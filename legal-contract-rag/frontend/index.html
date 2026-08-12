@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Contract Assistant</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Legal Contract Assistant</h1>
+            <p>Upload legal contracts and ask questions about them</p>
+            <div id="model-status">
+                <span>AI Model: </span>
+                <span id="model-name">Llama 3.2</span>
+                <span> | </span>
+                <span id="model-provider">Ollama (Local)</span>
+                <span> | </span>
+                <span id="model-status-indicator">Checking…</span>
+            </div>
+        </header>
+
+        <!-- Upload Section -->
+        <section class="upload-section">
+            <h2>Upload Contract</h2>
+            <div class="upload-row">
+                <input type="file" id="pdfFile" accept=".pdf">
+                <button id="uploadBtn">Upload PDF</button>
+            </div>
+            <div id="uploadStatus" class="status-box"></div>
+        </section>
+
+        <!-- Indexed Documents Section -->
+        <section class="documents-section">
+            <h2>Indexed Documents</h2>
+            <div id="documentsList">
+                <p class="muted">No documents uploaded yet.</p>
+            </div>
+        </section>
+
+        <!-- Ask a Question Section -->
+        <section class="question-section">
+            <h2>Ask a Question</h2>
+            <textarea id="questionInput" rows="3" placeholder="e.g. What is the termination clause?"></textarea>
+            <button id="askBtn">Ask</button>
+        </section>
+
+        <!-- Answer Section -->
+        <section class="answer-section">
+            <h2>Answer</h2>
+            <div id="answer">
+                <p class="muted">Your answer will appear here after you ask a question.</p>
+            </div>
+            <div id="sources">
+                <h3>Sources</h3>
+                <div id="sourcesList">
+                    <p class="muted">No sources yet.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+
+</html>
