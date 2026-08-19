@@ -1,224 +1,204 @@
-# 📄 Legal Contract Assistant (100% Local RAG)
+# Enterprise Legal Contract RAG System
 
-A privacy-focused, fully local Retrieval-Augmented Generation (RAG) web application designed for processing, indexing, and querying legal contract PDF documents. The application runs **100% locally and offline** using [Ollama](https://ollama.com) for both text generation and vector embeddings, powered by [ChromaDB](https://www.trychroma.com/) for local vector persistence and [FastAPI](https://fastapi.tiangolo.com/) for backend service delivery.
-
----
-
-## 🌟 Key Features
-
-- **🔒 100% Local & Private**: Zero external API dependencies (no OpenAI or cloud keys required). All sensitive contract data remains strictly on your local machine.
-- **📄 Document Parsing with Page Awareness**: Extracts text from PDF files using `pypdf`, preserving exact document names, page numbers, and chunk indices for auditability.
-- **⚡ Batch Embedding Optimization**: Vectorizes text chunks using Ollama's `nomic-embed-text` model in configurable batch sizes to prevent timeouts on large legal documents.
-- **🎯 Anti-Hallucination & Grounded Responses**: Utilizes strict system prompts to constrain answers exclusively to retrieved contract context. Returns *"I don't know based on the provided documents."* if information is absent.
-- **📍 Detailed Source Citations**: Answers automatically cite the source document name, page number, and chunk index.
-- **🖥️ All-in-One FastAPI Server**: Serves both REST API endpoints and the clean, responsive web frontend on a single port (`http://localhost:8000`).
+An enterprise-ready, modular **Retrieval-Augmented Generation (RAG)** platform for legal contract ingestion, legal-aware clause chunking, vector search, and grounded question answering with source citations.
 
 ---
 
-## 🏗️ System Architecture & Workflow
-
-### 1. Document Ingestion & Vectorization Flow
+## 🏛️ Architecture Overview
 
 ```mermaid
-flowchart TD
-    A["Upload Legal Contract PDF"] --> B["PyPDF Text & Page Extraction"]
-    B --> C["Page-Aware Chunking<br/>(Chunk Size: 500 | Overlap: 100)"]
-    C --> D["Ollama Embedding Service<br/>(Model: nomic-embed-text)"]
-    D --> E["Store Embeddings & Metadata<br/>in ChromaDB"]
-    E --> F["Save PDF File in documents/ Directory"]
+graph TD
+    UI[Angular Frontend :4200] -->|REST API| API[FastAPI Backend :8080]
+    API -->|Metadata & History| SQL[(SQL Server :1433)]
+    API -->|Blob/Queue Storage| Blob[(Azurite :10000-10001)]
+    API -->|Enqueue Jobs| Queue[(Azure Queue)]
+    Queue -->|Queue Trigger| Proc[Azure Function Processor :7071]
+    Proc -->|Download Blob| Blob
+    Proc -->|Extract & Chunk| Engine[LegalAwareChunker]
+    Engine -->|Embeddings| AI[AI Provider\nOllama / OpenRouter / Gemini / ...]
+    AI -->|Store Vectors| Chroma[(ChromaDB :8000)]
+    API -->|RAG Search| Chroma
+    API -->|LLM Chat| AI
 ```
 
-```text
-[PDF Upload] ──► [PyPDF Text Extraction] ──► [Page-Aware Chunking]
-                                                    │
-                                                    ▼
-[ChromaDB Vector Store] ◄── [Embeddings] ◄── [Ollama: nomic-embed-text]
-```
-
-### 2. Retrieval-Augmented Generation (RAG) Query Flow
-
-```mermaid
-flowchart TD
-    User(["User Asks Question"]) --> EmbedQ["Ollama Embedding Service<br/>(Model: nomic-embed-text)"]
-    EmbedQ --> QueryVec["Query Embedding Vector"]
-    QueryVec --> SimilaritySearch["ChromaDB Similarity Search<br/>(Top-K = 5)"]
-    SimilaritySearch --> CheckResults{"Relevant Chunks Found?"}
-    
-    CheckResults -- "No" --> Fallback["Return: 'I don't know based on the provided documents.'"]
-    CheckResults -- "Yes" --> BuildContext["Assemble Context & Source Metadata"]
-    BuildContext --> SystemPrompt["Construct Grounded System Prompt"]
-    SystemPrompt --> OllamaLLM["Ollama Local Chat LLM<br/>(Model: llama3.2)"]
-    OllamaLLM --> FinalResponse["Grounded Answer + Document & Page Citations"]
-```
-
-```text
-User Question ──► Ollama (nomic-embed-text) ──► Query Vector
-                                                      │
-                                                      ▼
-Grounded Answer ◄── Ollama (llama3.2) ◄── ChromaDB Similarity Search
-+ Source Citations       Local LLM             (Top-5 Context Chunks)
-```
+| Service | Technology | Port |
+|---|---|---|
+| Frontend | Angular 17+ | 4200 |
+| Backend API | FastAPI + SQLAlchemy | 8080 |
+| Document Processor | Azure Functions (Python) | 7071 |
+| Database | SQL Server 2022 | 1433 |
+| Blob & Queue Storage | Azurite (local Azure emulator) | 10000-10002 |
+| Vector Store | ChromaDB 0.4.24 | 8000 |
+| AI (local option) | Ollama | 11434 |
 
 ---
 
-## 🛠️ Technology Stack
+## 🤖 Dynamic AI Provider Configuration
 
-| Component | Technology | Purpose |
-| :--- | :--- | :--- |
-| **Backend Framework** | [FastAPI](https://fastapi.tiangolo.com/) | High-performance asynchronous Python web framework |
-| **ASGI Server** | [Uvicorn](https://www.uvicorn.org/) | Lightning-fast ASGI server |
-| **LLM Engine** | [Ollama](https://ollama.com/) (`llama3.2`) | Local LLM for answer generation |
-| **Embedding Engine** | [Ollama](https://ollama.com/) (`nomic-embed-text`) | Local vector embedding model (768 dimensions) |
-| **Vector Database** | [ChromaDB](https://www.trychroma.com/) | Persistent local vector store (`./chroma_data`) |
-| **PDF Processing** | [PyPDF](https://pypdf.readthedocs.io/) | PDF text extraction and page parsing |
-| **HTTP Client** | [httpx](https://www.python-httpx.org/) | Async HTTP client for communicating with Ollama APIs |
-| **Frontend UI** | Vanilla HTML5 / CSS3 / JavaScript | Modern interactive interface served directly via FastAPI |
+The application supports **any OpenAI-compatible LLM and embedding API** without code changes. Switch providers by editing a single `.env` variable.
+
+### Supported Providers
+
+| `AI_PROVIDER` | LLM Chat | Embeddings | Free? |
+|---|---|---|---|
+| `OLLAMA` | Local Ollama (`/api/generate`) | Local Ollama (`/api/embed`) | ✅ Free (local) |
+| `OPENROUTER` | 100+ models | `jinaeu/jina-embeddings-v2-base-en` | ✅ Free tier |
+| `OPENAI` | `gpt-4o-mini` | `text-embedding-3-small` | 💳 Paid |
+| `GEMINI` | `gemini-1.5-flash` | `text-embedding-004` | ✅ Free tier |
+| `GROQ` | `llama-3.1-8b-instant` | *(use OpenRouter for embeddings)* | ✅ Free tier |
+| `DEEPSEEK` | `deepseek-chat` | *(use OpenRouter for embeddings)* | 💲 Very cheap |
+| `CUSTOM` | Any OpenAI-compatible URL | Any OpenAI-compatible URL | Varies |
+
+### Minimal Configuration
+
+Edit **one block** in your `.env` file (root or `backend/.env`):
+
+```env
+# Option 1 — Local Ollama (no internet, free, requires Docker or local install)
+AI_PROVIDER=OLLAMA
+
+# Option 2 — OpenRouter (free tier models available)
+AI_PROVIDER=OPENROUTER
+AI_API_KEY=sk-or-v1-your-key-here
+
+# Option 3 — Google Gemini (free tier)
+AI_PROVIDER=GEMINI
+AI_API_KEY=AIzaSy-your-gemini-key-here
+
+# Option 4 — Completely custom provider
+AI_PROVIDER=CUSTOM
+LLM_BASE_URL=https://your-provider.com/v1
+LLM_API_KEY=your-api-key
+LLM_MODEL=your-model-name
+EMBEDDING_BASE_URL=https://your-provider.com/v1
+EMBEDDING_MODEL=your-embedding-model
+```
+
+> **Model overrides:**  Use `LLM_MODEL` and `EMBEDDING_MODEL` to override any provider's default model without changing code.
 
 ---
 
-## 🚀 Quick Start & Setup Guide
+## 🚀 Local Development Setup
 
-### 1. Prerequisites
+### Prerequisites
 
-- **Python 3.11+** installed on your system.
-- **Ollama** installed from [ollama.com/download](https://ollama.com/download).
+- Python **3.11** (required by Azure Functions Core Tools)
+- Node.js 18+ and Angular CLI: `npm install -g @angular/cli`
+- Azure Functions Core Tools v4: [Install guide](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local)
+- Docker & Docker Compose (for infrastructure services)
+- ODBC Driver 17 for SQL Server
 
-### 2. Pull Required Ollama Models
+### Step 1 — Start Infrastructure Services (Docker)
 
-Open a terminal and download the local LLM and embedding models:
-
-```bash
-# Pull the LLM for chat & answer generation
-ollama pull llama3.2
-
-# Pull the embedding model for text vectorization
-ollama pull nomic-embed-text
-```
-
-Verify models are installed:
-```bash
-ollama list
-```
-
-### 3. Setup Virtual Environment & Install Dependencies
-
-Clone or open the project directory and set up a Python virtual environment:
-
-#### Windows (PowerShell):
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+docker-compose up -d sqlserver azurite chromadb
+```
+
+This starts SQL Server, Azurite (Blob + Queue), and ChromaDB — **without** building the backend or processor images.
+
+### Step 2 — Initialize the Database (first time only)
+
+```powershell
+cd "E:\Selvamani\Learning\AI Learning\legal-contract-rag"
+python backend/scripts/init_db.py
+```
+
+This creates the `LegalContractRAG` database and runs all Alembic migrations to set up tables.
+
+### Step 3 — Configure AI Provider
+
+Edit `backend/.env` and `processor/local.settings.json` with your chosen provider:
+
+```env
+# backend/.env
+AI_PROVIDER=OPENROUTER
+AI_API_KEY=sk-or-v1-your-key-here
+```
+
+```json
+// processor/local.settings.json → "Values" block
+"AI_PROVIDER": "OPENROUTER",
+"AI_API_KEY": "sk-or-v1-your-key-here"
+```
+
+### Step 4 — Start the Backend API
+
+```powershell
+cd "E:\Selvamani\Learning\AI Learning\legal-contract-rag"
+uvicorn backend.app.main:app --reload --port 8080
+```
+
+API Docs: [http://localhost:8080/docs](http://localhost:8080/docs)
+
+### Step 5 — Start the Document Processor
+
+```powershell
+cd processor
+
+# Install dependencies (first time or after requirements change)
 pip install -r requirements.txt
+
+func start
 ```
 
-#### macOS / Linux:
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+> ⚠️  Azure Functions Core Tools uses Python **3.11** internally. Your `venv` should be created with Python 3.11.
+
+### Step 6 — Start the Angular Frontend
+
+```powershell
+cd frontend
+npm install
+npm start
 ```
 
-### 4. Environment Configuration
-
-Copy or create a `.env` file in the root project folder:
-
-```ini
-# ─── Ollama LLM Settings ──────────────────────────────────────
-OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=llama3.2
-OLLAMA_TIMEOUT=120
-
-# ─── Ollama Embedding Model ───────────────────────────────────
-OLLAMA_EMBEDDING_MODEL=nomic-embed-text
-OLLAMA_EMBEDDING_BATCH_SIZE=10
-OLLAMA_EMBEDDING_TIMEOUT=120
-
-# ─── ChromaDB Settings ────────────────────────────────────────
-CHROMA_PERSIST_DIRECTORY=./chroma_data
-COLLECTION_NAME=legal_contracts
-
-# ─── RAG Chunking Parameters ──────────────────────────────────
-CHUNK_SIZE=500
-CHUNK_OVERLAP=100
-TOP_K=5
-```
-
-### 5. Start the Application
-
-Start the FastAPI application with Uvicorn:
-
-```bash
-uvicorn app.main:app --reload
-```
-
-### 6. Access the Application
-
-Open your browser and navigate to:
-👉 **[http://localhost:8000](http://localhost:8000)**
-
-*(Swagger API Documentation is available at `http://localhost:8000/docs`)*
+Frontend: [http://localhost:4200](http://localhost:4200)
 
 ---
 
-## 🔍 How It Works (In Detail)
+## 🐳 Full Docker Deployment
 
-### 1. PDF Upload & Document Parsing
-- When a contract PDF is uploaded via `/api/documents/upload`, `PDFService` extracts page-by-page text using `pypdf`.
-- The document is saved to the `documents/` folder with a unique UUID prefix.
+### Step 1 — Configure Root `.env`
 
-### 2. Text Chunking
-- `ChunkingService` processes page text into overlapping chunks (default: 500 characters with 100 character overlap).
-- Each chunk preserves metadata: `document_name`, `page` number, and `chunk_index`.
+The root `.env` is the **single source of truth** for `docker-compose`. Both the backend and processor containers read AI provider config from it via `${AI_PROVIDER}` variable substitution:
 
-### 3. Vector Embedding & Storage
-- `EmbeddingService` sends batch requests (`/api/embed`) to the local Ollama instance using `nomic-embed-text`.
-- The resulting 768-dimensional embeddings along with text chunks and metadata are persisted in local ChromaDB storage (`./chroma_data`).
+```env
+# .env (project root)
+AI_PROVIDER=OPENROUTER
+AI_API_KEY=sk-or-v1-your-key-here
+EMBEDDING_MODEL=jinaeu/jina-embeddings-v2-base-en
+```
 
-### 4. Semantic Search & Grounded Answering
-- When a user asks a question via `/api/chat/`, `RAGService`:
-  1. Embeds the user question using `nomic-embed-text`.
-  2. Queries ChromaDB for the Top-K (default: 5) most relevant context chunks.
-  3. Formulates a strict system prompt instructing `llama3.2` to rely **only** on retrieved context.
-  4. Returns the generated answer along with exact document name and page citations.
+### Step 2 — Build and Start All Services
 
----
+```powershell
+docker-compose up --build -d
+```
 
-## 📡 API Reference
+The **backend container automatically**:
+1. ⏳ Waits for SQL Server to be ready
+2. 🗄️ Creates the `LegalContractRAG` database if missing
+3. 📋 Runs `alembic upgrade head` to create/update all tables
+4. 🚀 Starts the API server
 
-| Endpoint | Method | Description |
-| :--- | :--- | :--- |
-| `GET /health` | `GET` | Health check endpoint returning status of FastAPI backend and local Ollama instance |
-| `POST /api/documents/upload` | `POST` | Upload and index a legal contract PDF document |
-| `GET /api/documents/` | `GET` | List all indexed documents, chunk totals, and metadata |
-| `DELETE /api/documents/{doc_id}` | `DELETE` | Remove an indexed document from ChromaDB and filesystem |
-| `POST /api/chat/` | `POST` | Query the RAG system with a question |
+### Exposed Endpoints
 
----
+| Service | URL |
+|---|---|
+| Frontend | [http://localhost:4200](http://localhost:4200) |
+| Backend API Docs | [http://localhost:8080/docs](http://localhost:8080/docs) |
+| Document Processor | [http://localhost:7071](http://localhost:7071) |
+| ChromaDB | [http://localhost:8000](http://localhost:8000) |
+| Azurite Blob | [http://localhost:10000](http://localhost:10000) |
+| SQL Server | `localhost:1433` |
 
-## 🔬 Chunk Size & Parameter Tuning
+### Using Local Ollama in Docker
 
-We evaluated multiple chunking configurations for dense legal contracts:
+If `AI_PROVIDER=OLLAMA`, pull models into your Ollama container before processing:
 
-| Configuration | Chunk Size | Overlap | Performance & Retrieval Characteristics |
-| :--- | :---: | :---: | :--- |
-| **Small Chunks** | 300 | 50 | Highly precise, but risks splitting complex legal clauses across chunk boundaries. |
-| **Recommended** | **500** | **100** | **Optimal balance**: Captures full legal clauses and definitions while maintaining low noise. |
-| **Large Chunks** | 800 | 150 | High context retention, but increases noise and context length for LLM processing. |
-
----
-
-## ❓ Troubleshooting & FAQs
-
-### 1. `404 Not Found` for `http://localhost:11434/api/embed`
-- **Cause**: The embedding model `nomic-embed-text` has not been pulled into Ollama yet.
-- **Fix**: Run `ollama pull nomic-embed-text` in your terminal.
-
-### 2. `Cannot connect to Ollama at http://localhost:11434`
-- **Cause**: Ollama service is not running.
-- **Fix**: Start Ollama by running `ollama serve` or launching the Ollama desktop application.
-
-### 3. Embedding Timeouts on Large Contracts
-- **Fix**: Reduce `OLLAMA_EMBEDDING_BATCH_SIZE` (e.g. set to `5` in `.env`) or decrease `CHUNK_SIZE`.
+```powershell
+docker exec -it legal_ollama ollama pull llama3.2
+docker exec -it legal_ollama ollama pull nomic-embed-text
+```
 
 ---
 
@@ -226,28 +206,155 @@ We evaluated multiple chunking configurations for dense legal contracts:
 
 ```
 legal-contract-rag/
-├── app/
-│   ├── api/
-│   │   ├── chat.py           # Chat API endpoint router
-│   │   └── documents.py      # Document upload & listing endpoints
-│   ├── models/
-│   │   └── schemas.py        # Pydantic request/response schemas
-│   ├── services/
-│   │   ├── chroma_service.py # Vector database operations
-│   │   ├── chunking_service.py# Document chunking logic
-│   │   ├── embedding_service.py# Ollama batch embedding client
-│   │   ├── ollama_service.py # Ollama LLM chat client
-│   │   ├── pdf_service.py    # PyPDF text extraction
-│   │   └── rag_service.py    # RAG pipeline orchestration
-│   ├── config.py             # Application configuration
-│   └── main.py               # FastAPI entry point & static file serving
-├── frontend/
-│   ├── index.html            # Web UI main HTML
-│   ├── styles.css            # Custom CSS styling
-│   └── app.js                # Frontend API client & UI logic
-├── chroma_data/              # Local ChromaDB persistent database
-├── documents/                # Saved contract PDF files
-├── .env                      # Environment variable configuration
-├── requirements.txt          # Python dependencies
-└── README.md                 # Project documentation
+├── .env                      # Root env — read by docker-compose
+├── docker-compose.yml
+├── backend/
+│   ├── .env                  # Backend local dev env
+│   ├── Dockerfile
+│   ├── scripts/
+│   │   ├── init_db.py        # Local DB init (run once)
+│   │   └── start.sh          # Docker entrypoint (auto-init DB + migrate)
+│   ├── app/
+│   │   ├── core/config.py    # All settings
+│   │   ├── services/
+│   │   │   ├── embedding_service.py   # Dynamic multi-provider embeddings
+│   │   │   └── ollama_service.py      # Dynamic multi-provider LLM
+│   │   └── ...
+│   └── alembic/              # Database migration scripts
+├── processor/
+│   ├── local.settings.json   # Processor local dev env (gitignored)
+│   ├── requirements.txt
+│   ├── function_app.py       # Azure Function entry point
+│   └── services/
+│       ├── embedding_service.py   # Dynamic multi-provider embeddings
+│       ├── chroma_service.py      # ChromaDB (HTTP or persistent)
+│       └── ...
+└── frontend/                 # Angular 17+ application
+```
+
+---
+
+## 🧪 Running Tests
+
+```powershell
+cd "E:\Selvamani\Learning\AI Learning\legal-contract-rag"
+pytest tests/ -v
+```
+
+---
+
+## ⚙️ Key Environment Variables Reference
+
+| Variable | Description | Example |
+|---|---|---|
+| `AI_PROVIDER` | Active AI provider | `OLLAMA`, `OPENROUTER`, `GEMINI` |
+| `AI_API_KEY` | Shared API key for LLM + embeddings | `sk-or-v1-...` |
+| `LLM_MODEL` | Override LLM model name | `meta-llama/llama-3.1-8b-instruct:free` |
+| `EMBEDDING_MODEL` | Override embedding model name | `jinaeu/jina-embeddings-v2-base-en` |
+| `LLM_BASE_URL` | Override LLM endpoint (any provider) | `https://api.groq.com/openai/v1` |
+| `LLM_API_KEY` | Override LLM-specific key | *(optional, falls back to AI_API_KEY)* |
+| `EMBEDDING_BASE_URL` | Override embedding endpoint | `https://openrouter.ai/api/v1` |
+| `EMBEDDING_API_KEY` | Override embedding-specific key | *(optional, falls back to AI_API_KEY)* |
+| `OLLAMA_BASE_URL` | Local Ollama URL | `http://localhost:11434` |
+| `DATABASE_URL` | SQL Server connection string | `mssql+pyodbc://sa:pass@host/db?...` |
+| `CHROMA_HOST` | ChromaDB host (HTTP mode) | `127.0.0.1` or `chromadb` (Docker) |
+| `CHROMA_PORT` | ChromaDB port | `8000` |
+
+
+---
+
+## 🏛️ Architecture Overview
+
+The system is decoupled into three core tiers:
+
+1. **Angular 17+ Frontend (`frontend/`)**: Modern UI built with Angular Material, featuring contract lifecycle management, asynchronous document upload progress tracking, interactive chat, and a slide-out Citation Drawer.
+2. **FastAPI Backend (`backend/`)**: Relational metadata API managing contracts, documents, processing job queues, conversation history, and persisted citation sources (`RAGSources`) using SQL Server and SQLAlchemy.
+3. **Document Processor Azure Functions (`processor/`)**: Isolated microservice handling document extraction (PDF, DOCX, TXT), `LegalAwareChunker` structural clause parsing (Articles, Sections, Clauses), embedding generation (SentenceTransformers / Ollama), and isolated ChromaDB vector indexing.
+
+```mermaid
+graph TD
+    UI[Angular 17 Frontend] -->|REST API| API[FastAPI Backend]
+    API -->|Metadata & History| SQL[(SQL Server)]
+    API -->|Blob Storage| Blob[(Azurite / Azure Blob)]
+    API -->|Enqueue Jobs| Queue[(Azure Queue)]
+    Queue -->|Queue Trigger| Proc[Document Processor Azure Function]
+    Proc -->|Download File| Blob
+    Proc -->|Extract & Legal Chunk| Engine[Legal-Aware Engine]
+    Engine -->|Generate Embeddings| Embed[SentenceTransformers / Ollama]
+    Embed -->|Store Vectors| Chroma[(ChromaDB)]
+    API -->|Vector Search API| Proc
+```
+
+---
+
+## 🚀 Key Features
+
+* **Asynchronous Queue Ingestion**: Document uploads return immediate `202 Accepted` responses. Ingestion runs asynchronously via Azure Queue (`legal-document-processing`).
+* **Legal-Aware Chunking (`LegalAwareChunker`)**: Respects legal hierarchy boundaries (Articles, Sections, Subsections, Clauses, Headings) without breaking contractual clauses across chunks.
+* **Vector Store Isolation**: ChromaDB is kept strictly internal to the Document Processor microservice and accessed exclusively via internal REST APIs (`/api/vector/search`, `/api/vector/delete`).
+* **Relational Citation Persistence**: User questions, assistant answers, and detailed chunk citations (Document Name, Page, Section, Clause, Relevance Score) are stored in SQL Server.
+* **Resilient Infrastructure**: Full Azurite (Blob & Queue) integration with seamless local disk and logging fallbacks.
+
+---
+
+## 🛠️ Local Development & Quickstart
+
+### Prerequisites
+* Python 3.10+
+* Node.js 18+ and Angular CLI (`npm install -g @angular/cli`)
+* Docker & Docker Compose (optional for containerized deployment)
+
+### 1. Database & Migrations Setup
+```bash
+cd backend
+pip install -r requirements.txt
+alembic upgrade head
+```
+
+### 2. Run Backend API Server
+```bash
+uvicorn backend.app.main:app --reload --port 8000
+```
+Swagger API Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+### 3. Run Document Processor Azure Function
+```bash
+cd processor
+pip install -r requirements.txt
+func start
+```
+
+### 4. Run Angular Frontend
+```bash
+cd frontend
+npm install
+npm start
+```
+Frontend Web UI: [http://localhost:4200](http://localhost:4200)
+
+---
+
+## 🐳 Containerized Deployment (Docker Compose)
+
+Launch the complete 7-container enterprise stack (SQL Server, Azurite, ChromaDB, Ollama, Backend, Processor, Frontend) with a single command:
+
+```bash
+docker-compose up --build -d
+```
+
+Services exposed:
+* **Frontend UI**: `http://localhost`
+* **FastAPI Backend**: `http://localhost:8080/docs`
+* **Document Processor Function**: `http://localhost:7071`
+* **SQL Server**: `localhost:1433`
+* **Azurite Emulator**: `localhost:10000` (Blob), `10001` (Queue)
+
+---
+
+## 🧪 Testing Strategy
+
+Run the automated pytest test suite covering domain models, legal extractors, chunkers, and FastAPI endpoint routes:
+
+```bash
+pytest tests/ -v
 ```

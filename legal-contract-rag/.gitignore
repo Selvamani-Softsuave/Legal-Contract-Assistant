@@ -1,46 +1,74 @@
-# Environment variables
+# ── Secrets & Environment ─────────────────────────────────────────────────────
 .env
 .env.local
+.env.*.local
+local.settings.json
 
-# Python
-__pycache__
+# ── Python ─────────────────────────────────────────────────────────────────────
+__pycache__/
 *.py[cod]
 *$py.class
 *.pyo
 *.pyd
+*.pdb
 .Python
-env
-build
-develop-eggs
-dist
-downloads
-eggs
-.eggs
-lib
-lib64
-parts
-sdist
-var
-wheels
-share/python-wheels
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
 
-# ChromaDB
+# Python packaging
+*.egg-info/
+*.egg
+dist/
+build/
+wheels/
+sdist/
+MANIFEST
+.installed.cfg
+
+# Python virtual environments
+venv/
+.venv/
+env/
+.env/
+ENV/
+env.bak/
+venv.bak/
+
+# Testing & coverage
+.pytest_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+htmlcov/
+*.xml
+
+# ── Azure Functions ─────────────────────────────────────────────────────────────
+.python_packages/
+bin/
+obj/
+.azure/
+
+# ── ChromaDB ───────────────────────────────────────────────────────────────────
 chroma_data/
 
-# Documents
+# ── Uploaded Documents ─────────────────────────────────────────────────────────
 documents/
 
-# IDE
+# ── Logs ───────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Frontend ───────────────────────────────────────────────────────────────────
+node_modules/
+.angular/
+frontend/dist/
+
+# ── IDEs ───────────────────────────────────────────────────────────────────────
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# OS
+# ── OS ─────────────────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
+Desktop.ini
