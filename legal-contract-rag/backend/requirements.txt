@@ -1,14 +1,23 @@
-fastapi>=0.104.1
-uvicorn[standard]>=0.24.0
-pydantic>=2.5.0
-pydantic-settings>=2.1.0
-sqlalchemy>=2.0.23
-alembic>=1.12.1
-pyodbc>=5.0.1
-azure-storage-blob>=12.19.0
-azure-storage-queue>=12.9.0
+# ─── Core API & Server ────────────────────────────
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+pydantic>=2.8.0
+pydantic-settings>=2.4.0
+
+# ─── Database & ORM ────────────────────────────────
+sqlalchemy>=2.0.30
+alembic>=1.13.0
+pyodbc>=5.1.0
+
+# ─── Storage & Queue ───────────────────────────────
+azure-storage-blob>=12.20.0
+azure-storage-queue>=12.10.0
+
+# ─── HTTP & Utilities ──────────────────────────────
 httpx>=0.28.1
-python-dotenv>=1.0.0
-python-multipart>=0.0.6
-pytest>=7.4.3
-pytest-asyncio>=0.21.1
+python-dotenv>=1.0.1
+python-multipart>=0.0.9
+
+# ─── Testing ───────────────────────────────────────
+pytest>=8.2.0
+pytest-asyncio>=0.23.0

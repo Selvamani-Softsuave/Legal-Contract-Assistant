@@ -1,44 +1,43 @@
 import logging
+import time
 from typing import List, Dict, Any, Optional
 from sqlalchemy.orm import Session
 
 from backend.app.infrastructure.vector.vector_client import VectorClient
 from backend.app.services.embedding_service import EmbeddingService
-from backend.app.services.ollama_service import OllamaService
 from backend.app.repositories.chat_repository import ChatRepository
 from backend.app.core.config import settings
 
+from backend.app.llm.base import LLMProvider
+from backend.app.llm.factory import LLMProviderFactory
+from backend.app.llm.models import LLMRequest
+from backend.app.llm.exceptions import LLMProviderError
+
+from backend.app.rag.context_builder import ContextBuilder
+from backend.app.rag.citation_handler import CitationHandler
+from backend.app.rag.prompt_builder import LegalRAGPromptBuilder
+from backend.app.rag.response_validator import ResponseValidator
+
 logger = logging.getLogger(__name__)
 
-def _clean_llm_response(text: str) -> str:
-    if not text:
-        return text
-    cleaned = text.strip()
-    
-    # 1. If model outputs thought checklist and ends with "Answer: ..."
-    if "Answer:" in cleaned:
-        parts = cleaned.split("Answer:")
-        candidate = parts[-1].strip()
-        if candidate:
-            cleaned = candidate
-
-    # 2. Filter out internal thinking bullets if still present
-    lines = [l for l in cleaned.split("\n")]
-    filtered = []
-    for line in lines:
-        stripped = line.strip()
-        if stripped.startswith(("* Role:", "* Task:", "* Constraint", "* Document:", "* Content:", "* Question:", "* Section", "* Total", "* Direct answer", "* Professional", "* No internal", "* Citations", "* Only using", "*Self-Correction")):
-            continue
-        filtered.append(line)
-    
-    result = "\n".join(filtered).strip()
-    return result if result else cleaned
 
 class EnterpriseRAGService:
-    def __init__(self):
-        self.vector_client = VectorClient()
-        self.embedding_service = EmbeddingService()
-        self.ollama_service = OllamaService()
+    """
+    Provider-independent Enterprise Legal Contract RAG Service.
+    Orchestrates embedding, vector similarity retrieval, standardized prompt construction,
+    LLM generation via generic LLMProvider, output validation, and database persistence.
+    """
+
+    def __init__(
+        self,
+        llm_provider: Optional[LLMProvider] = None,
+        embedding_service: Optional[EmbeddingService] = None,
+        vector_client: Optional[VectorClient] = None
+    ):
+        # Single active LLM Provider injected or resolved via factory
+        self.llm_provider = llm_provider or LLMProviderFactory.get_provider()
+        self.embedding_service = embedding_service or EmbeddingService()
+        self.vector_client = vector_client or VectorClient()
 
     async def answer_question(
         self,
@@ -47,7 +46,7 @@ class EnterpriseRAGService:
         scoped_contract_ids: Optional[List[str]] = None,
         db: Optional[Session] = None
     ) -> Dict[str, Any]:
-        if not question.strip():
+        if not question or not question.strip():
             return {"answer": "Please provide a question.", "sources": []}
 
         # 1. Generate query embedding
@@ -57,64 +56,68 @@ class EnterpriseRAGService:
             logger.error(f"Error embedding question: {e}")
             return {"answer": "Error generating question embedding.", "sources": []}
 
-        # 2. Decoupled similarity search via Document Processor internal Vector API
+        # 2. Vector similarity search via Document Processor internal Vector API
         search_results = self.vector_client.search_vectors(
             query_embedding=query_embedding,
             top_k=settings.TOP_K,
             contract_ids=scoped_contract_ids
         )
 
+        # 3. Handle empty retrieval
         if not search_results:
-            answer_text = "I don't know based on the provided documents."
-            sources = []
+            answer_text = ResponseValidator.DEFAULT_FALLBACK
+            sources: List[Dict[str, Any]] = []
             if db and conversation_id:
                 chat_repo = ChatRepository(db)
-                msg = chat_repo.add_message(conversation_id, "assistant", answer_text)
+                chat_repo.add_message(conversation_id, "assistant", answer_text)
             return {"answer": answer_text, "sources": sources}
 
-        # 3. Build context & citation DTOs
-        context_parts = []
-        sources = []
-        for res in search_results:
-            meta = res.get("metadata", {})
-            doc_text = res.get("document", "")
-            context_parts.append(f"[Document: {meta.get('document_name', 'Unknown')}, Page {meta.get('page', 1)}]\n{doc_text}")
+        # 4. Build context string & citation DTOs
+        context_str = ContextBuilder.build_context(search_results)
+        sources = CitationHandler.build_sources(search_results)
 
-            sources.append({
-                "chunk_id": res.get("id"),
-                "document_name": meta.get("document_name", "Unknown"),
-                "page_number": meta.get("page"),
-                "section": meta.get("section") or meta.get("article"),
-                "clause": meta.get("clause"),
-                "relevance_score": float(res.get("distance", 0.0))
-            })
+        # 5. Build standardized, provider-independent RAG prompt
+        system_prompt = LegalRAGPromptBuilder.build_system_prompt()
+        user_prompt = LegalRAGPromptBuilder.build_user_prompt(question, context_str)
 
-        context_str = "\n\n---\n\n".join(context_parts)
-
-        # 4. Construct clean legal RAG prompt
-        system_prompt = (
-            "You are a professional legal contract assistant. "
-            "Answer the question directly and concisely based strictly on the provided contract context. "
-            "Cite relevant sections, clauses, or page numbers where applicable. "
-            "If the context does not contain the answer, say 'I don't know based on the provided documents.' "
-            "Do not output internal thinking, notes, or bullet-point rule evaluations."
-        )
-
-        user_prompt = f"Contract Context:\n{context_str}\n\nQuestion: {question}\n\nDirect Answer:"
-
-        # 5. Generate LLM response
+        # 6. Dispatch to single active LLM Provider
+        start_time = time.time()
         try:
-            raw_answer = await self.ollama_service.generate(system_prompt, user_prompt)
-            answer_text = _clean_llm_response(raw_answer)
+            llm_request = LLMRequest(
+                system_prompt=system_prompt,
+                user_prompt=user_prompt,
+                temperature=0.0,
+                metadata={
+                    "conversation_id": conversation_id,
+                    "chunk_count": len(search_results)
+                }
+            )
+            llm_response = await self.llm_provider.generate(llm_request)
+            raw_answer = llm_response.content
+            duration = time.time() - start_time
+            logger.info(
+                f"LLM generation finished | Provider: {llm_response.provider} | "
+                f"Model: {llm_response.model} | Duration: {duration:.2f}s"
+            )
+
+            # 7. Normalize & validate LLM response
+            answer_text = ResponseValidator.validate_and_normalize(raw_answer)
+
+        except LLMProviderError as e:
+            logger.error(f"LLM Provider Error ({e.provider}): {e.message}")
+            answer_text = f"Error generating answer from LLM provider ({e.provider}): {e.message}"
         except Exception as e:
-            logger.error(f"Error generating answer: {e}")
+            logger.error(f"Unexpected error in LLM generation: {e}")
             answer_text = f"Error generating answer: {str(e)}"
 
-        # 6. Persist to relational database (Messages & RAGSources)
+        # 8. Persist assistant message & RAG sources to database
         if db and conversation_id:
-            chat_repo = ChatRepository(db)
-            assistant_msg = chat_repo.add_message(conversation_id, "assistant", answer_text)
-            chat_repo.add_rag_sources(assistant_msg.id, sources)
+            try:
+                chat_repo = ChatRepository(db)
+                assistant_msg = chat_repo.add_message(conversation_id, "assistant", answer_text)
+                chat_repo.add_rag_sources(assistant_msg.id, sources)
+            except Exception as db_err:
+                logger.error(f"Failed to persist chat message/sources: {db_err}")
 
         return {
             "answer": answer_text,

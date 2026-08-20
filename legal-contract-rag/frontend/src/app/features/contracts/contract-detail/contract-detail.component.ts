@@ -110,15 +110,25 @@ export class ContractDetailComponent implements OnChanges, OnDestroy, OnInit {
 
   onFileSelected(event: any): void {
     const file: File = event.target.files[0];
-    if (file && this.contract) {
+    if (!file) return;
+
+    const maxMB = 25;
+    if (file.size > maxMB * 1024 * 1024) {
+      alert(`File size (${(file.size / (1024 * 1024)).toFixed(1)}MB) exceeds maximum limit of ${maxMB}MB.`);
+      event.target.value = '';
+      return;
+    }
+
+    if (this.contract) {
       this.uploading = true;
       this.documentService.uploadDocument(this.contract.id, file).subscribe({
         next: () => {
           this.uploading = false;
           this.loadDocuments();
         },
-        error: () => {
+        error: (err) => {
           this.uploading = false;
+          alert(err.error?.detail || 'Failed to upload document. Please check file size and format.');
         }
       });
     }

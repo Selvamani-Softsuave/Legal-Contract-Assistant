@@ -1,0 +1,61 @@
+<div class="app-container">
+  <!-- Top Navigation Header -->
+  <header class="enterprise-header">
+    <div class="brand-logo">
+      <span class="logo-icon">⚖️</span>
+      <span class="logo-text">Legal Contract Assistant</span>
+      <span class="badge">v2.0</span>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="nav-tab-btn" [class.active]="activeTab === 'contracts'" (click)="activeTab = 'contracts'">
+        <span>📑 Contracts & Upload</span>
+      </button>
+      <button class="nav-tab-btn" [class.active]="activeTab === 'documents'" (click)="activeTab = 'documents'">
+        <span>📂 All Documents</span>
+      </button>
+      <button class="nav-tab-btn" [class.active]="activeTab === 'chat'" (click)="activeTab = 'chat'">
+        <span>💬 Legal Assistant</span>
+      </button>
+    </nav>
+
+    <div class="header-status">
+      <span class="status-chip completed">● System Online</span>
+    </div>
+  </header>
+
+  <!-- Main Dynamic Content Workspace -->
+  <main class="main-layout" [class.split-mode]="activeTab === 'contracts'">
+    
+    <!-- Contracts View (Split Layout) -->
+    <ng-container *ngIf="activeTab === 'contracts'">
+      <div class="sidebar">
+        <app-contract-list (contractSelected)="onContractSelected($event)"></app-contract-list>
+      </div>
+
+      <div class="center-content">
+        <app-contract-detail [contract]="selectedContract"></app-contract-detail>
+      </div>
+
+      <div class="chat-sidebar">
+        <app-chat-window [selectedContract]="selectedContract"></app-chat-window>
+      </div>
+    </ng-container>
+
+    <!-- All Uploaded Documents View -->
+    <ng-container *ngIf="activeTab === 'documents'">
+      <div class="full-view-container">
+        <app-all-documents></app-all-documents>
+      </div>
+    </ng-container>
+
+    <!-- Fullscreen Legal Assistant Chat View -->
+    <ng-container *ngIf="activeTab === 'chat'">
+      <div class="full-chat-container">
+        <app-chat-window [selectedContract]="selectedContract"></app-chat-window>
+      </div>
+    </ng-container>
+
+  </main>
+</div>

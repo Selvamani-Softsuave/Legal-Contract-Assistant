@@ -1,3 +1,10 @@
+import sys
+try:
+    __import__('pysqlite3')
+    sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+except ImportError:
+    pass
+
 import chromadb
 import logging
 import os
@@ -14,7 +21,12 @@ class ProcessorChromaService:
         else:
             self.persist_dir = persist_dir or os.getenv("CHROMA_PERSIST_DIRECTORY", "./chroma_data")
             self.client = chromadb.PersistentClient(path=self.persist_dir)
-        self.collection = self._get_or_create_collection()
+        self.collection = None
+
+    def get_collection(self):
+        if self.collection is None:
+            self.collection = self._get_or_create_collection()
+        return self.collection
 
     def _get_or_create_collection(self):
         collection = self.client.get_or_create_collection(
@@ -53,7 +65,7 @@ class ProcessorChromaService:
             })
 
         try:
-            self.collection.add(
+            self.get_collection().add(
                 ids=ids,
                 documents=documents,
                 metadatas=metadatas,
@@ -107,12 +119,19 @@ class ProcessorChromaService:
             kwargs["where"] = where_filter
 
         try:
-            results = self.collection.query(**kwargs)
+            results = self.get_collection().query(**kwargs)
         except Exception as e:
-            if "dimensionality" in str(e).lower() or "dimension" in str(e).lower():
-                logger.warning(f"Dimension mismatch during search: {e}. Please reprocess documents.")
-                return []
-            raise e
+            err_msg = str(e).lower()
+            if "does not exist" in err_msg or "dimensionality" in err_msg or "dimension" in err_msg:
+                logger.warning(f"Chroma collection issue ({e}). Refreshing collection reference...")
+                self.collection = self._get_or_create_collection()
+                try:
+                    results = self.collection.query(**kwargs)
+                except Exception as retry_e:
+                    logger.warning(f"Similarity search failed after collection refresh: {retry_e}")
+                    return []
+            else:
+                raise e
 
         formatted = []
         if results.get("ids") and len(results["ids"]) > 0:
@@ -128,9 +147,9 @@ class ProcessorChromaService:
 
     def delete_document_vectors(self, document_id: str) -> bool:
         try:
-            results = self.collection.get(where={"document_id": document_id}, include=["metadatas"])
+            results = self.get_collection().get(where={"document_id": document_id}, include=["metadatas"])
             if results and results.get("ids"):
-                self.collection.delete(ids=results["ids"])
+                self.get_collection().delete(ids=results["ids"])
                 logger.info(f"Deleted {len(results['ids'])} vectors for document {document_id}")
                 return True
             return False
@@ -138,7 +157,7 @@ class ProcessorChromaService:
             logger.error(f"Error deleting vectors for document {document_id}: {e}")
             return False
 
-    def clear_vectors() -> bool:
+    def clear_vectors(self) -> bool:
         try:
             self.client.delete_collection(self.collection_name)
             self.collection = self._get_or_create_collection()
@@ -147,8 +166,8 @@ class ProcessorChromaService:
             logger.error(f"Error clearing collection: {e}")
             return False
 
-    def get_health() -> Dict[str, Any]:
-        count = self.collection.count()
+    def get_health(self) -> Dict[str, Any]:
+        count = self.get_collection().count()
         return {
             "status": "healthy",
             "collection_name": self.collection_name,

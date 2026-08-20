@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Conversation, ChatResponse } from '../models';
+import { Conversation, ChatResponse, MessageResponse } from '../models';
 
 @Injectable({
     providedIn: 'root'
@@ -20,6 +20,14 @@ export class ChatService {
 
     getConversations(): Observable<Conversation[]> {
         return this.http.get<Conversation[]>(`${this.apiUrl}/conversations`);
+    }
+
+    getConversationMessages(conversationId: string): Observable<MessageResponse[]> {
+        return this.http.get<MessageResponse[]>(`${this.apiUrl}/conversations/${conversationId}/messages`);
+    }
+
+    deleteConversation(conversationId: string): Observable<any> {
+        return this.http.delete<any>(`${this.apiUrl}/conversations/${conversationId}`);
     }
 
     sendMessage(conversationId: string, question: string, scopedContractIds?: string[]): Observable<ChatResponse> {

@@ -25,8 +25,22 @@ class ChatRepository:
 
     def list_conversations(self) -> List[Conversation]:
         return self.db.query(Conversation).filter(
-            Conversation.is_deleted == False
+            Conversation.is_deleted == False,
+            Conversation.messages.any()
         ).order_by(Conversation.created_at.desc()).all()
+
+    def delete_conversation(self, conversation_id: str) -> bool:
+        conv = self.get_conversation(conversation_id)
+        if not conv:
+            return False
+        conv.is_deleted = True
+        self.db.commit()
+        return True
+
+    def get_messages(self, conversation_id: str) -> List[Message]:
+        return self.db.query(Message).filter(
+            Message.conversation_id == conversation_id
+        ).order_by(Message.created_at.asc()).all()
 
     def add_message(self, conversation_id: str, role: str, content: str) -> Message:
         msg = Message(conversation_id=conversation_id, role=role, content=content)

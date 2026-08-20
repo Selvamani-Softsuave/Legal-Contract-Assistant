@@ -19,7 +19,14 @@ import httpx
 
 logger = logging.getLogger("document_processor")
 app = func.FunctionApp()
-chroma_service = ProcessorChromaService()
+
+_chroma_service = None
+
+def get_chroma_service():
+    global _chroma_service
+    if _chroma_service is None:
+        _chroma_service = ProcessorChromaService()
+    return _chroma_service
 
 @app.function_name(name="VectorSearch")
 @app.route(route="vector/search", auth_level=func.AuthLevel.ANONYMOUS, methods=["POST"])
@@ -38,6 +45,7 @@ def vector_search(req: func.HttpRequest) -> func.HttpResponse:
                 mimetype="application/json"
             )
 
+        chroma_service = get_chroma_service()
         results = chroma_service.similarity_search(
             query_embedding=query_embedding,
             top_k=top_k,
@@ -70,6 +78,7 @@ def vector_delete(req: func.HttpRequest) -> func.HttpResponse:
                 mimetype="application/json"
             )
 
+        chroma_service = get_chroma_service()
         success = chroma_service.delete_document_vectors(document_id)
         return func.HttpResponse(
             json.dumps({"status": "success" if success else "not_found", "document_id": document_id}),
@@ -87,12 +96,21 @@ def vector_delete(req: func.HttpRequest) -> func.HttpResponse:
 @app.function_name(name="VectorHealth")
 @app.route(route="vector/health", auth_level=func.AuthLevel.ANONYMOUS, methods=["GET"])
 def vector_health(req: func.HttpRequest) -> func.HttpResponse:
-    health_info = chroma_service.get_health()
-    return func.HttpResponse(
-        json.dumps(health_info),
-        status_code=200,
-        mimetype="application/json"
-    )
+    try:
+        chroma_service = get_chroma_service()
+        health_info = chroma_service.get_health()
+        return func.HttpResponse(
+            json.dumps(health_info),
+            status_code=200,
+            mimetype="application/json"
+        )
+    except Exception as e:
+        logger.error(f"Error in vector health API: {e}")
+        return func.HttpResponse(
+            json.dumps({"status": "unhealthy", "error": str(e)}),
+            status_code=500,
+            mimetype="application/json"
+        )
 
 @app.function_name(name="LegalDocumentQueueTrigger")
 @app.queue_trigger(arg_name="msg", queue_name="%QUEUE_NAME%", connection="AZURE_STORAGE_CONNECTION_STRING")
@@ -116,6 +134,7 @@ def process_document_queue(msg: func.QueueMessage) -> None:
         
         logger.info(f"Processing document {document_id} (job {job_id}) with operation {operation}")
 
+        result = None
         if operation in ["PROCESS", "REPROCESS"]:
             # 1. Download file from blob storage
             conn_str = os.environ.get("AZURE_STORAGE_CONNECTION_STRING")
@@ -129,7 +148,7 @@ def process_document_queue(msg: func.QueueMessage) -> None:
             
             # 2. Run Processing Service
             doc_service = DocumentProcessingService()
-            doc_service.process_document(
+            result = doc_service.process_document(
                 document_id=document_id,
                 contract_id=contract_id,
                 file_name=file_name,
@@ -146,10 +165,14 @@ def process_document_queue(msg: func.QueueMessage) -> None:
 
         # 3. Notify backend of success
         if job_id:
+            patch_data = {"status": "Completed", "document_id": document_id}
+            if result:
+                patch_data["page_count"] = result.get("page_count", 1)
+                patch_data["chunk_count"] = result.get("indexed_count", 0)
             with httpx.Client() as client:
                 client.patch(
                     f"{backend_url}/api/v1/processing/jobs/{job_id}/status",
-                    json={"status": "Completed", "document_id": document_id}
+                    json=patch_data
                 )
                 
     except Exception as e:

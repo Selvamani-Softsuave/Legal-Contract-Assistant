@@ -10,12 +10,11 @@
         "CHROMA_HOST": "127.0.0.1",
         "CHROMA_PORT": "8000",
         "COLLECTION_NAME": "legal_contracts",
-        "OLLAMA_BASE_URL": "http://localhost:11434",
-        "OLLAMA_EMBEDDING_MODEL": "nomic-embed-text",
         "BACKEND_API_URL": "http://127.0.0.1:8080",
         "DATABASE_URL": "mssql+pyodbc://sa:LegalRAG_Password2026!@127.0.0.1:1433/LegalContractRAG?driver=ODBC+Driver+17+for+SQL+Server",
-        "AI_PROVIDER": "OPENROUTER",
-        "AI_API_KEY": "your-api-key-here",
-        "EMBEDDING_MODEL": "jinaeu/jina-embeddings-v2-base-en"
+        "EMBEDDING_PROVIDER": "OLLAMA",
+        "EMBEDDING_MODEL": "nomic-embed-text",
+        "OLLAMA_BASE_URL": "http://localhost:11434",
+        "OLLAMA_EMBEDDING_MODEL": "nomic-embed-text"
     }
 }

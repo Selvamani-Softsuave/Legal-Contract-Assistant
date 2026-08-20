@@ -23,6 +23,8 @@ class JobStatusUpdate(BaseModel):
     status: str
     error_message: Optional[str] = None
     document_id: str
+    page_count: Optional[int] = None
+    chunk_count: Optional[int] = None
 
 @router.patch("/jobs/{job_id}/status")
 async def update_job_status(job_id: str, obj_in: JobStatusUpdate, db: Session = Depends(get_db)):
@@ -33,13 +35,14 @@ async def update_job_status(job_id: str, obj_in: JobStatusUpdate, db: Session = 
 
     if obj_in.document_id:
         doc_repo = DocumentRepository(db)
-        doc_repo.update_status(obj_in.document_id, obj_in.status)
+        doc_repo.update_status(obj_in.document_id, obj_in.status, page_count=obj_in.page_count)
 
     await manager.broadcast({
         "type": "JOB_UPDATE",
         "document_id": obj_in.document_id,
         "status": obj_in.status,
-        "job_id": job_id
+        "job_id": job_id,
+        "page_count": obj_in.page_count
     })
 
     return {"message": "Status updated successfully"}

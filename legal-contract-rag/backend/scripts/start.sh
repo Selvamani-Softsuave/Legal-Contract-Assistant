@@ -11,7 +11,8 @@ if not match:
     sys.exit(1)
 server = match.group(1).replace(':', ',')
 db     = match.group(2)
-driver = 'ODBC Driver 17 for SQL Server'
+drivers = pyodbc.drivers()
+driver = 'ODBC Driver 17 for SQL Server' if 'ODBC Driver 17 for SQL Server' in drivers else ('ODBC Driver 18 for SQL Server' if 'ODBC Driver 18 for SQL Server' in drivers else (drivers[0] if drivers else 'ODBC Driver 17 for SQL Server'))
 try:
     # Connect to master first (DB may not exist yet)
     conn = pyodbc.connect(f'DRIVER={{{driver}}};SERVER={server};DATABASE=master;UID=sa;PWD=LegalRAG_Password2026!;TrustServerCertificate=yes', timeout=5)
@@ -35,7 +36,8 @@ conn_str = os.environ.get('DATABASE_URL', '')
 match = re.search(r'@([^/]+)/([^?]+)', conn_str)
 server = match.group(1).replace(':', ',')
 db     = match.group(2)
-driver = 'ODBC Driver 17 for SQL Server'
+drivers = pyodbc.drivers()
+driver = 'ODBC Driver 17 for SQL Server' if 'ODBC Driver 17 for SQL Server' in drivers else ('ODBC Driver 18 for SQL Server' if 'ODBC Driver 18 for SQL Server' in drivers else (drivers[0] if drivers else 'ODBC Driver 17 for SQL Server'))
 
 conn = pyodbc.connect(
     f'DRIVER={{{driver}}};SERVER={server};DATABASE=master;UID=sa;PWD=LegalRAG_Password2026!;TrustServerCertificate=yes',

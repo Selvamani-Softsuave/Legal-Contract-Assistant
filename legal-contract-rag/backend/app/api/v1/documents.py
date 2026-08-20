@@ -29,6 +29,11 @@ async def upload_document(
     if not file.filename.lower().endswith(allowed_exts):
         raise HTTPException(status_code=400, detail="Allowed file formats: PDF, DOCX, TXT")
 
+    # Validate file size (max 25MB)
+    max_size = 25 * 1024 * 1024
+    if file.size and file.size > max_size:
+        raise HTTPException(status_code=400, detail="File size exceeds maximum limit of 25MB.")
+
     document_id = str(uuid.uuid4())
     correlation_id = str(uuid.uuid4())
     job_id = str(uuid.uuid4())
@@ -88,10 +93,33 @@ async def upload_document(
         message="Document uploaded successfully. Processing job queued."
     )
 
+def _to_document_response(doc) -> DocumentResponse:
+    contract_name = doc.contract.name if getattr(doc, "contract", None) else None
+    return DocumentResponse(
+        id=doc.id,
+        contract_id=doc.contract_id,
+        contract_name=contract_name,
+        file_name=doc.file_name,
+        file_size=doc.file_size,
+        file_type=doc.file_type,
+        blob_path=doc.blob_path,
+        page_count=doc.page_count,
+        status=doc.status,
+        created_at=doc.created_at,
+        updated_at=doc.updated_at
+    )
+
+@router.get("", response_model=List[DocumentResponse])
+def list_all_documents(limit: int = 100, db: Session = Depends(get_db)):
+    doc_repo = DocumentRepository(db)
+    docs = doc_repo.list_all(limit=limit)
+    return [_to_document_response(d) for d in docs]
+
 @router.get("/contract/{contract_id}", response_model=List[DocumentResponse])
 def list_contract_documents(contract_id: str, db: Session = Depends(get_db)):
     doc_repo = DocumentRepository(db)
-    return doc_repo.list_by_contract(contract_id)
+    docs = doc_repo.list_by_contract(contract_id)
+    return [_to_document_response(d) for d in docs]
 
 @router.get("/{document_id}", response_model=DocumentResponse)
 def get_document(document_id: str, db: Session = Depends(get_db)):
@@ -99,7 +127,7 @@ def get_document(document_id: str, db: Session = Depends(get_db)):
     doc = doc_repo.get_by_id(document_id)
     if not doc:
         raise HTTPException(status_code=404, detail="Document not found")
-    return doc
+    return _to_document_response(doc)
 
 @router.get("/{document_id}/download")
 def download_document(document_id: str, db: Session = Depends(get_db)):

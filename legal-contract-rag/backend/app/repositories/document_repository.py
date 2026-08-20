@@ -9,6 +9,11 @@ class DocumentRepository:
     def get_by_id(self, document_id: str) -> Optional[Document]:
         return self.db.query(Document).filter(Document.id == document_id, Document.is_deleted == False).first()
 
+    def list_all(self, limit: int = 100) -> List[Document]:
+        return self.db.query(Document).filter(
+            Document.is_deleted == False
+        ).order_by(Document.created_at.desc()).limit(limit).all()
+
     def list_by_contract(self, contract_id: str) -> List[Document]:
         return self.db.query(Document).filter(
             Document.contract_id == contract_id,
@@ -22,11 +27,13 @@ class DocumentRepository:
         self.db.refresh(doc)
         return doc
 
-    def update_status(self, document_id: str, status: str) -> Optional[Document]:
+    def update_status(self, document_id: str, status: str, page_count: Optional[int] = None) -> Optional[Document]:
         doc = self.get_by_id(document_id)
         if not doc:
             return None
         doc.status = status
+        if page_count is not None:
+            doc.page_count = page_count
         self.db.commit()
         self.db.refresh(doc)
         return doc

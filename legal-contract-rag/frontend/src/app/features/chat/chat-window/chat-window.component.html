@@ -1,0 +1,105 @@
+<div class="chat-container">
+  <div class="chat-header">
+    <div class="header-left">
+      <button class="history-toggle-btn" (click)="toggleHistory()" title="Toggle Conversation History">
+        <span class="icon">💬</span>
+        <span>History ({{ conversations.length }})</span>
+      </button>
+      <div class="header-info">
+        <div class="title-row">
+          <h3>Legal Contract Assistant</h3>
+          <span class="active-badge" *ngIf="activeConversationTitle">{{ activeConversationTitle }}</span>
+        </div>
+        <div class="scope-row">
+          <span class="scoping-badge" *ngIf="selectedContract">🎯 Scoped: {{ selectedContract.name }}</span>
+          <span class="scoping-badge global" *ngIf="!selectedContract">🌐 Scoped: All Contracts</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn-new-chat" (click)="startNewChat()" title="Start New Conversation">
+        + New Chat
+      </button>
+    </div>
+  </div>
+
+  <div class="chat-body-wrapper">
+    <!-- Collapsible Conversation History Drawer -->
+    <div *ngIf="showHistoryDrawer" class="history-drawer">
+      <div class="history-drawer-header">
+        <h4>Past Conversations</h4>
+        <button class="close-drawer-btn" (click)="showHistoryDrawer = false">✕</button>
+      </div>
+
+      <div class="history-list">
+        <div *ngIf="conversations.length === 0" class="empty-history">
+          No previous conversations found.
+        </div>
+        <div *ngFor="let conv of conversations" 
+             class="history-item"
+             [class.active]="conv.id === conversationId"
+             (click)="selectConversation(conv)">
+          <div class="history-item-content">
+            <span class="history-title">{{ conv.title || 'Untitled Chat' }}</span>
+            <span class="history-date">{{ conv.created_at | date:'short' }}</span>
+          </div>
+          <button class="delete-history-btn" (click)="deleteConversation($event, conv.id)" title="Delete Conversation">
+            🗑️
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Messages Container -->
+    <div class="chat-messages" #messagesContainer>
+      <div *ngIf="messages.length === 0 && !loading" class="welcome-card">
+        <div class="welcome-icon">⚖️</div>
+        <h4>Legal Contract Assistant</h4>
+        <p>Ask legal questions regarding contract clauses, terms, notice periods, and liabilities.</p>
+        <div class="example-prompts">
+          <span class="prompt-chip" (click)="usePrompt('What is the termination notice period?')">"Termination notice period?"</span>
+          <span class="prompt-chip" (click)="usePrompt('What is the governing law and jurisdiction?')">"Governing law & jurisdiction?"</span>
+          <span class="prompt-chip" (click)="usePrompt('What are the limitation of liability clauses?')">"Limitation of liability?"</span>
+        </div>
+      </div>
+
+      <div *ngFor="let msg of messages" class="message-bubble" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'">
+        <div class="msg-header">
+          <span class="msg-author">{{ msg.role === 'user' ? '👤 You' : '⚖️ Legal AI' }}</span>
+          <span class="msg-time">{{ msg.created_at | date:'shortTime' }}</span>
+        </div>
+        <div class="msg-content">{{ msg.content }}</div>
+
+        <div *ngIf="msg.sources && msg.sources.length > 0" class="citation-trigger">
+          <button class="citation-btn" (click)="openSources(msg.sources)">
+            📎 View {{ msg.sources.length }} Source Citation(s)
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="loading" class="typing-indicator">
+        <span class="pulse-dot"></span> Generating grounded response from retrieved contract context...
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-input-area">
+    <textarea rows="2" 
+              [(ngModel)]="questionText" 
+              (keydown.enter)="onEnterPress($event)"
+              placeholder="Ask a question based on contract context (Press Enter to send)..." 
+              class="chat-input"
+              [disabled]="loading"></textarea>
+    <button class="send-btn" (click)="send()" [disabled]="loading || !questionText.trim()">
+      <span>Send</span>
+      <span class="send-icon">➤</span>
+    </button>
+  </div>
+
+  <app-citation-drawer 
+    [isOpen]="drawerOpen" 
+    [sources]="activeSources" 
+    (close)="drawerOpen = false">
+  </app-citation-drawer>
+</div>

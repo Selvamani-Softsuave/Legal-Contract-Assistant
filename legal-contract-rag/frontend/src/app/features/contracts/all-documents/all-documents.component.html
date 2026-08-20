@@ -1,0 +1,68 @@
+<div class="documents-manager-container">
+  <div class="documents-header">
+    <div class="header-titles">
+      <h2>📂 Document Repository</h2>
+      <p class="subtitle">All uploaded contracts, extracted sections, and vector indexing status</p>
+    </div>
+    <div class="header-actions">
+      <input type="text" 
+             [(ngModel)]="searchQuery" 
+             placeholder="Search by file name or contract..." 
+             class="search-input" />
+      <button class="btn refresh-btn" (click)="loadAllDocuments()" title="Refresh list">
+        🔄 Refresh
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">
+    <span class="pulse-dot"></span> Loading document repository...
+  </div>
+
+  <div *ngIf="!loading && filteredDocuments.length === 0" class="empty-state">
+    <div class="empty-icon">📄</div>
+    <h3>No documents found</h3>
+    <p>Upload documents via the Contract Explorer to index them for AI semantic search.</p>
+  </div>
+
+  <div *ngIf="!loading && filteredDocuments.length > 0" class="table-card">
+    <table class="documents-table">
+      <thead>
+        <tr>
+          <th>Document Name</th>
+          <th>Associated Contract</th>
+          <th>Type</th>
+          <th>File Size</th>
+          <th>Pages</th>
+          <th>Indexing Status</th>
+          <th>Uploaded Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let doc of filteredDocuments">
+          <td class="filename-cell">
+            <span class="file-icon">{{ getFileIcon(doc.file_type) }}</span>
+            <span class="filename" [title]="doc.file_name">{{ doc.file_name }}</span>
+          </td>
+          <td>
+            <span class="contract-tag">🏷️ {{ doc.contract_name || 'Unassigned' }}</span>
+          </td>
+          <td><span class="type-tag">{{ doc.file_type | uppercase }}</span></td>
+          <td>{{ (doc.file_size / 1024).toFixed(1) }} KB</td>
+          <td>{{ doc.page_count || 1 }}</td>
+          <td>
+            <span class="status-chip" [class]="doc.status.toLowerCase()">
+              {{ doc.status }}
+            </span>
+          </td>
+          <td>{{ doc.created_at | date:'mediumDate' }}</td>
+          <td class="actions-cell">
+            <button class="action-btn" (click)="reprocess(doc.id)" title="Reprocess Document">🔄</button>
+            <button class="action-btn danger" (click)="deleteDoc(doc.id)" title="Delete Document">🗑️</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

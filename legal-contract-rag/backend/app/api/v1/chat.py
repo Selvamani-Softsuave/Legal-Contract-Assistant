@@ -41,6 +41,45 @@ def list_conversations(db: Session = Depends(get_db)):
         ))
     return results
 
+@router.get("/conversations/{conversation_id}/messages", response_model=List[MessageResponse])
+def get_conversation_messages(conversation_id: str, db: Session = Depends(get_db)):
+    repo = ChatRepository(db)
+    conv = repo.get_conversation(conversation_id)
+    if not conv:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+    
+    messages = repo.get_messages(conversation_id)
+    results = []
+    for m in messages:
+        sources_dto = [
+            SourceDTO(
+                chunk_id=s.chunk_id,
+                document_name=s.document_name,
+                page_number=s.page_number,
+                section=s.section,
+                clause=s.clause,
+                relevance_score=s.relevance_score
+            )
+            for s in (m.rag_sources or [])
+        ]
+        results.append(MessageResponse(
+            id=m.id,
+            conversation_id=m.conversation_id,
+            role=m.role,
+            content=m.content,
+            sources=sources_dto,
+            created_at=m.created_at
+        ))
+    return results
+
+@router.delete("/conversations/{conversation_id}", status_code=status.HTTP_200_OK)
+def delete_conversation(conversation_id: str, db: Session = Depends(get_db)):
+    repo = ChatRepository(db)
+    success = repo.delete_conversation(conversation_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+    return {"message": "Conversation deleted successfully"}
+
 @router.post("/conversations/{conversation_id}/messages", response_model=ChatResponse)
 async def send_message(conversation_id: str, request: ChatRequest, db: Session = Depends(get_db)):
     repo = ChatRepository(db)
@@ -67,7 +106,8 @@ async def send_message(conversation_id: str, request: ChatRequest, db: Session =
     sources_dto = [SourceDTO(**s) for s in rag_result["sources"]]
 
     # Fetch newly persisted assistant message
-    latest_msg = conv.messages[-1] if conv.messages else user_msg
+    messages = repo.get_messages(conversation_id)
+    latest_msg = messages[-1] if messages else user_msg
 
     return ChatResponse(
         conversation_id=conversation_id,
@@ -97,7 +137,8 @@ async def chat_legacy(request: ChatRequest, db: Session = Depends(get_db)):
     )
 
     sources_dto = [SourceDTO(**s) for s in rag_result["sources"]]
-    latest_msg = conv.messages[-1] if conv.messages else conv
+    messages = repo.get_messages(conv.id)
+    latest_msg = messages[-1] if messages else conv
 
     return ChatResponse(
         conversation_id=conv.id,

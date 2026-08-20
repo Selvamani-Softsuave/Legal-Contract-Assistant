@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse
 from backend.app.core.config import settings
 from backend.app.core.logging import setup_logging
 from backend.app.api.v1.router import api_router
-from backend.app.services.ollama_service import OllamaService
+from backend.app.llm.factory import LLMProviderFactory
 
 setup_logging()
 logger = logging.getLogger(__name__)
@@ -31,14 +31,14 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 
 @app.get("/health")
 async def health_check():
-    ollama_service = OllamaService()
-    ollama_health = await ollama_service.health_check()
-    overall_status = "healthy" if ollama_health["status"] == "healthy" else "degraded"
+    active_provider = LLMProviderFactory.get_provider()
+    llm_health = await active_provider.health_check()
+    overall_status = "healthy" if llm_health.get("status") == "healthy" else "degraded"
     return {
         "status": overall_status,
         "environment": settings.ENVIRONMENT,
         "version": settings.VERSION,
-        "ollama": ollama_health
+        "active_llm": llm_health
     }
 
 # Serve Angular compiled static frontend if available

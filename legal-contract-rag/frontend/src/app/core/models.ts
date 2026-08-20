@@ -28,6 +28,7 @@ export interface ContractCreate {
 export interface Document {
     id: string;
     contract_id: string;
+    contract_name?: string;
     file_name: string;
     file_size: number;
     file_type: string;

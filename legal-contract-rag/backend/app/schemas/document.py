@@ -15,6 +15,7 @@ class DocumentUploadResponse(BaseModel):
 class DocumentResponse(BaseModel):
     id: str
     contract_id: str
+    contract_name: Optional[str] = None
     file_name: str
     file_size: int
     file_type: str

@@ -28,22 +28,21 @@ class Settings(BaseSettings):
     # Document Processor Microservice
     DOCUMENT_PROCESSOR_URL: str = os.getenv("DOCUMENT_PROCESSOR_URL", "http://localhost:7071")
 
-    # Dynamic AI Provider Configuration (OLLAMA, OPENAI, OPENROUTER, GEMINI, GROQ, DEEPSEEK, CUSTOM)
-    AI_PROVIDER: str = os.getenv("AI_PROVIDER", "OLLAMA")
-    LLM_PROVIDER: Optional[str] = os.getenv("LLM_PROVIDER", None)
-    EMBEDDING_PROVIDER: Optional[str] = os.getenv("EMBEDDING_PROVIDER", None)
+    # ─── Clean Unified AI Configuration ──────────────────────────────────
+    # Active Provider: OLLAMA | GEMINI | OPENROUTER (Defaults to OLLAMA)
+    LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", os.getenv("AI_PROVIDER", "OLLAMA")).upper()
+    EMBEDDING_PROVIDER: str = os.getenv("EMBEDDING_PROVIDER", os.getenv("LLM_PROVIDER", os.getenv("AI_PROVIDER", "OLLAMA"))).upper()
 
-    # Base URLs & Keys (Optional overrides)
-    LLM_BASE_URL: Optional[str] = os.getenv("LLM_BASE_URL", None)
-    LLM_API_KEY: Optional[str] = os.getenv("LLM_API_KEY", os.getenv("AI_API_KEY", None))
-    EMBEDDING_BASE_URL: Optional[str] = os.getenv("EMBEDDING_BASE_URL", None)
-    EMBEDDING_API_KEY: Optional[str] = os.getenv("EMBEDDING_API_KEY", os.getenv("AI_API_KEY", None))
+    # Unified API Key & Models
+    API_KEY: Optional[str] = os.getenv("API_KEY", os.getenv("AI_API_KEY", os.getenv("LLM_API_KEY", os.getenv("GEMINI_API_KEY", os.getenv("OPENROUTER_API_KEY", None)))))
+    LLM_MODEL: Optional[str] = os.getenv("LLM_MODEL", None)
+    EMBEDDING_MODEL: Optional[str] = os.getenv("EMBEDDING_MODEL", None)
 
-    # Ollama LLM / Fallback Defaults
+    # Ollama Local Configuration Defaults
     OLLAMA_BASE_URL: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-    OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", os.getenv("LLM_MODEL", "llama3.2"))
-    OLLAMA_TIMEOUT: float = float(os.getenv("OLLAMA_TIMEOUT", "120"))
-    OLLAMA_EMBEDDING_MODEL: str = os.getenv("OLLAMA_EMBEDDING_MODEL", os.getenv("EMBEDDING_MODEL", "nomic-embed-text"))
+    OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "llama3.2")
+    OLLAMA_TIMEOUT: float = float(os.getenv("OLLAMA_TIMEOUT", os.getenv("LLM_TIMEOUT", "120")))
+    OLLAMA_EMBEDDING_MODEL: str = os.getenv("OLLAMA_EMBEDDING_MODEL", "nomic-embed-text")
     OLLAMA_EMBEDDING_TIMEOUT: float = float(os.getenv("OLLAMA_EMBEDDING_TIMEOUT", "120"))
 
     # RAG Configuration

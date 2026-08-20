@@ -11,6 +11,10 @@ export class DocumentService {
 
     constructor(private http: HttpClient) { }
 
+    getAllDocuments(limit: number = 100): Observable<Document[]> {
+        return this.http.get<Document[]>(this.apiUrl, { params: { limit } });
+    }
+
     uploadDocument(contractId: string, file: File): Observable<DocumentUploadResponse> {
         const formData = new FormData();
         formData.append('contract_id', contractId);
