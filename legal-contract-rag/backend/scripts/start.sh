@@ -4,19 +4,17 @@ set -e
 echo "==> Waiting for SQL Server to be ready..."
 for i in $(seq 1 30); do
     if python -c "
-import pyodbc, os, sys
+import pyodbc, os, sys, re
 conn_str = os.environ.get('DATABASE_URL', '')
-# Extract server from URL: mssql+pyodbc://user:pass@server:port/db?...
-import re
 match = re.search(r'@([^/]+)/([^?]+)', conn_str)
 if not match:
     sys.exit(1)
-server = match.group(1)
+server = match.group(1).replace(':', ',')
 db     = match.group(2)
 driver = 'ODBC Driver 17 for SQL Server'
 try:
     # Connect to master first (DB may not exist yet)
-    conn = pyodbc.connect(f'DRIVER={{{driver}}};SERVER={server};DATABASE=master;UID=sa;PWD=LegalRAG_Password2026!;TrustServerCertificate=yes', timeout=3)
+    conn = pyodbc.connect(f'DRIVER={{{driver}}};SERVER={server};DATABASE=master;UID=sa;PWD=LegalRAG_Password2026!;TrustServerCertificate=yes', timeout=5)
     conn.close()
     print('SQL Server is up.')
 except Exception as e:
@@ -35,7 +33,7 @@ import pyodbc, os, re
 
 conn_str = os.environ.get('DATABASE_URL', '')
 match = re.search(r'@([^/]+)/([^?]+)', conn_str)
-server = match.group(1)
+server = match.group(1).replace(':', ',')
 db     = match.group(2)
 driver = 'ODBC Driver 17 for SQL Server'
 
@@ -51,7 +49,7 @@ print(f'Database [{db}] is ready.')
 
 echo "==> Running Alembic migrations..."
 cd /app
-alembic upgrade head
+alembic -c backend/alembic.ini upgrade head
 
 echo "==> Starting backend server..."
 exec uvicorn backend.app.main:app --host 0.0.0.0 --port 8000

@@ -76,7 +76,48 @@ class EmbeddingService:
                 logger.error(f"Failed to generate embedding from native Ollama: {e}")
                 raise ValueError("Failed to generate embedding")
 
-        # OpenAI-Compatible API (OpenRouter, OpenAI, Gemini, Custom)
+        if provider == "GEMINI":
+            candidate_models = []
+            if model:
+                candidate_models.append(model.replace("models/", ""))
+            for fallback in ["gemini-embedding-001", "embedding-001", "text-embedding-004"]:
+                if fallback not in candidate_models:
+                    candidate_models.append(fallback)
+
+            last_err = None
+            for m in candidate_models:
+                try:
+                    with httpx.Client(timeout=self.timeout) as client:
+                        if len(texts) == 1:
+                            url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:embedContent?key={api_key}"
+                            payload = {"model": f"models/{m}", "content": {"parts": [{"text": texts[0]}]}}
+                            resp = client.post(url, json=payload)
+                            if resp.status_code == 200:
+                                data = resp.json()
+                                if "embedding" in data and "values" in data["embedding"]:
+                                    return [data["embedding"]["values"]]
+                            else:
+                                last_err = f"Gemini ({m}) error {resp.status_code}: {resp.text}"
+                        else:
+                            url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:batchEmbedContents?key={api_key}"
+                            requests_payload = [
+                                {"model": f"models/{m}", "content": {"parts": [{"text": t}]}}
+                                for t in texts
+                            ]
+                            resp = client.post(url, json={"requests": requests_payload})
+                            if resp.status_code == 200:
+                                data = resp.json()
+                                if "embeddings" in data:
+                                    return [item["values"] for item in data["embeddings"]]
+                            else:
+                                last_err = f"Gemini ({m}) batch error {resp.status_code}: {resp.text}"
+                except Exception as e:
+                    last_err = str(e)
+
+            logger.error(f"Error calling Gemini Embedding API across models {candidate_models}: {last_err}")
+            raise ValueError(f"Failed to generate embedding from Gemini: {last_err}")
+
+        # OpenAI-Compatible API (OpenRouter, OpenAI, Custom)
         url = f"{base_url}/embeddings"
         headers = {}
         if api_key:
@@ -85,6 +126,8 @@ class EmbeddingService:
         try:
             with httpx.Client(timeout=self.timeout) as client:
                 resp = client.post(url, headers=headers, json={"model": model, "input": texts})
+                if resp.status_code >= 400:
+                    logger.error(f"Embedding API error response ({resp.status_code}): {resp.text}")
                 resp.raise_for_status()
                 data = resp.json()
                 if "data" in data:

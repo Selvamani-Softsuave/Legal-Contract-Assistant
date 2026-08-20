@@ -44,7 +44,7 @@ services:
       dockerfile: processor/Dockerfile
     container_name: legal_processor
     ports:
-      - "7071:7071"
+      - "7071:80"
     environment:
       - AzureWebJobsStorage=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;QueueEndpoint=http://azurite:10001/devstoreaccount1;
       - FUNCTIONS_WORKER_RUNTIME=python
@@ -56,7 +56,7 @@ services:
       - COLLECTION_NAME=legal_contracts
       - DATABASE_URL=mssql+pyodbc://sa:LegalRAG_Password2026!@sqlserver:1433/LegalContractRAG?driver=ODBC+Driver+17+for+SQL+Server
       - OLLAMA_BASE_URL=http://ollama:11434
-      - BACKEND_API_URL=http://backend:8080
+      - BACKEND_API_URL=http://backend:8000
       - AI_PROVIDER=${AI_PROVIDER:-OLLAMA}
       - AI_API_KEY=${AI_API_KEY:-}
       - LLM_MODEL=${LLM_MODEL:-}
@@ -76,7 +76,7 @@ services:
     environment:
       - DATABASE_URL=mssql+pyodbc://sa:LegalRAG_Password2026!@sqlserver:1433/LegalContractRAG?driver=ODBC+Driver+17+for+SQL+Server
       - AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;QueueEndpoint=http://azurite:10001/devstoreaccount1;
-      - DOCUMENT_PROCESSOR_URL=http://processor:7071
+      - DOCUMENT_PROCESSOR_URL=http://processor:80
       - OLLAMA_BASE_URL=http://ollama:11434
       - AI_PROVIDER=${AI_PROVIDER:-OLLAMA}
       - AI_API_KEY=${AI_API_KEY:-}

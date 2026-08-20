@@ -20,9 +20,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/ /app/backend/
 
-# Copy startup script and make executable
+# Copy startup script and make executable (stripping Windows CRLF if present)
 COPY backend/scripts/start.sh /app/start.sh
-RUN chmod +x /app/start.sh
+RUN sed -i 's/\r$//' /app/start.sh && chmod +x /app/start.sh
 
 ENV PYTHONPATH=/app
 

@@ -17,17 +17,12 @@ class ProcessorChromaService:
         self.collection = self._get_or_create_collection()
 
     def _get_or_create_collection(self):
-        try:
-            collection = self.client.get_collection(name=self.collection_name)
-            logger.info(f"Got existing ChromaDB collection: {self.collection_name}")
-            return collection
-        except Exception:
-            collection = self.client.create_collection(
-                name=self.collection_name,
-                metadata={"hnsw:space": "cosine"}
-            )
-            logger.info(f"Created new ChromaDB collection: {self.collection_name}")
-            return collection
+        collection = self.client.get_or_create_collection(
+            name=self.collection_name,
+            metadata={"hnsw:space": "cosine"}
+        )
+        logger.info(f"ChromaDB collection '{self.collection_name}' ready.")
+        return collection
 
     def add_chunks(
         self,
@@ -57,12 +52,33 @@ class ProcessorChromaService:
                 "heading": chunk.get("heading", "")
             })
 
-        self.collection.add(
-            ids=ids,
-            documents=documents,
-            metadatas=metadatas,
-            embeddings=embeddings
-        )
+        try:
+            self.collection.add(
+                ids=ids,
+                documents=documents,
+                metadatas=metadatas,
+                embeddings=embeddings
+            )
+        except Exception as e:
+            if "dimensionality" in str(e).lower() or "dimension" in str(e).lower():
+                logger.warning(f"Dimension mismatch detected ({e}). Recreating collection '{self.collection_name}' to match new embedding dimension.")
+                try:
+                    self.client.delete_collection(name=self.collection_name)
+                except Exception:
+                    pass
+                self.collection = self.client.get_or_create_collection(
+                    name=self.collection_name,
+                    metadata={"hnsw:space": "cosine"}
+                )
+                self.collection.add(
+                    ids=ids,
+                    documents=documents,
+                    metadatas=metadatas,
+                    embeddings=embeddings
+                )
+            else:
+                raise e
+
         logger.info(f"Indexed {len(chunks)} chunks for document {document_id} in ChromaDB")
         return len(chunks)
 
@@ -90,7 +106,13 @@ class ProcessorChromaService:
         if where_filter:
             kwargs["where"] = where_filter
 
-        results = self.collection.query(**kwargs)
+        try:
+            results = self.collection.query(**kwargs)
+        except Exception as e:
+            if "dimensionality" in str(e).lower() or "dimension" in str(e).lower():
+                logger.warning(f"Dimension mismatch during search: {e}. Please reprocess documents.")
+                return []
+            raise e
 
         formatted = []
         if results.get("ids") and len(results["ids"]) > 0:

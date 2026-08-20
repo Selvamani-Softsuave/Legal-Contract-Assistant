@@ -41,6 +41,8 @@ def _resolve_llm_config() -> tuple[str, str, str | None, bool]:
 
 
 class OllamaService:
+    _cached_gemini_model = None  # (version, model_name)
+
     def __init__(self):
         self.timeout = float(os.getenv("LLM_TIMEOUT", os.getenv("OLLAMA_TIMEOUT", "120.0")))
 
@@ -59,6 +61,106 @@ class OllamaService:
             except Exception as e:
                 logger.error(f"Ollama native error: {e}")
                 raise Exception(f"Ollama generation failed: {e}")
+
+        provider = os.getenv("AI_PROVIDER", "OLLAMA").upper()
+        if provider == "GEMINI":
+            def _build_payload(m_name: str) -> dict:
+                if "gemma" in m_name.lower():
+                    return {
+                        "contents": [
+                            {
+                                "role": "user",
+                                "parts": [{"text": f"{system_prompt}\n\n{user_prompt}"}]
+                            }
+                        ],
+                        "generationConfig": {"temperature": 0.1}
+                    }
+                return {
+                    "system_instruction": {
+                        "parts": [{"text": system_prompt}]
+                    },
+                    "contents": [
+                        {
+                            "role": "user",
+                            "parts": [{"text": user_prompt}]
+                        }
+                    ],
+                    "generationConfig": {"temperature": 0.1}
+                }
+
+            def _get_text(resp_data: dict) -> str:
+                candidates_list = resp_data.get("candidates", [])
+                if candidates_list:
+                    parts = candidates_list[0].get("content", {}).get("parts", [])
+                    return "".join(p.get("text", "") for p in parts if "text" in p).strip()
+                return ""
+
+            # 1. Fast Path: Use cached working model
+            if OllamaService._cached_gemini_model:
+                version, m = OllamaService._cached_gemini_model
+                url = f"https://generativelanguage.googleapis.com/{version}/models/{m}:generateContent?key={api_key}"
+                try:
+                    async with httpx.AsyncClient(timeout=self.timeout) as client:
+                        resp = await client.post(url, json=_build_payload(m))
+                        if resp.status_code == 200:
+                            extracted = _get_text(resp.json())
+                            if extracted:
+                                return extracted
+                except Exception:
+                    OllamaService._cached_gemini_model = None
+
+            # 2. Targeted Candidate List (starts with configured model)
+            clean_model = model.replace("models/", "") if model else "gemma-4-26b-a4b-it"
+            candidates = [clean_model]
+            for fb in ["gemma-4-26b-a4b-it", "gemini-2.5-flash", "gemini-1.5-flash-latest", "gemini-1.5-flash"]:
+                if fb not in candidates:
+                    candidates.append(fb)
+
+            last_err = None
+            for m in candidates:
+                for version in ["v1beta", "v1"]:
+                    url = f"https://generativelanguage.googleapis.com/{version}/models/{m}:generateContent?key={api_key}"
+                    try:
+                        async with httpx.AsyncClient(timeout=self.timeout) as client:
+                            resp = await client.post(url, json=_build_payload(m))
+                            if resp.status_code == 200:
+                                extracted = _get_text(resp.json())
+                                if extracted:
+                                    OllamaService._cached_gemini_model = (version, m)
+                                    logger.info(f"Connected to model: {m} (cached)")
+                                    return extracted
+                            else:
+                                last_err = f"Google ({version}/{m}) error {resp.status_code}: {resp.text}"
+                    except Exception as e:
+                        last_err = str(e)
+
+            # 3. Dynamic Discovery: Query ListModels filtering out audio/TTS/embeddings
+            try:
+                async with httpx.AsyncClient(timeout=self.timeout) as client:
+                    list_resp = await client.get(f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}")
+                    if list_resp.status_code == 200:
+                        models_data = list_resp.json().get("models", [])
+                        valid_models = [
+                            m["name"].replace("models/", "")
+                            for m in models_data
+                            if "generateContent" in m.get("supportedGenerationMethods", [])
+                            and not any(x in m["name"].lower() for x in ["tts", "audio", "embed", "imagen"])
+                        ]
+                        logger.info(f"Available text models: {valid_models}")
+                        for m in valid_models:
+                            url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent?key={api_key}"
+                            resp = await client.post(url, json=_build_payload(m))
+                            if resp.status_code == 200:
+                                extracted = _get_text(resp.json())
+                                if extracted:
+                                    OllamaService._cached_gemini_model = ("v1beta", m)
+                                    logger.info(f"Discovered working model: {m} (cached)")
+                                    return extracted
+            except Exception as list_e:
+                logger.error(f"Failed to query ListModels: {list_e}")
+
+            logger.error(f"Generation failed across candidates: {last_err}")
+            raise Exception(f"Generation failed: {last_err}")
 
         # Universal OpenAI-compatible path
         headers = {"Authorization": f"Bearer {api_key}"} if api_key else {}

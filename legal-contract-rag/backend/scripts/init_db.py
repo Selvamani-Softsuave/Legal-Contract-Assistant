@@ -28,7 +28,7 @@ if not match:
     print("ERROR: Could not parse DATABASE_URL")
     sys.exit(1)
 
-server = match.group(1)
+server = match.group(1).replace(':', ',')
 db_name = match.group(2)
 driver = "ODBC Driver 17 for SQL Server"
 
@@ -49,7 +49,7 @@ except Exception as e:
 print("==> Running Alembic migrations...")
 import subprocess
 result = subprocess.run(
-    ["alembic", "upgrade", "head"],
+    ["alembic", "-c", "backend/alembic.ini", "upgrade", "head"],
     cwd=os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')),
     capture_output=False
 )

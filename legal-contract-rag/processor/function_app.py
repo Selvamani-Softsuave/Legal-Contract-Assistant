@@ -101,7 +101,7 @@ def process_document_queue(msg: func.QueueMessage) -> None:
     logger.info(f"Received document processing queue message: {message_body}")
     
     payload = {}
-    backend_url = os.environ.get("BACKEND_API_URL", "http://backend:8080")
+    backend_url = os.environ.get("BACKEND_API_URL", "http://backend:8000")
     job_id = None
     document_id = None
     
