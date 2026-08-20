@@ -56,12 +56,23 @@ class EnterpriseRAGService:
             logger.error(f"Error embedding question: {e}")
             return {"answer": "Error generating question embedding.", "sources": []}
 
-        # 2. Vector similarity search via Document Processor internal Vector API
-        search_results = self.vector_client.search_vectors(
-            query_embedding=query_embedding,
-            top_k=settings.TOP_K,
-            contract_ids=scoped_contract_ids
-        )
+        # 2. Hybrid Retrieval (Semantic Search + BM25 + RRF Fusion)
+        from backend.app.rag.hybrid_retriever import HybridRetriever
+        try:
+            retriever = HybridRetriever(db=db)
+            retrieval_res = retriever.search(
+                query=question,
+                contract_ids=scoped_contract_ids,
+                top_k=settings.TOP_K
+            )
+            search_results = retrieval_res["results"]
+        except Exception as err:
+            logger.error(f"Error executing hybrid retrieval: {err}. Falling back to standard vector search.")
+            search_results = self.vector_client.search_vectors(
+                query_embedding=query_embedding,
+                top_k=settings.TOP_K,
+                contract_ids=scoped_contract_ids
+            )
 
         # 3. Handle empty retrieval
         if not search_results:

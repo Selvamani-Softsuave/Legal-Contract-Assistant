@@ -50,6 +50,13 @@ class Settings(BaseSettings):
     CHUNK_OVERLAP: int = int(os.getenv("CHUNK_OVERLAP", "100"))
     TOP_K: int = int(os.getenv("TOP_K", "5"))
 
+    # Week 4 Hybrid RAG Configuration
+    HYBRID_RETRIEVAL_ENABLED: bool = bool(os.getenv("HYBRID_RETRIEVAL_ENABLED", "False").lower() in ("true", "1", "yes"))
+    RRF_K: int = int(os.getenv("RRF_K", "60"))
+    BM25_TOP_K: int = int(os.getenv("BM25_TOP_K", "10"))
+    SEMANTIC_TOP_K: int = int(os.getenv("SEMANTIC_TOP_K", "10"))
+    HYBRID_FINAL_TOP_K: int = int(os.getenv("HYBRID_FINAL_TOP_K", "5"))
+
     class Config:
         case_sensitive = True
         env_file = ".env"
