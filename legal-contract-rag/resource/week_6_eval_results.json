@@ -1,0 +1,52 @@
+{
+  "agreement_before": 80.0,
+  "agreement_after": 96.0,
+  "agreement_delta": 16.0,
+  "assertion_count": 4,
+  "judged_criteria_count": 1,
+  "total_cases": 27,
+  "regression_cases_count": 2,
+  "mode_breakdown": {
+    "IDENTIFIERS_AND_HEADINGS": {
+      "total": 4,
+      "passed": 4,
+      "failed": 0
+    },
+    "NUMERICAL_DETAIL_SUMMARY_OMISSION": {
+      "total": 2,
+      "passed": 0,
+      "failed": 2
+    },
+    "NUMERICAL_AND_TIME_TERMS": {
+      "total": 4,
+      "passed": 4,
+      "failed": 0
+    },
+    "LIABILITY_AND_GOVERNING_LAW": {
+      "total": 5,
+      "passed": 4,
+      "failed": 1
+    },
+    "MULTI_DOC_SCOPING": {
+      "total": 5,
+      "passed": 5,
+      "failed": 0
+    },
+    "EDGE_CASES_AND_OUT_OF_SCOPE": {
+      "total": 6,
+      "passed": 6,
+      "failed": 0
+    },
+    "SUPERSEDED_AMENDMENT_PRECISION": {
+      "total": 1,
+      "passed": 0,
+      "failed": 1
+    }
+  },
+  "ragas_metrics": {
+    "average_faithfulness": 0.89,
+    "average_context_precision": 0.879,
+    "superseded_faithfulness": 0.96,
+    "superseded_precision": 0.33
+  }
+}

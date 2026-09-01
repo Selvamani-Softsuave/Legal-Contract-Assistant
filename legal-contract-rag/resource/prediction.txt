@@ -1,0 +1,1 @@
+Few-shot calibration using real disagreement examples will prevent the judge from falsely passing incomplete clause summaries that omit mandatory notice periods, and will eliminate false failure penalties on grounded negative refusals where clauses are unstated.

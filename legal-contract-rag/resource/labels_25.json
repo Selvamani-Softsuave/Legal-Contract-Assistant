@@ -1,0 +1,140 @@
+{
+  "protocol": "BLIND_HAND_LABELING_PROTOCOL",
+  "criterion": "is_faithful_and_accurate_clause_answer",
+  "criterion_description": "Single binary criterion: 1 if the answer is completely faithful to the retrieved contract and accurately answers the legal question without material omission or hallucination; 0 otherwise.",
+  "timestamp_created": "2026-08-31T13:40:00Z",
+  "total_cases_labeled": 25,
+  "labeler": "Legal Reviewer / Evaluator",
+  "labels": {
+    "TC-W6-001": {
+      "human_label": 1,
+      "verdict_name": "PASS",
+      "rationale": "Exact agreement number VSA-2026-022 correctly identified from contract header."
+    },
+    "TC-W6-002": {
+      "human_label": 0,
+      "verdict_name": "FAIL",
+      "rationale": "Failed on critical omission: Omitted the 90-day written notice requirement under Article 10."
+    },
+    "TC-W6-003": {
+      "human_label": 1,
+      "verdict_name": "PASS",
+      "rationale": "Accurately cited Chunking_Test_Amendment.pdf and associated contract ID."
+    },
+    "TC-W6-004": {
+      "human_label": 1,
+      "verdict_name": "PASS",
+      "rationale": "Accurate internal system identifier CNT-4A40A677."
+    },
+    "TC-W6-005": {
+      "human_label": 1,
+      "verdict_name": "PASS",
+      "rationale": "Accurately extracted 15 business days written notice from Section 6.3."
+    },
+    "TC-W6-006": {
+      "human_label": 1,
+      "verdict_name": "PASS",
+      "rationale": "Accurately extracted one audit per calendar year constraint."
+    },
+    "TC-W6-007": {
+      "human_label": 1,
+      "verdict_name": "PASS",
+      "rationale": "Accurate 90 days written notice after initial 12-month period."
+    },
+    "TC-W6-008": {
+      "human_label": 1,
+      "verdict_name": "PASS",
+      "rationale": "Accurate 12-month initial commitment duration."
+    },
+    "TC-W6-009": {
+      "human_label": 1,
+      "verdict_name": "PASS",
+      "rationale": "Accurately identified laws of India under Section 14.1."
+    },
+    "TC-W6-010": {
+      "human_label": 1,
+      "verdict_name": "PASS",
+      "rationale": "Accurately identified Chennai courts under Section 14.2."
+    },
+    "TC-W6-011": {
+      "human_label": 1,
+      "verdict_name": "PASS",
+      "rationale": "Correct grounded fallback for empty document scope."
+    },
+    "TC-W6-012": {
+      "human_label": 1,
+      "verdict_name": "PASS",
+      "rationale": "Correctly identified that indemnification clause is unstated in context."
+    },
+    "TC-W6-013": {
+      "human_label": 1,
+      "verdict_name": "PASS",
+      "rationale": "Correct grounded fallback for empty contract scope."
+    },
+    "TC-W6-014": {
+      "human_label": 1,
+      "verdict_name": "PASS",
+      "rationale": "Accurate global cross-document synthesis across both contracts."
+    },
+    "TC-W6-015": {
+      "human_label": 1,
+      "verdict_name": "PASS",
+      "rationale": "Accurately compared Section 10 breach terms with Article 10.1 amendment terms."
+    },
+    "TC-W6-016": {
+      "human_label": 1,
+      "verdict_name": "PASS",
+      "rationale": "Accurate list of associated documents under CNT-4A40A677."
+    },
+    "TC-W6-017": {
+      "human_label": 1,
+      "verdict_name": "PASS",
+      "rationale": "Correct refusal: late payment interest rate is not present in contract text."
+    },
+    "TC-W6-018": {
+      "human_label": 1,
+      "verdict_name": "PASS",
+      "rationale": "Correct refusal: non-compete clause for executives is absent."
+    },
+    "TC-W6-019": {
+      "human_label": 1,
+      "verdict_name": "PASS",
+      "rationale": "Correct negative finding: contract does not have automatic renewal."
+    },
+    "TC-W6-020": {
+      "human_label": 1,
+      "verdict_name": "PASS",
+      "rationale": "Correct negative finding: Section 4 does not contain IP assignment."
+    },
+    "TC-W6-021": {
+      "human_label": 0,
+      "verdict_name": "FAIL",
+      "rationale": "Omission failure: Used vague 'reasonable notice period' instead of contractually mandated 30-day cure period."
+    },
+    "TC-W6-022": {
+      "human_label": 0,
+      "verdict_name": "FAIL",
+      "rationale": "Hallucination failure: Fabricated $1,000,000 cap; contract states 12 months paid fees."
+    },
+    "TC-W6-023": {
+      "human_label": 1,
+      "verdict_name": "PASS",
+      "rationale": "Accurate contract title and January 15, 2026 effective date."
+    },
+    "TC-W6-024": {
+      "human_label": 1,
+      "verdict_name": "PASS",
+      "rationale": "Accurate negative finding: viral pandemics are not listed in force majeure."
+    },
+    "TC-W6-025": {
+      "human_label": 0,
+      "verdict_name": "FAIL",
+      "rationale": "Inversion failure: Stated third parties have rights when Section 15.4 expressly disclaims third-party rights."
+    }
+  },
+  "summary_distribution": {
+    "total_pass": 21,
+    "total_fail": 4,
+    "pass_rate_pct": 84.0
+  }
+}
