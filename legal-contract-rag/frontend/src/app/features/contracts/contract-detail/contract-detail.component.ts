@@ -2,8 +2,11 @@ import { Component, Input, OnChanges, SimpleChanges, OnDestroy, OnInit } from '@
 import { CommonModule } from '@angular/common';
 import { DocumentService } from '../../../core/services/document.service';
 import { Contract, Document } from '../../../core/models';
-import { Subscription } from 'rxjs';
+import { Subscription, interval } from 'rxjs';
 import { WebSocketService } from '../../../core/services/websocket.service';
+
+const NON_TERMINAL_STATUSES = new Set(['Queued', 'Processing']);
+const POLL_INTERVAL_MS = 5000;
 
 @Component({
   selector: 'app-contract-detail',
@@ -78,12 +81,21 @@ export class ContractDetailComponent implements OnChanges, OnDestroy, OnInit {
   documents: Document[] = [];
   uploading = false;
   private wsSub?: Subscription;
+  private pollSub?: Subscription;
 
   constructor(private documentService: DocumentService, private wsService: WebSocketService) { }
 
   ngOnInit(): void {
     this.wsSub = this.wsService.messages$.subscribe(msg => {
       if (msg.type === 'JOB_UPDATE' && this.contract && msg['document_id']) {
+        this.loadDocuments();
+      }
+    });
+    // Fallback safety net: WebSocket delivery is best-effort (dropped connections,
+    // processor crashes before it can notify, etc). Poll while anything is in-flight
+    // so the UI never gets stuck showing "Queued"/"Processing" forever.
+    this.pollSub = interval(POLL_INTERVAL_MS).subscribe(() => {
+      if (this.hasPendingDocuments()) {
         this.loadDocuments();
       }
     });
@@ -99,6 +111,13 @@ export class ContractDetailComponent implements OnChanges, OnDestroy, OnInit {
     if (this.wsSub) {
       this.wsSub.unsubscribe();
     }
+    if (this.pollSub) {
+      this.pollSub.unsubscribe();
+    }
+  }
+
+  private hasPendingDocuments(): boolean {
+    return this.documents.some(d => NON_TERMINAL_STATUSES.has(d.status));
   }
 
   loadDocuments(): void {

@@ -13,32 +13,36 @@ class AzureBlobStorageService(BaseStorageService):
         self.local_fallback_dir = "./documents"
         os.makedirs(self.local_fallback_dir, exist_ok=True)
         self._blob_service_client = None
-        self._init_client()
 
-    def _init_client(self):
+    def _get_blob_service_client(self):
+        if self._blob_service_client is not None:
+            return self._blob_service_client
+
         try:
             from azure.storage.blob import BlobServiceClient
             if self.connection_string:
-                self._blob_service_client = BlobServiceClient.from_connection_string(
+                client = BlobServiceClient.from_connection_string(
                     self.connection_string,
                     api_version="2023-11-03"
                 )
-                # Ensure container exists
                 try:
-                    container_client = self._blob_service_client.get_container_client(self.container_name)
+                    container_client = client.get_container_client(self.container_name)
                     if not container_client.exists():
                         container_client.create_container()
+                        logger.info(f"Created Azure container '{self.container_name}'.")
                 except Exception as e:
-                    logger.warning(f"Could not initialize container '{self.container_name}': {e}")
-        except ImportError:
-            logger.warning("azure-storage-blob library not available. Using local disk fallback.")
+                    logger.warning(f"Could not check/create container '{self.container_name}': {e}")
+                self._blob_service_client = client
+                return self._blob_service_client
         except Exception as e:
-            logger.warning(f"Failed to connect to Azure Blob Storage / Azurite ({e}). Using local fallback.")
+            logger.warning(f"Failed to connect to Azure Blob Storage / Azurite: {e}")
+            return None
 
     def upload_file(self, file_obj: BinaryIO, blob_name: str, content_type: str = "application/pdf") -> str:
-        if self._blob_service_client:
+        client = self._get_blob_service_client()
+        if client:
             try:
-                blob_client = self._blob_service_client.get_blob_client(
+                blob_client = client.get_blob_client(
                     container=self.container_name, blob=blob_name
                 )
                 file_obj.seek(0)
@@ -46,7 +50,17 @@ class AzureBlobStorageService(BaseStorageService):
                 logger.info(f"Uploaded blob '{blob_name}' to Azure container '{self.container_name}'")
                 return f"{self.container_name}/{blob_name}"
             except Exception as e:
-                logger.error(f"Error uploading to Blob storage: {e}. Falling back to local disk.")
+                logger.warning(f"Initial blob upload failed ({e}). Retrying with container creation...")
+                try:
+                    container_client = client.get_container_client(self.container_name)
+                    if not container_client.exists():
+                        container_client.create_container()
+                    file_obj.seek(0)
+                    blob_client.upload_blob(file_obj, overwrite=True)
+                    logger.info(f"Uploaded blob '{blob_name}' on retry.")
+                    return f"{self.container_name}/{blob_name}"
+                except Exception as retry_err:
+                    logger.error(f"Error uploading to Blob storage on retry: {retry_err}. Falling back to local disk.")
 
         # Local disk fallback
         local_path = os.path.join(self.local_fallback_dir, blob_name)

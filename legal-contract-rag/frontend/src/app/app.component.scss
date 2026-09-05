@@ -38,8 +38,12 @@
 
 .full-view-container, .full-chat-container {
   height: 100%;
-  max-width: 1300px;
+  width: 100%;
+  max-width: 1440px;
   margin: 0 auto;
+  min-width: 0;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .nav-tabs {

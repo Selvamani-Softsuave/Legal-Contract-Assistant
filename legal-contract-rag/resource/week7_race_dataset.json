@@ -1,0 +1,92 @@
+[
+  {
+    "id": "RACE-001",
+    "category": "DIRECT_LOOKUP",
+    "question": "What is the notice period required for early termination for convenience under the executed agreement?",
+    "expected_facts": ["90 days", "prior written notice", "Article 10.1"],
+    "requires_multi_hop": false,
+    "difficulty": "EASY",
+    "ground_truth": "Under Article 10.1 of the Final Executed Agreement, termination for convenience requires ninety (90) days prior written notice."
+  },
+  {
+    "id": "RACE-002",
+    "category": "DIRECT_LOOKUP",
+    "question": "What is the initial commitment period before termination for convenience can be exercised?",
+    "expected_facts": ["12 month", "commitment period", "February 1, 2024"],
+    "requires_multi_hop": false,
+    "difficulty": "EASY",
+    "ground_truth": "The initial commitment period is twelve (12) months from the Effective Date (February 1, 2024)."
+  },
+  {
+    "id": "RACE-003",
+    "category": "DIRECT_LOOKUP",
+    "question": "What is the governing law for the executed agreement?",
+    "expected_facts": ["Delaware", "State of Delaware", "Article 14"],
+    "requires_multi_hop": false,
+    "difficulty": "EASY",
+    "ground_truth": "The agreement is governed by the laws of the State of Delaware per Article 14."
+  },
+  {
+    "id": "RACE-004",
+    "category": "DIRECT_LOOKUP",
+    "question": "What is the formal delivery method for notices under Article 11 of the Final Executed Agreement?",
+    "expected_facts": ["registered courier", "secure client portal", "Article 11"],
+    "requires_multi_hop": false,
+    "difficulty": "EASY",
+    "ground_truth": "Notices must be delivered via registered courier or secure client portal per Article 11.1."
+  },
+  {
+    "id": "RACE-005",
+    "category": "MULTI_HOP_DEPENDENT",
+    "question": "What is the exact notice deadline for termination for Material Breach under the Final Executed Agreement?",
+    "expected_facts": ["15 Business Days", "Schedule B-2", "30-day Cure Period"],
+    "requires_multi_hop": true,
+    "difficulty": "HARD",
+    "ground_truth": "Termination for Material Breach turns on Schedule B-2: 15 Business Days following expiration of the 30-day Cure Period."
+  },
+  {
+    "id": "RACE-006",
+    "category": "MULTI_HOP_DEPENDENT",
+    "question": "If Acme Corp experiences a Change of Control, what is the notice requirement to terminate?",
+    "expected_facts": ["30 days notice", "Change of Control", "Article 10.3"],
+    "requires_multi_hop": true,
+    "difficulty": "HARD",
+    "ground_truth": "Under Article 10.3, either party may terminate on thirty (30) days notice upon a Change of Control (>50% voting shares)."
+  },
+  {
+    "id": "RACE-007",
+    "category": "MULTI_HOP_DEPENDENT",
+    "question": "Under Amendment No. 1, what was the early termination notice period and initial commitment duration?",
+    "expected_facts": ["60 days", "6 month", "Amendment No. 1"],
+    "requires_multi_hop": true,
+    "difficulty": "HARD",
+    "ground_truth": "Under Amendment No. 1, termination for convenience required sixty (60) days notice after a six (6) month commitment."
+  },
+  {
+    "id": "RACE-008",
+    "category": "MULTI_HOP_DEPENDENT",
+    "question": "What are the combined requirements (cure period and subsequent notice window) to terminate for cause under Schedule B-2?",
+    "expected_facts": ["30 calendar days", "15 Business Days", "Schedule B-2", "Cure Period"],
+    "requires_multi_hop": true,
+    "difficulty": "HARD",
+    "ground_truth": "Requires a 30 calendar day Cure Period followed by 15 Business Days written notice under Schedule B-2."
+  },
+  {
+    "id": "RACE-009",
+    "category": "VERSION_COMPARISON",
+    "question": "How did the defined Cure Period change between the Original Agreement and Amendment No. 1?",
+    "expected_facts": ["30 calendar days", "45 calendar days", "Original", "Amendment No. 1"],
+    "requires_multi_hop": true,
+    "difficulty": "HARD",
+    "ground_truth": "The Cure Period was 30 calendar days in the Original Agreement and was extended to 45 calendar days in Amendment No. 1."
+  },
+  {
+    "id": "RACE-010",
+    "category": "BUDGET_STRESS_CIRCULAR",
+    "question": "Resolve the notice schedule for Circular Term Alpha to determine the final termination date.",
+    "expected_facts": ["CIRCULAR", "BUDGET_TERMINATION", "MAX_ITERATIONS"],
+    "requires_multi_hop": true,
+    "difficulty": "CIRCULAR_STRESS",
+    "ground_truth": "Triggers circular definition chain (Alpha -> Beta -> Gamma -> Alpha) causing clean budget termination under MAX_ITERATIONS."
+  }
+]

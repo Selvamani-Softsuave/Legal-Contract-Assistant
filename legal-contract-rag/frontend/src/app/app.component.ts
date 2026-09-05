@@ -4,6 +4,7 @@ import { ContractListComponent } from './features/contracts/contract-list/contra
 import { ContractDetailComponent } from './features/contracts/contract-detail/contract-detail.component';
 import { AllDocumentsComponent } from './features/contracts/all-documents/all-documents.component';
 import { ChatWindowComponent } from './features/chat/chat-window/chat-window.component';
+import { AgentLabComponent } from './features/agent-lab/agent-lab.component';
 import { Contract } from './core/models';
 
 @Component({
@@ -14,14 +15,16 @@ import { Contract } from './core/models';
         ContractListComponent, 
         ContractDetailComponent, 
         AllDocumentsComponent,
-        ChatWindowComponent
+        ChatWindowComponent,
+        AgentLabComponent
     ],
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
     selectedContract: Contract | null = null;
-    activeTab: 'contracts' | 'documents' | 'chat' = 'contracts';
+    activeTab: 'contracts' | 'documents' | 'chat' | 'agent' = 'contracts';
+
 
     onContractSelected(contract: Contract): void {
         this.selectedContract = contract;

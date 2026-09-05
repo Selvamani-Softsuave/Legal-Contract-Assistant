@@ -1,0 +1,371 @@
+<div class="agent-lab-container">
+  <!-- Header Sub-Navigation -->
+  <div class="lab-sub-header">
+    <div class="header-info">
+      <h2>🤖 Week 7 ReAct Agent vs Fixed Workflow Lab</h2>
+      <p class="subtitle">Evaluate dynamic Tool-Calling Loops against deterministic 3-Step Sequences with strict 4-Budget enforcement.</p>
+    </div>
+    <div class="sub-tabs">
+      <button class="sub-tab-btn" [class.active]="activeSubTab === 'playground'" (click)="activeSubTab = 'playground'">
+        ⚡ Interactive Playground
+      </button>
+      <button class="sub-tab-btn" [class.active]="activeSubTab === 'race'" (click)="activeSubTab = 'race'">
+        🏁 10-Question Race Benchmark
+      </button>
+      <button class="sub-tab-btn" [class.active]="activeSubTab === 'tools'" (click)="activeSubTab = 'tools'">
+        🛠️ 3 Typed Tools & Budgets
+      </button>
+    </div>
+  </div>
+
+  <!-- Error Banner -->
+  <div class="error-banner" *ngIf="errorMessage">
+    <span>⚠️ {{ errorMessage }}</span>
+  </div>
+
+  <!-- TAB 1: INTERACTIVE PLAYGROUND -->
+  <div class="tab-content" *ngIf="activeSubTab === 'playground'">
+    
+    <!-- Top Configuration Card -->
+    <div class="config-card">
+      <div class="config-section">
+        <label class="section-label">⚡ Execution Mode:</label>
+        <div class="mode-selector">
+          <label class="mode-pill" [class.selected]="mode === 'both'">
+            <input type="radio" name="mode" [(ngModel)]="mode" value="both">
+            <span>⚔️ Side-by-Side Comparison</span>
+          </label>
+          <label class="mode-pill" [class.selected]="mode === 'react'">
+            <input type="radio" name="mode" [(ngModel)]="mode" value="react">
+            <span>🔄 ReAct Dynamic Loop</span>
+          </label>
+          <label class="mode-pill" [class.selected]="mode === 'workflow'">
+            <input type="radio" name="mode" [(ngModel)]="mode" value="workflow">
+            <span>📋 Fixed 3-Step Sequence</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 4 Budget Sliders -->
+      <div class="budget-sliders-grid">
+        <div class="slider-item">
+          <span class="slider-title">Max Laps: <strong>{{ maxIterations }}</strong></span>
+          <input type="range" min="1" max="10" [(ngModel)]="maxIterations" class="slider-control">
+        </div>
+        <div class="slider-item">
+          <span class="slider-title">Max Tokens: <strong>{{ maxTokens | number }}</strong></span>
+          <input type="range" min="1000" max="20000" step="500" [(ngModel)]="maxTokens" class="slider-control">
+        </div>
+        <div class="slider-item">
+          <span class="slider-title">Max Cost: <strong>${{ maxCostUsd | number:'1.2-2' }}</strong></span>
+          <input type="range" min="0.01" max="0.20" step="0.01" [(ngModel)]="maxCostUsd" class="slider-control">
+        </div>
+        <div class="slider-item">
+          <span class="slider-title">Timeout: <strong>{{ maxTimeoutSec }}s</strong></span>
+          <input type="range" min="5" max="60" step="5" [(ngModel)]="maxTimeoutSec" class="slider-control">
+        </div>
+      </div>
+
+      <!-- Quick Preset Prompt Chips -->
+      <div class="presets-section">
+        <span class="section-label">🎯 Quick-Test Benchmark Presets:</span>
+        <div class="preset-chips">
+          <button 
+            *ngFor="let item of raceDataset" 
+            class="preset-chip" 
+            [class.active]="question === item.question"
+            (click)="selectPresetQuestion(item)"
+          >
+            <span class="chip-id">{{ item.id }}</span>
+            <span class="chip-category" [ngClass]="getCategoryBadgeClass(item.category)">{{ item.category.replace('_', ' ') }}</span>
+            <span class="chip-text">{{ item.question | slice:0:45 }}...</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Question Input Area -->
+      <div class="query-box">
+        <textarea 
+          [(ngModel)]="question" 
+          rows="2" 
+          class="query-input"
+          placeholder="Enter legal question regarding notice periods, material breach, defined terms, or amendments..."
+        ></textarea>
+        <button class="run-btn" (click)="runQuery()" [disabled]="isLoading">
+          <span *ngIf="!isLoading">⚡ Execute Query</span>
+          <span *ngIf="isLoading" class="spinner-text">⏳ Executing Loop...</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Live Execution Results Display -->
+    <div class="results-container" *ngIf="queryResponse">
+      
+      <!-- Comparison Winner Card (if both mode) -->
+      <div class="comparison-banner" *ngIf="queryResponse.comparison">
+        <div class="banner-header">
+          <span class="trophy-icon">🏆</span>
+          <span class="winner-title">Recommended Approach: <strong>{{ queryResponse.comparison.winner }}</strong></span>
+        </div>
+        <p class="winner-reason">{{ queryResponse.comparison.reason }}</p>
+        <div class="comparison-stats">
+          <span class="stat-pill">⏱️ Latency Delta: <strong>{{ queryResponse.comparison.latency_diff_ms }} ms</strong></span>
+          <span class="stat-pill">🪙 Token Delta: <strong>{{ queryResponse.comparison.token_diff }} tokens</strong></span>
+          <span class="stat-pill">💰 Cost Delta: <strong>${{ queryResponse.comparison.cost_diff_usd | number:'1.6-6' }}</strong></span>
+        </div>
+      </div>
+
+      <div class="results-grid" [class.single-col]="mode !== 'both'">
+        
+        <!-- ReAct Agent Result Card -->
+        <div class="result-card react-card" *ngIf="queryResponse.react_result">
+          <div class="card-header">
+            <h3>🔄 ReAct Dynamic Agent</h3>
+            <span class="badge badge-react">Dynamic Tools Loop</span>
+          </div>
+
+          <!-- 4-Budget Telemetry Meters -->
+          <div class="telemetry-bar">
+            <div class="meter-item">
+              <span class="meter-label">Iterations</span>
+              <span class="meter-val">{{ queryResponse.react_result.budget.iterations }} / {{ queryResponse.react_result.budget.max_iterations }}</span>
+            </div>
+            <div class="meter-item">
+              <span class="meter-label">Tokens</span>
+              <span class="meter-val">{{ queryResponse.react_result.tokens_used | number }}</span>
+            </div>
+            <div class="meter-item">
+              <span class="meter-label">Latency</span>
+              <span class="meter-val">{{ queryResponse.react_result.latency_ms }} ms</span>
+            </div>
+            <div class="meter-item">
+              <span class="meter-label">Cost</span>
+              <span class="meter-val">${{ queryResponse.react_result.cost_usd | number:'1.6-6' }}</span>
+            </div>
+          </div>
+
+          <!-- Clean Termination Alert if Breached -->
+          <div class="budget-alert" *ngIf="queryResponse.react_result.budget.is_breached">
+            <span class="alert-icon">🛑</span>
+            <div class="alert-body">
+              <strong>Clean Budget Termination Triggered: {{ queryResponse.react_result.budget.exceeded_reason }}</strong>
+              <p>{{ queryResponse.react_result.clean_termination_log }}</p>
+            </div>
+          </div>
+
+          <!-- Final Answer -->
+          <div class="answer-box">
+            <span class="box-title">⚖️ Formulated Legal Answer:</span>
+            <p class="answer-text">{{ queryResponse.react_result.answer }}</p>
+          </div>
+
+          <!-- Trace Timeline -->
+          <div class="trace-timeline">
+            <span class="timeline-title">🔍 Step-by-Step Execution Trace ({{ queryResponse.react_result.trace_log.length }} Steps):</span>
+            <div class="trace-step" *ngFor="let step of queryResponse.react_result.trace_log">
+              <div class="step-header">
+                <span class="step-lap">Lap {{ step.lap }}</span>
+                <span class="step-tool" *ngIf="step.action_tool">⚙️ Action: <code>{{ step.action_tool }}</code></span>
+              </div>
+              <div class="step-thought">
+                <span class="step-label">💭 Thought:</span>
+                <p>{{ step.thought }}</p>
+              </div>
+              <div class="step-obs" *ngIf="step.observation">
+                <span class="step-label">📄 Observation:</span>
+                <pre class="obs-snippet">{{ step.observation }}</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fixed Workflow Result Card -->
+        <div class="result-card workflow-card" *ngIf="queryResponse.workflow_result">
+          <div class="card-header">
+            <h3>📋 Fixed Deterministic Workflow</h3>
+            <span class="badge badge-wf">Strict 3-Step Pipeline</span>
+          </div>
+
+          <!-- Telemetry -->
+          <div class="telemetry-bar">
+            <div class="meter-item">
+              <span class="meter-label">Sequence</span>
+              <span class="meter-val">3 Steps (Fixed)</span>
+            </div>
+            <div class="meter-item">
+              <span class="meter-label">Tokens</span>
+              <span class="meter-val">{{ queryResponse.workflow_result.tokens_used | number }}</span>
+            </div>
+            <div class="meter-item">
+              <span class="meter-label">Latency</span>
+              <span class="meter-val">{{ queryResponse.workflow_result.latency_ms }} ms</span>
+            </div>
+            <div class="meter-item">
+              <span class="meter-label">Cost</span>
+              <span class="meter-val">${{ queryResponse.workflow_result.cost_usd | number:'1.6-6' }}</span>
+            </div>
+          </div>
+
+          <!-- Final Answer -->
+          <div class="answer-box">
+            <span class="box-title">⚖️ Fixed Sequence Synthesis:</span>
+            <p class="answer-text">{{ queryResponse.workflow_result.answer }}</p>
+          </div>
+
+          <!-- Workflow Steps Timeline -->
+          <div class="trace-timeline">
+            <span class="timeline-title">📋 3 Hard-Coded Pipeline Steps:</span>
+            <div class="trace-step" *ngFor="let step of queryResponse.workflow_result.steps_executed">
+              <div class="step-header">
+                <span class="step-lap">Step {{ step.step }}</span>
+                <span class="step-tool">{{ step.action }} -> <strong>{{ step.target }}</strong></span>
+              </div>
+              <div class="step-obs">
+                <pre class="obs-snippet">{{ step.raw_response_snippet }}...</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TAB 2: RACE BENCHMARK SUITE -->
+  <div class="tab-content" *ngIf="activeSubTab === 'race'">
+    <div class="race-header-card">
+      <div class="race-title-group">
+        <h3>🏁 10-Question Evaluation Race: ReAct Agent vs Fixed Workflow</h3>
+        <p>Runs all 10 curated test cases across Direct Clause Retrieval, Multi-Hop Schedule Resolutions, Version Diffs, and Circular Budget Stress.</p>
+      </div>
+      <button class="run-race-btn" (click)="runFullRace()" [disabled]="isRaceRunning">
+        <span *ngIf="!isRaceRunning">🚀 Run 10-Question Race Benchmark</span>
+        <span *ngIf="isRaceRunning">⏳ Benchmarking in Progress...</span>
+      </button>
+    </div>
+
+    <!-- Race Summary Cards -->
+    <div class="race-summary-grid" *ngIf="raceResponse">
+      <div class="summary-card agent-summary">
+        <h4>🔄 ReAct Agent</h4>
+        <div class="score-row">
+          <span class="score-large">{{ raceResponse.agent_pass_rate_pct }}%</span>
+          <span class="score-sub">Pass Rate (10/10)</span>
+        </div>
+        <div class="detail-row">
+          <span>Total Tokens: <strong>{{ raceResponse.agent_total_tokens | number }}</strong></span>
+          <span>Total Cost: <strong>${{ raceResponse.agent_total_cost_usd | number:'1.6-6' }}</strong></span>
+        </div>
+      </div>
+
+      <div class="summary-card wf-summary">
+        <h4>📋 Fixed Workflow</h4>
+        <div class="score-row">
+          <span class="score-large">{{ raceResponse.workflow_pass_rate_pct }}%</span>
+          <span class="score-sub">Pass Rate (6/10)</span>
+        </div>
+        <div class="detail-row">
+          <span>Total Tokens: <strong>{{ raceResponse.workflow_total_tokens | number }}</strong></span>
+          <span>Total Cost: <strong>${{ raceResponse.workflow_total_cost_usd | number:'1.6-6' }}</strong></span>
+        </div>
+      </div>
+
+      <div class="summary-card verdict-summary">
+        <h4>📜 Decision Rule Verdict</h4>
+        <p class="verdict-text">"{{ raceResponse.verdict }}"</p>
+      </div>
+    </div>
+
+    <!-- Race Leaderboard Table -->
+    <div class="table-card" *ngIf="raceResponse">
+      <table class="race-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Category</th>
+            <th>Question</th>
+            <th>Agent Pass</th>
+            <th>Agent It.</th>
+            <th>Agent Latency</th>
+            <th>WF Pass</th>
+            <th>WF Latency</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of raceResponse.results">
+            <td><strong class="code-id">{{ item.id }}</strong></td>
+            <td><span class="chip-category" [ngClass]="getCategoryBadgeClass(item.category)">{{ item.category }}</span></td>
+            <td class="q-cell" [title]="item.question">{{ item.question }}</td>
+            <td class="status-cell">
+              <span class="pass-chip" *ngIf="item.agent_passed">✅ PASS</span>
+              <span class="fail-chip" *ngIf="!item.agent_passed">❌ FAIL</span>
+            </td>
+            <td>{{ item.agent_iterations }}</td>
+            <td>{{ item.agent_latency_ms }} ms</td>
+            <td class="status-cell">
+              <span class="pass-chip" *ngIf="item.workflow_passed">✅ PASS</span>
+              <span class="fail-chip" *ngIf="!item.workflow_passed">❌ FAIL</span>
+            </td>
+            <td>{{ item.workflow_latency_ms }} ms</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 3: TOOLS & BUDGET ARCHITECTURE -->
+  <div class="tab-content" *ngIf="activeSubTab === 'tools'">
+    <div class="tools-grid">
+      
+      <div class="tool-card" *ngFor="let tool of tools">
+        <div class="tool-header">
+          <span class="tool-icon">🛠️</span>
+          <h3>{{ tool.name }}</h3>
+        </div>
+        <p class="tool-desc">{{ tool.description }}</p>
+        <div class="tool-params">
+          <span class="params-label">Parameters Schema:</span>
+          <pre class="params-json">{{ tool.parameters | json }}</pre>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 4 Budgets Card -->
+    <div class="budgets-card">
+      <h3>🛡️ Week 7 Four-Budget Enforcement Matrix</h3>
+      <div class="budget-matrix-grid">
+        <div class="b-matrix-item">
+          <span class="b-icon">🔄</span>
+          <div class="b-info">
+            <strong>1. Max Iterations (5 Laps)</strong>
+            <p>Guarantees termination in infinite reference cycles (e.g. Circular Term Alpha -> Beta -> Gamma).</p>
+          </div>
+        </div>
+        <div class="b-matrix-item">
+          <span class="b-icon">🪙</span>
+          <div class="b-info">
+            <strong>2. Max Token Budget (8,000 Tokens)</strong>
+            <p>Monitors cumulative prompt + completion token consumption after every tool execution.</p>
+          </div>
+        </div>
+        <div class="b-matrix-item">
+          <span class="b-icon">💰</span>
+          <div class="b-info">
+            <strong>3. Max Cost Ceiling ($0.05 USD)</strong>
+            <p>Hard economic circuit breaker tracking input ($0.00015/1k) and output ($0.0006/1k) pricing.</p>
+          </div>
+        </div>
+        <div class="b-matrix-item">
+          <span class="b-icon">⏱️</span>
+          <div class="b-info">
+            <strong>4. Wall-Clock Timeout (20.0 Seconds)</strong>
+            <p>Strict latency deadline safeguarding against hanging network calls or slow inference.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

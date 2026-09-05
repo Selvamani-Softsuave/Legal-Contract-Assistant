@@ -1,4 +1,11 @@
 numpy==1.26.4
+protobuf==5.29.3
+googleapis-common-protos==1.63.2
+opentelemetry-proto==1.29.0
+opentelemetry-api==1.29.0
+opentelemetry-sdk==1.29.0
+opentelemetry-exporter-otlp-proto-grpc==1.29.0
+opentelemetry-exporter-otlp-proto-common==1.29.0
 chromadb==0.5.0
 pypdf>=4.3.0
 python-docx>=1.1.0
@@ -6,3 +13,4 @@ azure-functions>=1.20.0
 azure-storage-blob>=12.20.0
 httpx>=0.28.1
 pysqlite3-binary; sys_platform == 'linux'
+

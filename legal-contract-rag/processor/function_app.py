@@ -12,8 +12,12 @@ import azure.functions as func
 import json
 import logging
 import os
-from processor.services.chroma_service import ProcessorChromaService
-from processor.services.document_processing_service import DocumentProcessingService
+try:
+    from processor.services.chroma_service import ProcessorChromaService
+    from processor.services.document_processing_service import DocumentProcessingService
+except (ImportError, ModuleNotFoundError):
+    from services.chroma_service import ProcessorChromaService
+    from services.document_processing_service import DocumentProcessingService
 from azure.storage.blob import BlobServiceClient
 import httpx
 
@@ -122,7 +126,24 @@ def process_document_queue(msg: func.QueueMessage) -> None:
     backend_url = os.environ.get("BACKEND_API_URL", "http://backend:8000")
     job_id = None
     document_id = None
-    
+    HTTP_TIMEOUT = 10.0
+
+    def notify_backend(patch_data: dict) -> None:
+        """Best-effort status notification. Never raises - a failed notification
+        must not crash the queue trigger or prevent retries from being visible in logs."""
+        if not job_id:
+            logger.error(f"Cannot notify backend: job_id missing from queue payload for document {document_id}")
+            return
+        try:
+            with httpx.Client(timeout=HTTP_TIMEOUT) as client:
+                response = client.patch(
+                    f"{backend_url}/api/v1/processing/jobs/{job_id}/status",
+                    json=patch_data
+                )
+                response.raise_for_status()
+        except Exception as notify_err:
+            logger.error(f"Failed to notify backend of status '{patch_data.get('status')}' for job {job_id}: {notify_err}")
+
     try:
         payload = json.loads(message_body)
         document_id = payload.get("documentId")
@@ -131,8 +152,11 @@ def process_document_queue(msg: func.QueueMessage) -> None:
         contract_id = payload.get("contract_id")
         blob_path = payload.get("blob_path")
         file_name = payload.get("file_name")
-        
+
         logger.info(f"Processing document {document_id} (job {job_id}) with operation {operation}")
+
+        # Let the backend/frontend know the job has actually started (not just queued)
+        notify_backend({"status": "Processing", "document_id": document_id})
 
         result = None
         if operation in ["PROCESS", "REPROCESS"]:
@@ -164,26 +188,15 @@ def process_document_queue(msg: func.QueueMessage) -> None:
             )
 
         # 3. Notify backend of success
-        if job_id:
-            patch_data = {"status": "Completed", "document_id": document_id}
-            if result:
-                patch_data["page_count"] = result.get("page_count", 1)
-                patch_data["chunk_count"] = result.get("indexed_count", 0)
-            with httpx.Client() as client:
-                client.patch(
-                    f"{backend_url}/api/v1/processing/jobs/{job_id}/status",
-                    json=patch_data
-                )
-                
+        patch_data = {"status": "Completed", "document_id": document_id}
+        if result:
+            patch_data["page_count"] = result.get("page_count", 1)
+            patch_data["chunk_count"] = result.get("indexed_count", 0)
+        notify_backend(patch_data)
+
     except Exception as e:
         logger.error(f"Failed to process queue message: {e}")
-        # Notify backend of failure
-        if job_id:
-            try:
-                with httpx.Client() as client:
-                    client.patch(
-                        f"{backend_url}/api/v1/processing/jobs/{job_id}/status",
-                        json={"status": "Failed", "error_message": str(e), "document_id": document_id}
-                    )
-            except Exception as patch_e:
-                logger.error(f"Failed to send failure patch: {patch_e}")
+        # Notify backend of failure so the document/job don't stay stuck in "Queued"/"Processing"
+        notify_backend({"status": "Failed", "error_message": str(e), "document_id": document_id})
+        # Re-raise so the Azure Functions queue trigger honors its built-in retry/poison-queue policy
+        raise

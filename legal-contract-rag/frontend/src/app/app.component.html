@@ -18,6 +18,9 @@
       <button class="nav-tab-btn" [class.active]="activeTab === 'chat'" (click)="activeTab = 'chat'">
         <span>💬 Legal Assistant</span>
       </button>
+      <button class="nav-tab-btn" [class.active]="activeTab === 'agent'" (click)="activeTab = 'agent'">
+        <span>🤖 ReAct Agent Lab</span>
+      </button>
     </nav>
 
     <div class="header-status">
@@ -57,5 +60,13 @@
       </div>
     </ng-container>
 
+    <!-- Week 7 ReAct Agent Lab View -->
+    <ng-container *ngIf="activeTab === 'agent'">
+      <div class="full-view-container">
+        <app-agent-lab></app-agent-lab>
+      </div>
+    </ng-container>
+
   </main>
 </div>
+

@@ -72,15 +72,22 @@ async def upload_document(
     })
 
     # 4. Enqueue processing message to legal-document-processing queue
-    queue_service.enqueue_job(
-        document_id=document_id,
-        operation="PROCESS",
-        correlation_id=correlation_id,
-        job_id=job_id,
-        contract_id=contract_id,
-        blob_path=blob_path,
-        file_name=file.filename
-    )
+    try:
+        queue_service.enqueue_job(
+            document_id=document_id,
+            operation="PROCESS",
+            correlation_id=correlation_id,
+            job_id=job_id,
+            contract_id=contract_id,
+            blob_path=blob_path,
+            file_name=file.filename
+        )
+    except Exception as e:
+        logger.error(f"Failed to enqueue processing job for document {document_id}: {e}")
+        error_msg = "Failed to queue document for processing. Please check that the queue service is running."
+        doc_repo.update_status(document_id, "Failed")
+        job_repo.update_status(job_id, "Failed", error_msg)
+        raise HTTPException(status_code=502, detail=error_msg)
 
     return DocumentUploadResponse(
         documentId=document_id,
@@ -164,15 +171,22 @@ def reprocess_document(document_id: str, db: Session = Depends(get_db)):
         "requested_by": "system"
     })
 
-    queue_service.enqueue_job(
-        document_id=document_id, 
-        operation="REPROCESS", 
-        correlation_id=correlation_id,
-        job_id=job_id,
-        contract_id=doc.contract_id,
-        blob_path=doc.blob_path,
-        file_name=doc.file_name
-    )
+    try:
+        queue_service.enqueue_job(
+            document_id=document_id,
+            operation="REPROCESS",
+            correlation_id=correlation_id,
+            job_id=job_id,
+            contract_id=doc.contract_id,
+            blob_path=doc.blob_path,
+            file_name=doc.file_name
+        )
+    except Exception as e:
+        logger.error(f"Failed to enqueue reprocessing job for document {document_id}: {e}")
+        error_msg = "Failed to queue document for reprocessing. Please check that the queue service is running."
+        doc_repo.update_status(document_id, "Failed")
+        job_repo.update_status(job_id, "Failed", error_msg)
+        raise HTTPException(status_code=502, detail=error_msg)
 
     return DocumentUploadResponse(
         documentId=document_id,
@@ -205,11 +219,20 @@ def delete_document(document_id: str, db: Session = Depends(get_db)):
         "status": "Queued",
         "correlation_id": correlation_id
     })
-    queue_service.enqueue_job(
-        document_id=document_id, 
-        operation="DELETE_INDEX", 
-        correlation_id=correlation_id,
-        job_id=job_id
-    )
+    try:
+        queue_service.enqueue_job(
+            document_id=document_id,
+            operation="DELETE_INDEX",
+            correlation_id=correlation_id,
+            job_id=job_id
+        )
+    except Exception as e:
+        logger.error(f"Failed to enqueue delete-index job for document {document_id}: {e}")
+        job_repo.update_status(job_id, "Failed", "Failed to queue vector purge job.")
+        # Document is already soft-deleted; surface the queue issue but don't block deletion.
+        return {
+            "message": "Document deleted, but vector purging could not be queued (queue service unavailable).",
+            "document_id": document_id
+        }
 
     return {"message": "Document deleted and vector purging queued.", "document_id": document_id}
