@@ -18,6 +18,9 @@
       <button class="sub-tab-btn" [class.active]="activeSubTab === 'injection'" (click)="activeSubTab = 'injection'">
         🛡️ Prompt Injection Defense (W8)
       </button>
+      <button class="sub-tab-btn" [class.active]="activeSubTab === 'mcp'" (click)="activeSubTab = 'mcp'">
+        🔌 MCP Lab & Wire Trace (W9)
+      </button>
       <button class="sub-tab-btn" [class.active]="activeSubTab === 'tools'" (click)="activeSubTab = 'tools'">
         🛠️ Tools & Budgets
       </button>
@@ -558,6 +561,334 @@ ARTICLE 10 — TERMINATION
     </div>
   </div>
 
+  <!-- TAB 6: MODEL CONTEXT PROTOCOL (MCP) LAB & WIRE INSPECTOR (W9) -->
+  <div class="tab-content mcp-lab-tab" *ngIf="activeSubTab === 'mcp'">
+    
+    <!-- Top Header Banner for MCP -->
+    <div class="mcp-hero-card">
+      <div class="hero-text">
+        <h3>🔌 Model Context Protocol (MCP) & Zero-Code Agent Host</h3>
+        <p>Enterprise JSON-RPC 2.0 protocol standard connecting decoupled agent hosts with plug-and-play contract knowledge servers.</p>
+      </div>
+      <div class="config-toggle-box">
+        <span class="toggle-label">Active Server Configuration:</span>
+        <div class="toggle-pills">
+          <button class="pill-btn" [class.active]="mcpConfigMode === 'all'" (click)="switchMcpConfig('all')">
+            🌐 All Servers (Server 1 & 2) <span class="badge">4 Tools</span>
+          </button>
+          <button class="pill-btn" [class.active]="mcpConfigMode === 'server1_only'" (click)="switchMcpConfig('server1_only')">
+            📦 Server 1 Only (Clause) <span class="badge">2 Tools</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. Discovery Summary & Tool Grid -->
+    <div class="mcp-section">
+      <div class="section-title-row">
+        <h4>📡 Dynamic Tool Discovery & Zero-Code Extensibility</h4>
+        <span class="discovery-stat" *ngIf="mcpDiscovery">
+          Active Servers: <strong>{{ mcpDiscovery.server_count }}</strong> | Total Discovered Tools: <strong>{{ mcpDiscovery.total_tools }}</strong>
+        </span>
+      </div>
+
+      <div class="servers-summary-grid" *ngIf="mcpDiscovery">
+        <div class="server-badge-card" *ngFor="let s of mcpDiscovery.servers">
+          <div class="s-header">
+            <span class="s-icon">🏢</span>
+            <div>
+              <h5>{{ s.name }}</h5>
+              <span class="s-id">ID: {{ s.id }}</span>
+            </div>
+            <span class="status-pill pass">CONNECTED</span>
+          </div>
+          <div class="s-tools-list">
+            <span class="s-tool-tag" *ngFor="let t of s.tools">⚡ {{ t }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Discovered Tools Cards -->
+      <div class="mcp-tools-grid" *ngIf="mcpDiscovery">
+        <div class="mcp-tool-card" *ngFor="let tool of mcpDiscovery.tools">
+          <div class="tool-top">
+            <div class="tool-name-box">
+              <span class="mcp-badge">{{ tool.server_id || 'mcp' }}</span>
+              <h4>{{ tool.name }}</h4>
+            </div>
+          </div>
+          <div class="prompt-docstring-box">
+            <span class="docstring-label">📝 Prompt-Engineered Docstring:</span>
+            <p class="docstring-text">{{ tool.description }}</p>
+          </div>
+          <div class="schema-box">
+            <span class="schema-label">Input Parameters:</span>
+            <pre class="schema-code">{{ tool.inputSchema.properties | json }}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Interactive MCP Agent Execution Sandbox -->
+    <div class="mcp-section">
+      <div class="section-title-row">
+        <h4>🤖 MCP Agent Reasoning & Autonomous Error Recovery Sandbox</h4>
+      </div>
+
+      <div class="mcp-query-card">
+        <div class="input-row">
+          <div class="field-group flex-1">
+            <label>Legal Query / Task:</label>
+            <input type="text" [(ngModel)]="mcpQueryText" class="text-input" placeholder="e.g. Find dispute resolution procedures under Clause 12.4">
+          </div>
+          <div class="field-group w-200">
+            <label>Contract ID:</label>
+            <input type="text" [(ngModel)]="mcpQueryContractId" class="text-input" placeholder="CNT-MAIN-2024">
+          </div>
+          <button class="primary-btn" [disabled]="isMcpQueryRunning" (click)="runMcpAgentQuery()">
+            <span *ngIf="!isMcpQueryRunning">⚡ Execute MCP Agent</span>
+            <span *ngIf="isMcpQueryRunning">⏳ Reasoning...</span>
+          </button>
+        </div>
+
+        <!-- Sample Quick Prompts -->
+        <div class="sample-prompts">
+          <span>Quick Samples:</span>
+          <button class="sample-chip" (click)="mcpQueryText = 'Find dispute resolution procedures under Clause 12.4 of CNT-MAIN-2024'">
+            🔄 Clause 12.4 Relocation (Self-Correction)
+          </button>
+          <button class="sample-chip" (click)="mcpQueryText = 'What is the liability cap under Clause 8.1 in CNT-MAIN-2024?'">
+            🛡️ Liability Cap (Direct Lookup)
+          </button>
+          <button class="sample-chip" (click)="mcpQueryText = 'What is the defined meaning of Confidential Information?'">
+            📖 Term Definitions
+          </button>
+          <button class="sample-chip" (click)="mcpQueryText = 'Show amendment history and metadata for CNT-MAIN-2024'">
+            📜 Amendment History (Server 2)
+          </button>
+        </div>
+      </div>
+
+      <!-- Agent Reasoning Result Card -->
+      <div class="agent-result-card" *ngIf="mcpQueryResponse">
+        <div class="result-header">
+          <div class="res-meta">
+            <span>Discovered Tools: <strong>{{ mcpQueryResponse.tools_discovered_count }}</strong></span>
+            <span>Tools Invoked: <strong>{{ mcpQueryResponse.tools_invoked.join(', ') || 'None' }}</strong></span>
+          </div>
+          <span class="status-pill pass">SYNTHESIS COMPLETE</span>
+        </div>
+
+        <!-- Reasoning Step Trace -->
+        <div class="reasoning-trace-box">
+          <h5>🧠 Agent Thought & JSON-RPC Action Trail:</h5>
+          <div class="reasoning-step-item" *ngFor="let step of mcpQueryResponse.reasoning_steps">
+            <div class="step-num">Step {{ step.step }}</div>
+            <div class="step-content">
+              <span class="step-phase">{{ step.phase }}</span>
+              <p class="step-desc" *ngIf="step.thought">{{ step.thought }}</p>
+              <div class="step-action" *ngIf="step.action"><code>{{ step.action }}</code></div>
+              <div class="step-res" *ngIf="step.result" [class.err-box]="step.is_error">
+                <span class="res-lbl">{{ step.is_error ? '⚠️ Recoverable Guidance Received:' : 'Observation:' }}</span>
+                <p>{{ step.result }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Final Synthesized Answer -->
+        <div class="final-answer-box">
+          <h5>⚖️ Final Synthesized Legal Response:</h5>
+          <div class="answer-content">{{ mcpQueryResponse.final_answer }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Raw Annotated JSON-RPC 2.0 Wire Inspector -->
+    <div class="mcp-section">
+      <div class="section-title-row">
+        <h4>🔬 Raw JSON-RPC 2.0 MCP Wire Inspector</h4>
+        <div class="wire-actions">
+          <button class="sec-btn" (click)="loadWireTrace()" [disabled]="isWireLoading">🔄 Refresh Wire Trace</button>
+          <button class="sec-btn danger" (click)="clearWireTrace()">🗑️ Clear History</button>
+        </div>
+      </div>
+
+      <div class="wire-boundary-banner" *ngIf="mcpWireTrace">
+        <span class="boundary-icon">🛡️</span>
+        <div class="boundary-text">
+          <strong>Architectural Model Boundary:</strong>
+          <span>{{ mcpWireTrace.architecture_boundary_statement }}</span>
+        </div>
+      </div>
+
+      <div class="wire-packets-container" *ngIf="mcpWireTrace && mcpWireTrace.packets && mcpWireTrace.packets.length > 0">
+        <div class="wire-packet-card" *ngFor="let p of mcpWireTrace.packets" [class.inbound]="p.direction === 'server_to_client'" [class.outbound]="p.direction === 'client_to_server'">
+          <div class="packet-top">
+            <span class="dir-badge" [class.client-badge]="p.direction === 'client_to_server'" [class.server-badge]="p.direction === 'server_to_client'">
+              {{ p.direction === 'client_to_server' ? 'CLIENT ➔ SERVER' : 'SERVER ➔ CLIENT' }}
+            </span>
+            <span class="server-tag">{{ p.server_id }}</span>
+            <span class="type-tag">{{ p.message_type }}</span>
+            <span class="time-tag">{{ p.iso_time }}</span>
+          </div>
+
+          <p class="annotation-text">📌 <strong>Annotation:</strong> {{ p.annotation }}</p>
+          <p class="boundary-note" *ngIf="p.host_model_boundary_note">🤖 <em>Model Boundary: {{ p.host_model_boundary_note }}</em></p>
+
+          <details class="json-details">
+            <summary>View Raw JSON-RPC 2.0 Payload</summary>
+            <pre class="raw-json">{{ p.raw_jsonrpc | json }}</pre>
+          </details>
+        </div>
+      </div>
+
+      <div class="empty-placeholder" *ngIf="!mcpWireTrace || !mcpWireTrace.packets || mcpWireTrace.packets.length === 0">
+        <p>No wire packets recorded yet. Run an agent query or click "Refresh Wire Trace" above.</p>
+        <button class="sec-btn" (click)="loadWireTrace()">Load Recorded Trace</button>
+      </div>
+    </div>
+
+    <!-- 4. Docstring-as-Prompt & Recoverable Error Demo -->
+    <div class="mcp-section">
+      <div class="section-title-row">
+        <h4>🔄 Docstring-as-Prompt & Recoverable Error Comparison</h4>
+        <button class="sec-btn" (click)="loadErrorDemo()">📖 Load Before / After Demo</button>
+      </div>
+
+      <div class="error-demo-grid" *ngIf="mcpErrorDemo">
+        <!-- Before Card -->
+        <div class="contrast-card before-card">
+          <div class="c-header">
+            <span class="c-icon">❌</span>
+            <h4>Before: Non-Recoverable Generic Error</h4>
+            <span class="status-pill fail">DEAD END</span>
+          </div>
+          <div class="c-body">
+            <div class="code-snippet">
+              <span class="c-label">Raw Server Response:</span>
+              <pre class="code-box red">{{ mcpErrorDemo.error_path_before.raw_response }}</pre>
+            </div>
+            <p class="c-behavior"><strong>Model Behavior:</strong> {{ mcpErrorDemo.error_path_before.agent_behavior }}</p>
+            <div class="transcript-box">
+              <span class="c-label">Transcript:</span>
+              <pre class="transcript-text">{{ mcpErrorDemo.transcript_before }}</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- After Card -->
+        <div class="contrast-card after-card">
+          <div class="c-header">
+            <span class="c-icon">✅</span>
+            <h4>After: Prompt-Engineered Recoverable Error</h4>
+            <span class="status-pill pass">SELF-CORRECTED</span>
+          </div>
+          <div class="c-body">
+            <div class="code-snippet">
+              <span class="c-label">Raw Server Response (With Relocation Guidance):</span>
+              <pre class="code-box green">{{ mcpErrorDemo.error_path_after.raw_response }}</pre>
+            </div>
+            <p class="c-behavior"><strong>Model Behavior:</strong> {{ mcpErrorDemo.error_path_after.agent_behavior }}</p>
+            <div class="transcript-box">
+              <span class="c-label">Transcript:</span>
+              <pre class="transcript-text">{{ mcpErrorDemo.transcript_after }}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Bonus: Enterprise Security Gateway & RBAC Sandbox -->
+    <div class="mcp-section">
+      <div class="section-title-row">
+        <h4>🛡️ Bonus: MCP Enterprise Security Gateway & RBAC Token Scoping</h4>
+        <button class="sec-btn" (click)="loadGatewayAuditLogs()">📋 Refresh Audit Logs</button>
+      </div>
+
+      <div class="gateway-sandbox-card">
+        <div class="gw-form-row">
+          <div class="field-group">
+            <label>Caller Role (RBAC):</label>
+            <select [(ngModel)]="selectedGatewayRole" class="select-input">
+              <option value="legal_counsel">Legal Counsel (Full Contract Access)</option>
+              <option value="paralegal">Paralegal (Clauses Only)</option>
+              <option value="external_auditor">External Auditor (Metadata Only)</option>
+              <option value="guest">Guest (No Access)</option>
+              <option value="admin">Administrator (Unrestricted)</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label>Target Tool:</label>
+            <select [(ngModel)]="selectedGatewayTool" class="select-input">
+              <option value="get_clause">get_clause (Clause Server)</option>
+              <option value="get_definitions">get_definitions (Clause Server)</option>
+              <option value="get_contract_metadata">get_contract_metadata (Repo Server)</option>
+              <option value="get_amendment_chain">get_amendment_chain (Repo Server)</option>
+            </select>
+          </div>
+
+          <div class="field-group w-200">
+            <label>Contract ID:</label>
+            <input type="text" [(ngModel)]="gatewayContractId" class="text-input">
+          </div>
+
+          <button class="primary-btn" [disabled]="isGatewayTesting" (click)="testGatewayTool()">
+            <span *ngIf="!isGatewayTesting">🔒 Dispatch via Gateway</span>
+            <span *ngIf="isGatewayTesting">⏳ Validating RBAC...</span>
+          </button>
+        </div>
+
+        <!-- Result from Gateway -->
+        <div class="gw-result-box" *ngIf="gatewayTestResult" [class.gw-blocked]="gatewayTestResult.gateway_status === 'BLOCKED'" [class.gw-allowed]="gatewayTestResult.gateway_status === 'SUCCESS'">
+          <div class="gw-res-header">
+            <span>Gateway Policy Decision: <strong>{{ gatewayTestResult.gateway_status }}</strong></span>
+            <span *ngIf="gatewayTestResult.audit_id">Audit ID: <code>{{ gatewayTestResult.audit_id }}</code></span>
+            <span *ngIf="gatewayTestResult.duration_ms !== undefined">Latency: {{ gatewayTestResult.duration_ms }}ms</span>
+          </div>
+          <div class="gw-res-content">
+            <pre>{{ gatewayTestResult.content | json }}</pre>
+          </div>
+        </div>
+
+        <!-- Unified Audit Log Table -->
+        <div class="audit-log-table-box" *ngIf="mcpGatewayLogs && mcpGatewayLogs.length > 0">
+          <h5>📋 Unified Security Audit Ledger (Recent Invocations):</h5>
+          <table class="audit-table">
+            <thead>
+              <tr>
+                <th>Time (UTC)</th>
+                <th>Caller</th>
+                <th>Role</th>
+                <th>Tool</th>
+                <th>Contract ID</th>
+                <th>Status</th>
+                <th>Latency</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let log of mcpGatewayLogs">
+                <td>{{ log.timestamp }}</td>
+                <td><code>{{ log.caller }}</code></td>
+                <td><span class="role-badge">{{ log.role }}</span></td>
+                <td><strong>{{ log.tool }}</strong></td>
+                <td>{{ log.contract_id || 'N/A' }}</td>
+                <td>
+                  <span class="status-pill" [class.pass]="log.status === 'SUCCESS'" [class.fail]="log.status === 'BLOCKED'" [class.warn]="log.status === 'ERROR'">
+                    {{ log.status }}
+                  </span>
+                </td>
+                <td>{{ log.duration_ms }}ms</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
   <!-- TAB 5: TYPED TOOLS & BUDGETS -->
   <div class="tab-content" *ngIf="activeSubTab === 'tools'">
     <div class="tools-grid">
@@ -575,3 +906,4 @@ ARTICLE 10 — TERMINATION
     </div>
   </div>
 </div>
+

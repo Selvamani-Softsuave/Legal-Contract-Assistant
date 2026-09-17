@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AgentService } from '../../core/services/agent.service';
+import { McpService } from '../../core/services/mcp.service';
 import {
     AgentQueryResponse,
     RaceDatasetItem,
@@ -10,7 +11,13 @@ import {
     TrajectoryEvaluationResponse,
     TrajectoryCaseResult,
     MitigationBenchmarkResponse,
-    InjectionAttackResponse
+    InjectionAttackResponse,
+    MCPDiscoveryResponse,
+    MCPQueryResponse,
+    MCPToolCallResponse,
+    MCPWireTraceResponse,
+    AuditLogEntry,
+    MCPErrorDemoResponse
 } from '../../core/models';
 
 @Component({
@@ -21,7 +28,7 @@ import {
     styleUrls: ['./agent-lab.component.scss']
 })
 export class AgentLabComponent implements OnInit {
-    activeSubTab: 'playground' | 'race' | 'trajectory' | 'injection' | 'tools' = 'playground';
+    activeSubTab: 'playground' | 'race' | 'trajectory' | 'injection' | 'tools' | 'mcp' = 'playground';
     
     // Playground Form
     question: string = 'What is the exact notice deadline for termination for Material Breach under the Final Executed Agreement?';
@@ -53,30 +60,62 @@ export class AgentLabComponent implements OnInit {
     injectionQuestion: string = 'Under what conditions can the agreement be terminated?';
     injectionResponse: InjectionAttackResponse | null = null;
 
-    constructor(private agentService: AgentService) {}
+    // ─── Week 9 MCP (Model Context Protocol) & Gateway States ─────────────────
+    mcpConfigMode: 'all' | 'server1_only' = 'all';
+    mcpDiscovery: MCPDiscoveryResponse | null = null;
+    isMcpLoading: boolean = false;
+
+    mcpQueryText: string = 'Find dispute resolution procedures under Clause 12.4 of CNT-MAIN-2024';
+    mcpQueryContractId: string = 'CNT-MAIN-2024';
+    mcpQueryResponse: MCPQueryResponse | null = null;
+    isMcpQueryRunning: boolean = false;
+
+    mcpWireTrace: MCPWireTraceResponse | null = null;
+    isWireLoading: boolean = false;
+
+    mcpErrorDemo: MCPErrorDemoResponse | null = null;
+    isErrorDemoLoading: boolean = false;
+
+    mcpGatewayLogs: AuditLogEntry[] = [];
+    selectedGatewayRole: string = 'legal_counsel';
+    selectedGatewayTool: string = 'get_clause';
+    gatewayContractId: string = 'CNT-MAIN-2024';
+    gatewayClauseNum: string = '8.1';
+    gatewayTestResult: MCPToolCallResponse | null = null;
+    isGatewayTesting: boolean = false;
+
+    constructor(
+        private agentService: AgentService,
+        private mcpService: McpService
+    ) {}
 
     ngOnInit(): void {
         this.loadDataset();
         this.loadTools();
+        this.loadMcpDiscovery();
     }
 
     loadDataset(): void {
         this.agentService.getRaceDataset().subscribe({
-            next: (data) => (this.raceDataset = data),
-            error: (err) => console.error('Failed to load race dataset:', err)
+            next: (data: RaceDatasetItem[]) => this.raceDataset = data,
+            error: (err: any) => console.error('Failed to load race dataset', err)
         });
     }
 
     loadTools(): void {
         this.agentService.getTools().subscribe({
-            next: (data) => (this.tools = data),
-            error: (err) => console.error('Failed to load tools:', err)
+            next: (data: ToolDefinition[]) => this.tools = data,
+            error: (err: any) => console.error('Failed to load agent tools', err)
         });
     }
 
     selectPresetQuestion(item: RaceDatasetItem): void {
         this.question = item.question;
-        this.errorMessage = null;
+        this.activeSubTab = 'playground';
+    }
+
+    selectDatasetItem(item: RaceDatasetItem): void {
+        this.selectPresetQuestion(item);
     }
 
     runQuery(): void {
@@ -84,6 +123,7 @@ export class AgentLabComponent implements OnInit {
 
         this.isLoading = true;
         this.errorMessage = null;
+        this.queryResponse = null;
 
         this.agentService.query({
             question: this.question,
@@ -94,31 +134,40 @@ export class AgentLabComponent implements OnInit {
             max_cost_usd: this.maxCostUsd,
             max_wall_clock_seconds: this.maxTimeoutSec
         }).subscribe({
-            next: (res) => {
+            next: (res: AgentQueryResponse) => {
                 this.queryResponse = res;
                 this.isLoading = false;
             },
-            error: (err) => {
-                this.errorMessage = err.error?.detail || err.message || 'Failed to execute query';
+            error: (err: any) => {
+                this.errorMessage = err.error?.detail || err.message || 'Agent query execution failed';
                 this.isLoading = false;
             }
         });
     }
 
+    runAgentQuery(): void {
+        this.runQuery();
+    }
+
     runFullRace(): void {
         this.isRaceRunning = true;
         this.errorMessage = null;
+        this.raceResponse = null;
 
         this.agentService.runRace(this.useLiveLlm).subscribe({
-            next: (res) => {
+            next: (res: RaceRunResponse) => {
                 this.raceResponse = res;
                 this.isRaceRunning = false;
             },
-            error: (err) => {
-                this.errorMessage = err.error?.detail || err.message || 'Failed to run race benchmark';
+            error: (err: any) => {
+                this.errorMessage = err.error?.detail || err.message || 'Benchmark race failed';
                 this.isRaceRunning = false;
             }
         });
+    }
+
+    runRace(): void {
+        this.runFullRace();
     }
 
     // ─── Week 8 Trajectory Evaluation Handlers ────────────────────────────────
@@ -174,6 +223,124 @@ export class AgentLabComponent implements OnInit {
             error: (err) => {
                 this.errorMessage = err.error?.detail || err.message || 'Failed to run injection test';
                 this.isInjectionRunning = false;
+            }
+        });
+    }
+
+    // ─── Week 9 MCP Protocol Handlers ────────────────────────────────────────
+
+    loadMcpDiscovery(): void {
+        this.isMcpLoading = true;
+        this.mcpService.getDiscovery(this.mcpConfigMode).subscribe({
+            next: (res) => {
+                this.mcpDiscovery = res;
+                this.isMcpLoading = false;
+            },
+            error: (err) => {
+                console.error('Failed to load MCP discovery', err);
+                this.isMcpLoading = false;
+            }
+        });
+    }
+
+    switchMcpConfig(mode: 'all' | 'server1_only'): void {
+        this.mcpConfigMode = mode;
+        this.loadMcpDiscovery();
+    }
+
+    runMcpAgentQuery(): void {
+        if (!this.mcpQueryText.trim()) return;
+
+        this.isMcpQueryRunning = true;
+        this.errorMessage = null;
+        this.mcpQueryResponse = null;
+
+        this.mcpService.queryAgent({
+            query: this.mcpQueryText,
+            contract_id: this.mcpQueryContractId,
+            server_config: this.mcpConfigMode
+        }).subscribe({
+            next: (res) => {
+                this.mcpQueryResponse = res;
+                this.isMcpQueryRunning = false;
+                // Automatically refresh wire trace and audit logs
+                this.loadWireTrace();
+                this.loadGatewayAuditLogs();
+            },
+            error: (err) => {
+                this.errorMessage = err.error?.detail || err.message || 'MCP Agent query failed';
+                this.isMcpQueryRunning = false;
+            }
+        });
+    }
+
+    loadWireTrace(): void {
+        this.isWireLoading = true;
+        this.mcpService.getWireTrace().subscribe({
+            next: (res) => {
+                this.mcpWireTrace = res;
+                this.isWireLoading = false;
+            },
+            error: (err) => {
+                console.error('Failed to load wire trace', err);
+                this.isWireLoading = false;
+            }
+        });
+    }
+
+    clearWireTrace(): void {
+        this.mcpService.clearWireTrace().subscribe({
+            next: () => {
+                this.mcpWireTrace = null;
+                this.loadWireTrace();
+            }
+        });
+    }
+
+    loadErrorDemo(): void {
+        this.isErrorDemoLoading = true;
+        this.mcpService.getErrorDemo().subscribe({
+            next: (res) => {
+                this.mcpErrorDemo = res;
+                this.isErrorDemoLoading = false;
+            },
+            error: (err) => {
+                console.error('Failed to load error demo', err);
+                this.isErrorDemoLoading = false;
+            }
+        });
+    }
+
+    loadGatewayAuditLogs(): void {
+        this.mcpService.getAuditLogs(30).subscribe({
+            next: (res) => this.mcpGatewayLogs = res,
+            error: (err) => console.error('Failed to load audit logs', err)
+        });
+    }
+
+    testGatewayTool(): void {
+        this.isGatewayTesting = true;
+        this.gatewayTestResult = null;
+
+        const args: Record<string, any> = { contract_id: this.gatewayContractId };
+        if (this.selectedGatewayTool === 'get_clause') {
+            args['clause_number'] = this.gatewayClauseNum;
+        }
+
+        this.mcpService.callToolGateway({
+            tool_name: this.selectedGatewayTool,
+            arguments: args,
+            role: this.selectedGatewayRole,
+            caller: `${this.selectedGatewayRole}_tester@enterprise.com`
+        }).subscribe({
+            next: (res) => {
+                this.gatewayTestResult = res;
+                this.isGatewayTesting = false;
+                this.loadGatewayAuditLogs();
+            },
+            error: (err) => {
+                this.errorMessage = err.error?.detail || err.message || 'Gateway call failed';
+                this.isGatewayTesting = false;
             }
         });
     }

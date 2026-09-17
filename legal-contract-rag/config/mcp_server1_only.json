@@ -1,0 +1,13 @@
+{
+  "servers": [
+    {
+      "id": "clause_server",
+      "name": "Contract Clause & Definitions Server",
+      "endpoint": "in-process:clause_server",
+      "server_type": "in_process",
+      "module": "app.mcp.servers.clause_server",
+      "enabled": true,
+      "description": "Exposes semantic search and lookup for contract clauses and legal definitions."
+    }
+  ]
+}

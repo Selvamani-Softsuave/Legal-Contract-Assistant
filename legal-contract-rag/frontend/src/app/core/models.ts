@@ -298,3 +298,106 @@ export interface InjectionAttackResponse {
     guardrail_overhead_tokens: number;
     security_verdict: string;
 }
+
+// Week 9: Model Context Protocol (MCP) & Gateway Models
+export interface MCPToolInputSchema {
+    type: string;
+    properties: Record<string, any>;
+    required?: string[];
+}
+
+export interface MCPTool {
+    name: string;
+    description: string;
+    inputSchema: MCPToolInputSchema;
+    server_id?: string;
+}
+
+export interface MCPServerStatus {
+    id: string;
+    name: string;
+    enabled: boolean;
+    tool_count: number;
+    tools: string[];
+}
+
+export interface MCPDiscoveryResponse {
+    active_config: string;
+    server_count: number;
+    total_tools: number;
+    servers: MCPServerStatus[];
+    tools: MCPTool[];
+}
+
+export interface MCPQueryRequest {
+    query: string;
+    contract_id?: string;
+    server_config?: string;
+}
+
+export interface MCPQueryResponse {
+    query: string;
+    contract_id: string;
+    tools_discovered_count: number;
+    tools_discovered: string[];
+    tools_invoked: string[];
+    reasoning_steps: any[];
+    final_answer: string;
+}
+
+export interface MCPToolCallRequest {
+    tool_name: string;
+    arguments: Record<string, any>;
+    token?: string;
+    caller?: string;
+    role?: string;
+}
+
+export interface MCPToolCallResponse {
+    content: any[];
+    isError: boolean;
+    gateway_status: string;
+    audit_id?: string;
+    duration_ms?: number;
+}
+
+export interface WirePacket {
+    timestamp: number;
+    iso_time: string;
+    direction: string;
+    server_id: string;
+    message_type: string;
+    raw_jsonrpc: any;
+    annotation: string;
+    host_model_boundary_note?: string;
+}
+
+export interface MCPWireTraceResponse {
+    title: string;
+    protocol_version: string;
+    architecture_boundary_statement: string;
+    trace_summary: any;
+    packets: WirePacket[];
+}
+
+export interface AuditLogEntry {
+    id: string;
+    timestamp: string;
+    caller: string;
+    role: string;
+    tool: string;
+    contract_id?: string;
+    status: string;
+    duration_ms: number;
+    error_message?: string;
+    arguments: any;
+}
+
+export interface MCPErrorDemoResponse {
+    scenario: string;
+    error_path_before: any;
+    error_path_after: any;
+    transcript_before: string;
+    transcript_after: string;
+    model_recovery_success: boolean;
+}

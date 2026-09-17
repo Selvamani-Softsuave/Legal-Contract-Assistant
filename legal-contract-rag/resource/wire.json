@@ -1,0 +1,177 @@
+{
+  "title": "Annotated Raw JSON-RPC 2.0 MCP Wire Trace",
+  "protocol_version": "2024-11-05",
+  "architecture_boundary_statement": "MODEL CALL LOCATION: The LLM model call happens EXCLUSIVELY on the Agent Host side. The MCP servers provide structured data and tool execution without invoking LLMs.",
+  "trace_summary": {
+    "total_packets": 6,
+    "recorded_at": "2026-09-17T16:20:00Z"
+  },
+  "packets": [
+    {
+      "timestamp": 1726588800.1,
+      "iso_time": "2026-09-17T16:20:00.100Z",
+      "direction": "client_to_server",
+      "server_id": "clause_server",
+      "message_type": "initialize_request",
+      "raw_jsonrpc": {
+        "jsonrpc": "2.0",
+        "id": "init-001",
+        "method": "initialize",
+        "params": {
+          "protocolVersion": "2024-11-05",
+          "capabilities": {},
+          "clientInfo": {
+            "name": "LegalMCPAgentHost",
+            "version": "1.0.0"
+          }
+        }
+      },
+      "annotation": "TOP-LEVEL FIELD: 'method': 'initialize' -> Host initiates MCP protocol negotiation with clause_server, advertising client capability and protocol version 2024-11-05.",
+      "host_model_boundary_note": "Agent Host establishes protocol transport before any LLM inference takes place."
+    },
+    {
+      "timestamp": 1726588800.15,
+      "iso_time": "2026-09-17T16:20:00.150Z",
+      "direction": "server_to_client",
+      "server_id": "clause_server",
+      "message_type": "initialize_response",
+      "raw_jsonrpc": {
+        "jsonrpc": "2.0",
+        "id": "init-001",
+        "result": {
+          "protocolVersion": "2024-11-05",
+          "capabilities": {
+            "tools": {
+              "listChanged": false
+            }
+          },
+          "serverInfo": {
+            "name": "Contract Clause & Definitions Server",
+            "version": "1.1.0"
+          }
+        }
+      },
+      "annotation": "TOP-LEVEL FIELD: 'result': Server confirms handshake with supported MCP specification (2024-11-05) and capabilities (tools support).",
+      "host_model_boundary_note": "MCP Server does not call an LLM; it returns static server capability metadata."
+    },
+    {
+      "timestamp": 1726588800.2,
+      "iso_time": "2026-09-17T16:20:00.200Z",
+      "direction": "client_to_server",
+      "server_id": "clause_server",
+      "message_type": "tools_list_request",
+      "raw_jsonrpc": {
+        "jsonrpc": "2.0",
+        "id": "list-001",
+        "method": "tools/list",
+        "params": {}
+      },
+      "annotation": "TOP-LEVEL FIELD: 'method': 'tools/list' -> Host queries available tools to format into LLM function/tool calling definitions.",
+      "host_model_boundary_note": "Host gathers tool schemas to dynamically populate the LLM system prompt."
+    },
+    {
+      "timestamp": 1726588800.25,
+      "iso_time": "2026-09-17T16:20:00.250Z",
+      "direction": "server_to_client",
+      "server_id": "clause_server",
+      "message_type": "tools_list_response",
+      "raw_jsonrpc": {
+        "jsonrpc": "2.0",
+        "id": "list-001",
+        "result": {
+          "tools": [
+            {
+              "name": "get_clause",
+              "description": "Retrieve the exact legal text, section number, and title of a specific clause in a contract. Use this tool whenever the user asks for obligations, termination conditions, indemnification, liability caps, or specific clause provisions. Provide the contract_id (e.g. 'CNT-MAIN-2024') and either a clause_type (e.g. 'termination', 'indemnification', 'confidentiality') or clause_number (e.g. '12.4'). If the clause is missing, this tool returns structural guidance indicating where the provision was relocated or amended.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "contract_id": {
+                    "type": "string",
+                    "description": "Unique identifier of the contract (e.g. 'CNT-MAIN-2024' or 'CNT-AMD-2024-01')"
+                  },
+                  "clause_number": {
+                    "type": "string",
+                    "description": "Specific clause number to lookup (e.g. '1.1', '4.2', '8.1', '9.3', '12.4')"
+                  },
+                  "clause_type": {
+                    "type": "string",
+                    "description": "Category/type of clause (e.g. 'termination', 'indemnification', 'confidentiality', 'limitation_of_liability')"
+                  }
+                },
+                "required": [
+                  "contract_id"
+                ]
+              }
+            },
+            {
+              "name": "get_definitions",
+              "description": "Retrieve defined terms, legal interpretations, and glossary definitions from Section 1 or Appendix A of a contract. Use this tool to resolve the precise contractual meaning of capitalized terms (e.g., 'Confidential Information', 'Material Breach', 'Applicable Law'). Provide the contract_id and an optional term filter.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "contract_id": {
+                    "type": "string",
+                    "description": "Unique identifier of the contract (e.g. 'CNT-MAIN-2024')"
+                  },
+                  "term": {
+                    "type": "string",
+                    "description": "Optional specific term name to search for (e.g. 'Confidential Information', 'Material Breach')"
+                  }
+                },
+                "required": [
+                  "contract_id"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "annotation": "TOP-LEVEL FIELD: 'result.tools': Server returns JSON schema and prompt-engineered docstrings for 'get_clause' and 'get_definitions'.",
+      "host_model_boundary_note": "Host receives schemas and transforms them into OpenAI/Anthropic tool formats for the upcoming LLM call."
+    },
+    {
+      "timestamp": 1726588800.5,
+      "iso_time": "2026-09-17T16:20:00.500Z",
+      "direction": "client_to_server",
+      "server_id": "clause_server",
+      "message_type": "tools_call_request",
+      "raw_jsonrpc": {
+        "jsonrpc": "2.0",
+        "id": "call-001",
+        "method": "tools/call",
+        "params": {
+          "name": "get_clause",
+          "arguments": {
+            "contract_id": "CNT-MAIN-2024",
+            "clause_number": "8.1"
+          }
+        }
+      },
+      "annotation": "TOP-LEVEL FIELD: 'params': Contains the tool name ('get_clause') and parsed arguments ('contract_id': 'CNT-MAIN-2024', 'clause_number': '8.1') dispatched after LLM decided to invoke tool.",
+      "host_model_boundary_note": "Host invokes MCP Server tool after LLM emits a tool_call action."
+    },
+    {
+      "timestamp": 1726588800.55,
+      "iso_time": "2026-09-17T16:20:00.550Z",
+      "direction": "server_to_client",
+      "server_id": "clause_server",
+      "message_type": "tools_call_response",
+      "raw_jsonrpc": {
+        "jsonrpc": "2.0",
+        "id": "call-001",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "[CNT-MAIN-2024] Clause 8.1 - Aggregate Liability Cap (Type: limitation_of_liability)\nText: \"In no event shall either party's total aggregate liability arising out of or related to this Agreement exceed the total fees paid or payable by Customer in the twelve (12) months preceding the incident giving rise to liability.\""
+            }
+          ],
+          "isError": false
+        }
+      },
+      "annotation": "TOP-LEVEL FIELD: 'result.content': Server executes deterministic retrieval and returns the exact clause text with isError=false.",
+      "host_model_boundary_note": "MCP Server finishes execution. Host receives text, feeds it back to the LLM context for final answer synthesis."
+    }
+  ]
+}

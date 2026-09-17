@@ -1,0 +1,34 @@
+================================================================================
+TRACK F DELIVERABLE: ZERO-CODE AGENT HOST MODIFICATION (agent_diff.txt)
+================================================================================
+Task: Connect Host Agent to Server 2 (Contract Repository Server) in addition to Server 1.
+Result: 0 lines of code modified in backend/app/agent/mcp_agent.py.
+
+--- BEGIN GIT DIFF OF backend/app/agent/mcp_agent.py ---
+(Empty diff - 0 lines modified)
+--- END GIT DIFF ---
+
+Config Diff (config/mcp_server1_only.json -> config/mcp_servers_all.json):
+--- config/mcp_server1_only.json
++++ config/mcp_servers_all.json
+@@ -9,4 +9,11 @@
+       "enabled": true,
+       "description": "Exposes semantic search and lookup for contract clauses and legal definitions."
+     }
++    {
++      "id": "repo_server",
++      "name": "Contract Repository & Metadata Server",
++      "endpoint": "in-process:repo_server",
++      "server_type": "in_process",
++      "module": "app.mcp.servers.repo_server",
++      "enabled": true,
++      "description": "Exposes repository metadata, amendment histories, and relationship tracking across contracts."
++    }
+   ]
+ }
+
+Summary of Tool Discovery Before vs After:
+- Server 1 Only: 2 tools discovered (get_clause, get_definitions)
+- Server 1 + Server 2: 4 tools discovered (get_clause, get_definitions, get_contract_metadata, get_amendment_chain)
+- Lines changed in Agent Host (backend/app/agent/mcp_agent.py): 0 lines.
+================================================================================
