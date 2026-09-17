@@ -1,7 +1,9 @@
 """
-10-Question Evaluation Dataset for Week 7 Practical (Track F - Legal Contracts).
-Contains direct clause lookups, multi-hop defined-term schedule resolutions,
-and circular budget-stress test cases.
+10-Question Evaluation Dataset for Week 7 & 8 Practical (Track F - Legal Contracts).
+Enriched with Week 8 Trajectory Ground Truths:
+- Allowed Tool Sequence Sets (supporting legitimate alternate paths)
+- Required definitions and clauses
+- Minimum necessary steps for Step Efficiency calculations
 """
 
 from typing import List, Dict, Any
@@ -14,6 +16,14 @@ RACE_DATASET: List[Dict[str, Any]] = [
         "expected_facts": ["90 days", "prior written notice", "Article 10.1"],
         "requires_multi_hop": False,
         "difficulty": "EASY",
+        "min_steps_needed": 1,
+        "allowed_tool_sequences": [
+            ["get_clause"],
+            ["get_clause", "get_effective_date_and_metadata"],
+        ],
+        "required_tools": ["get_clause"],
+        "required_clause_types": ["TERMINATION"],
+        "required_definitions": [],
         "ground_truth": "Under Article 10.1 of the Final Executed Agreement, termination for convenience requires ninety (90) days prior written notice."
     },
     {
@@ -23,6 +33,15 @@ RACE_DATASET: List[Dict[str, Any]] = [
         "expected_facts": ["12 month", "commitment period", "February 1, 2024"],
         "requires_multi_hop": False,
         "difficulty": "EASY",
+        "min_steps_needed": 1,
+        "allowed_tool_sequences": [
+            ["get_clause"],
+            ["get_clause", "get_effective_date_and_metadata"],
+            ["get_effective_date_and_metadata", "get_clause"],
+        ],
+        "required_tools": ["get_clause"],
+        "required_clause_types": ["TERMINATION"],
+        "required_definitions": [],
         "ground_truth": "The initial commitment period is twelve (12) months from the Effective Date (February 1, 2024)."
     },
     {
@@ -32,6 +51,13 @@ RACE_DATASET: List[Dict[str, Any]] = [
         "expected_facts": ["Delaware", "State of Delaware", "Article 14"],
         "requires_multi_hop": False,
         "difficulty": "EASY",
+        "min_steps_needed": 1,
+        "allowed_tool_sequences": [
+            ["get_clause"],
+        ],
+        "required_tools": ["get_clause"],
+        "required_clause_types": ["GOVERNING_LAW"],
+        "required_definitions": [],
         "ground_truth": "The agreement is governed by the laws of the State of Delaware per Article 14."
     },
     {
@@ -41,6 +67,13 @@ RACE_DATASET: List[Dict[str, Any]] = [
         "expected_facts": ["registered courier", "secure client portal", "Article 11"],
         "requires_multi_hop": False,
         "difficulty": "EASY",
+        "min_steps_needed": 1,
+        "allowed_tool_sequences": [
+            ["get_clause"],
+        ],
+        "required_tools": ["get_clause"],
+        "required_clause_types": ["NOTICE"],
+        "required_definitions": [],
         "ground_truth": "Notices must be delivered via registered courier or secure client portal per Article 11.1."
     },
     {
@@ -50,6 +83,16 @@ RACE_DATASET: List[Dict[str, Any]] = [
         "expected_facts": ["15 Business Days", "Schedule B-2", "30-day Cure Period"],
         "requires_multi_hop": True,
         "difficulty": "HARD",
+        "min_steps_needed": 2,
+        "allowed_tool_sequences": [
+            # Legitimate alternate paths: clause first then schedule definition OR definition first
+            ["get_clause", "get_definitions"],
+            ["get_definitions", "get_clause"],
+            ["get_clause", "get_definitions", "get_definitions"],
+        ],
+        "required_tools": ["get_clause", "get_definitions"],
+        "required_clause_types": ["TERMINATION"],
+        "required_definitions": ["SCHEDULE B-2"],
         "ground_truth": "Termination for Material Breach turns on Schedule B-2: 15 Business Days following expiration of the 30-day Cure Period."
     },
     {
@@ -59,6 +102,15 @@ RACE_DATASET: List[Dict[str, Any]] = [
         "expected_facts": ["30 days notice", "Change of Control", "Article 10.3"],
         "requires_multi_hop": True,
         "difficulty": "HARD",
+        "min_steps_needed": 1,
+        "allowed_tool_sequences": [
+            ["get_clause"],
+            ["get_clause", "get_definitions"],
+            ["get_definitions", "get_clause"],
+        ],
+        "required_tools": ["get_clause"],
+        "required_clause_types": ["TERMINATION"],
+        "required_definitions": [],
         "ground_truth": "Under Article 10.3, either party may terminate on thirty (30) days notice upon a Change of Control (>50% voting shares)."
     },
     {
@@ -68,6 +120,14 @@ RACE_DATASET: List[Dict[str, Any]] = [
         "expected_facts": ["60 days", "6 month", "Amendment No. 1"],
         "requires_multi_hop": True,
         "difficulty": "HARD",
+        "min_steps_needed": 1,
+        "allowed_tool_sequences": [
+            ["get_clause"],
+            ["get_clause", "get_effective_date_and_metadata"],
+        ],
+        "required_tools": ["get_clause"],
+        "required_clause_types": ["TERMINATION"],
+        "required_definitions": [],
         "ground_truth": "Under Amendment No. 1, termination for convenience required sixty (60) days notice after a six (6) month commitment."
     },
     {
@@ -77,6 +137,16 @@ RACE_DATASET: List[Dict[str, Any]] = [
         "expected_facts": ["30 calendar days", "15 Business Days", "Schedule B-2", "Cure Period"],
         "requires_multi_hop": True,
         "difficulty": "HARD",
+        "min_steps_needed": 2,
+        "allowed_tool_sequences": [
+            ["get_definitions", "get_definitions"],
+            ["get_clause", "get_definitions"],
+            ["get_definitions", "get_clause"],
+            ["get_clause", "get_definitions", "get_definitions"],
+        ],
+        "required_tools": ["get_definitions"],
+        "required_clause_types": [],
+        "required_definitions": ["CURE PERIOD", "SCHEDULE B-2"],
         "ground_truth": "Requires a 30 calendar day Cure Period followed by 15 Business Days written notice under Schedule B-2."
     },
     {
@@ -86,6 +156,14 @@ RACE_DATASET: List[Dict[str, Any]] = [
         "expected_facts": ["30 calendar days", "45 calendar days", "Original", "Amendment No. 1"],
         "requires_multi_hop": True,
         "difficulty": "HARD",
+        "min_steps_needed": 2,
+        "allowed_tool_sequences": [
+            ["get_definitions", "get_definitions"],
+            ["get_clause", "get_definitions", "get_definitions"],
+        ],
+        "required_tools": ["get_definitions"],
+        "required_clause_types": [],
+        "required_definitions": ["CURE PERIOD"],
         "ground_truth": "The Cure Period was 30 calendar days in the Original Agreement and was extended to 45 calendar days in Amendment No. 1."
     },
     {
@@ -95,6 +173,13 @@ RACE_DATASET: List[Dict[str, Any]] = [
         "expected_facts": ["CIRCULAR", "BUDGET_TERMINATION", "MAX_ITERATIONS"],
         "requires_multi_hop": True,
         "difficulty": "CIRCULAR_STRESS",
+        "min_steps_needed": 5,
+        "allowed_tool_sequences": [
+            ["get_definitions", "get_definitions", "get_definitions", "get_definitions", "get_definitions"],
+        ],
+        "required_tools": ["get_definitions"],
+        "required_clause_types": [],
+        "required_definitions": ["CIRCULAR TERM ALPHA"],
         "ground_truth": "Triggers circular definition chain (Alpha -> Beta -> Gamma -> Alpha) causing clean budget termination under MAX_ITERATIONS."
     }
 ]

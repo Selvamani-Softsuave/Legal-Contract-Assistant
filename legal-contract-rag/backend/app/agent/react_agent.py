@@ -281,6 +281,8 @@ class ReActAgent:
                     "lap": lap_num,
                     "thought": thought,
                     "action": "FINAL_ANSWER",
+                    "action_tool": None,
+                    "action_args": {},
                     "observation": "Finished.",
                     "lap_tokens": prompt_tokens + completion_tokens,
                 })
@@ -295,6 +297,8 @@ class ReActAgent:
                     "lap": lap_num,
                     "thought": llm_text,
                     "action": "NONE",
+                    "action_tool": None,
+                    "action_args": {},
                     "observation": "Direct Answer.",
                     "lap_tokens": prompt_tokens + completion_tokens,
                 })
@@ -313,6 +317,8 @@ class ReActAgent:
                 "lap": lap_num,
                 "thought": thought_text,
                 "action": f"{tool_name}({tool_args})",
+                "action_tool": tool_name,
+                "action_args": tool_args,
                 "observation": observation[:250] + "..." if len(observation) > 250 else observation,
                 "lap_tokens": prompt_tokens + completion_tokens,
             })

@@ -975,3 +975,397 @@
     }
   }
 }
+
+/* ─── Week 8 Trajectory Evaluation & Prompt Injection Styles ─────────────── */
+
+.w8-header {
+  border-left: 4px solid #6366f1;
+}
+
+.action-buttons-group {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+
+  .trajectory-btn {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    &:hover { background: linear-gradient(135deg, #4f46e5, #4338ca); }
+  }
+
+  .mitigation-btn {
+    background: linear-gradient(135deg, #059669, #047857);
+    &:hover { background: linear-gradient(135deg, #047857, #065f46); }
+  }
+
+  .injection-btn {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    &:hover { background: linear-gradient(135deg, #b91c1c, #991b1b); }
+  }
+}
+
+.trajectory-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+
+  .metric-box {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    .metric-label {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .metric-val {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #38bdf8;
+    }
+
+    .text-red {
+      color: #ef4444 !important;
+    }
+
+    .cost-val {
+      font-size: 1.15rem;
+      color: #10b981;
+    }
+
+    .metric-sub {
+      font-size: 0.74rem;
+      color: #64748b;
+    }
+
+    &.gap-card {
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      background: rgba(239, 68, 68, 0.06);
+    }
+  }
+}
+
+.wrong-path-alert {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+
+  .alert-icon {
+    font-size: 1.6rem;
+  }
+
+  .alert-content {
+    h4 {
+      margin: 0 0 0.35rem 0;
+      color: #fbbf24;
+      font-size: 0.95rem;
+    }
+    p {
+      margin: 0 0 0.35rem 0;
+      font-size: 0.82rem;
+      color: #cbd5e1;
+    }
+    .path-diff {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 0.5rem 0;
+      font-size: 0.8rem;
+      code {
+        background: #0f172a;
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        color: #f87171;
+      }
+    }
+    .explanation {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      font-style: italic;
+    }
+  }
+}
+
+.trajectory-split-view {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+
+  .half-table {
+    margin: 0;
+  }
+
+  .clickable-row {
+    cursor: pointer;
+    transition: background 0.15s ease;
+    &:hover { background: rgba(255, 255, 255, 0.04); }
+    &.active-row { background: rgba(56, 189, 248, 0.12); border-left: 3px solid #38bdf8; }
+  }
+
+  .inspector-card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    .inspector-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      h4 { margin: 0; font-size: 1rem; color: #f8fafc; }
+      .chip-status {
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        background: rgba(245, 158, 11, 0.15);
+        color: #fbbf24;
+        &.pass { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+      }
+    }
+
+    .inspector-q {
+      margin: 0;
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+
+    .steps-inspector-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      max-height: 380px;
+      overflow-y: auto;
+
+      .step-audit-item {
+        background: #0f172a;
+        border: 1px solid #334155;
+        border-radius: 6px;
+        padding: 0.65rem 0.85rem;
+        display: flex;
+        gap: 0.75rem;
+        font-size: 0.8rem;
+
+        .step-num-badge {
+          background: #334155;
+          color: #f1f5f9;
+          padding: 0.2rem 0.45rem;
+          border-radius: 4px;
+          font-weight: 700;
+          font-size: 0.72rem;
+          height: fit-content;
+        }
+
+        .step-audit-details {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+
+          .tool-audit-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            code { color: #38bdf8; font-weight: 600; }
+            .arg-check {
+              font-size: 0.72rem;
+              color: #ef4444;
+              &.valid { color: #10b981; }
+            }
+          }
+
+          .args-view code {
+            font-size: 0.74rem;
+            color: #a78bfa;
+          }
+
+          .invalid-reason {
+            font-size: 0.74rem;
+            color: #fbbf24;
+          }
+        }
+      }
+    }
+  }
+}
+
+.mitigation-results-box {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .mitigation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    h3 { margin: 0; font-size: 1.05rem; color: #f8fafc; }
+    .mit-tag {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+  }
+
+  .mitigation-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.85rem;
+
+    .mit-stat {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+
+      .stat-title { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; font-weight: 600; }
+      .stat-val { font-size: 1.2rem; font-weight: 700; color: #38bdf8; }
+      small { font-size: 0.72rem; color: #64748b; }
+    }
+  }
+
+  .regression-section {
+    h4 { margin: 0 0 0.5rem 0; font-size: 0.9rem; color: #cbd5e1; }
+    .regression-table {
+      margin: 0;
+      .status-pill.info { background: rgba(100, 116, 139, 0.2); color: #94a3b8; }
+    }
+  }
+}
+
+/* Prompt Injection Styles */
+.injection-header {
+  border-left: 4px solid #ef4444;
+}
+
+.attack-payload-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+
+  .payload-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #ef4444;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .payload-text {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 0.75rem;
+    color: #f87171;
+    font-size: 0.78rem;
+    margin: 0.5rem 0 0 0;
+    white-space: pre-wrap;
+  }
+}
+
+.injection-comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+
+  .inj-card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    .inj-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      h4 { margin: 0; font-size: 0.95rem; color: #f8fafc; flex: 1; }
+    }
+
+    .inj-sub {
+      margin: 0;
+      font-size: 0.78rem;
+      color: #94a3b8;
+    }
+
+    .output-box {
+      background: #0f172a;
+      padding: 0.85rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      line-height: 1.4;
+      &.red-border { border-left: 3px solid #ef4444; color: #fca5a5; }
+      &.green-border { border-left: 3px solid #10b981; color: #86efac; }
+    }
+
+    .expl-text {
+      margin: 0;
+      font-size: 0.75rem;
+      color: #ef4444;
+      font-style: italic;
+    }
+
+    .interceptions-list {
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      ul {
+        margin: 0.25rem 0 0 1.2rem;
+        padding: 0;
+        li { color: #38bdf8; font-size: 0.74rem; margin-bottom: 0.2rem; }
+      }
+    }
+
+    .guardrail-price {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.76rem;
+      color: #94a3b8;
+      border-top: 1px solid #334155;
+      padding-top: 0.5rem;
+      strong { color: #f8fafc; }
+    }
+  }
+}
+

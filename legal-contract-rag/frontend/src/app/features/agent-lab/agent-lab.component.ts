@@ -6,7 +6,11 @@ import {
     AgentQueryResponse,
     RaceDatasetItem,
     RaceRunResponse,
-    ToolDefinition
+    ToolDefinition,
+    TrajectoryEvaluationResponse,
+    TrajectoryCaseResult,
+    MitigationBenchmarkResponse,
+    InjectionAttackResponse
 } from '../../core/models';
 
 @Component({
@@ -17,7 +21,7 @@ import {
     styleUrls: ['./agent-lab.component.scss']
 })
 export class AgentLabComponent implements OnInit {
-    activeSubTab: 'playground' | 'race' | 'tools' = 'playground';
+    activeSubTab: 'playground' | 'race' | 'trajectory' | 'injection' | 'tools' = 'playground';
     
     // Playground Form
     question: string = 'What is the exact notice deadline for termination for Material Breach under the Final Executed Agreement?';
@@ -36,6 +40,18 @@ export class AgentLabComponent implements OnInit {
     raceResponse: RaceRunResponse | null = null;
     tools: ToolDefinition[] = [];
     errorMessage: string | null = null;
+
+    // ─── Week 8 Trajectory Evaluation & Prompt Injection States ───────────────
+    isTrajectoryRunning: boolean = false;
+    trajectoryResponse: TrajectoryEvaluationResponse | null = null;
+    selectedTrajectoryCase: TrajectoryCaseResult | null = null;
+
+    isMitigationRunning: boolean = false;
+    mitigationResponse: MitigationBenchmarkResponse | null = null;
+
+    isInjectionRunning: boolean = false;
+    injectionQuestion: string = 'Under what conditions can the agreement be terminated?';
+    injectionResponse: InjectionAttackResponse | null = null;
 
     constructor(private agentService: AgentService) {}
 
@@ -101,6 +117,63 @@ export class AgentLabComponent implements OnInit {
             error: (err) => {
                 this.errorMessage = err.error?.detail || err.message || 'Failed to run race benchmark';
                 this.isRaceRunning = false;
+            }
+        });
+    }
+
+    // ─── Week 8 Trajectory Evaluation Handlers ────────────────────────────────
+
+    runTrajectoryEval(): void {
+        this.isTrajectoryRunning = true;
+        this.errorMessage = null;
+
+        this.agentService.runTrajectoryEval().subscribe({
+            next: (res) => {
+                this.trajectoryResponse = res;
+                if (res.cases && res.cases.length > 0) {
+                    this.selectedTrajectoryCase = res.top_right_answer_wrong_path_case || res.cases[0];
+                }
+                this.isTrajectoryRunning = false;
+            },
+            error: (err) => {
+                this.errorMessage = err.error?.detail || err.message || 'Failed to run trajectory evaluation';
+                this.isTrajectoryRunning = false;
+            }
+        });
+    }
+
+    selectTrajectoryCase(c: TrajectoryCaseResult): void {
+        this.selectedTrajectoryCase = c;
+    }
+
+    runMitigationBenchmark(): void {
+        this.isMitigationRunning = true;
+        this.errorMessage = null;
+
+        this.agentService.runMitigationBenchmark().subscribe({
+            next: (res) => {
+                this.mitigationResponse = res;
+                this.isMitigationRunning = false;
+            },
+            error: (err) => {
+                this.errorMessage = err.error?.detail || err.message || 'Failed to run mitigation benchmark';
+                this.isMitigationRunning = false;
+            }
+        });
+    }
+
+    runInjectionTest(): void {
+        this.isInjectionRunning = true;
+        this.errorMessage = null;
+
+        this.agentService.runInjectionSimulation(this.injectionQuestion).subscribe({
+            next: (res) => {
+                this.injectionResponse = res;
+                this.isInjectionRunning = false;
+            },
+            error: (err) => {
+                this.errorMessage = err.error?.detail || err.message || 'Failed to run injection test';
+                this.isInjectionRunning = false;
             }
         });
     }

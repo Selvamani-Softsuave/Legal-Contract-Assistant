@@ -6,7 +6,10 @@ import {
     AgentQueryResponse,
     RaceDatasetItem,
     RaceRunResponse,
-    ToolDefinition
+    ToolDefinition,
+    TrajectoryEvaluationResponse,
+    MitigationBenchmarkResponse,
+    InjectionAttackResponse
 } from '../models';
 
 @Injectable({
@@ -31,5 +34,19 @@ export class AgentService {
 
     runRace(useLiveLlm: boolean = false): Observable<RaceRunResponse> {
         return this.http.post<RaceRunResponse>(`${this.apiUrl}/run-race?use_live_llm=${useLiveLlm}`, {});
+    }
+
+    // ─── Week 8 Endpoints ────────────────────────────────────────────────────
+
+    runTrajectoryEval(): Observable<TrajectoryEvaluationResponse> {
+        return this.http.get<TrajectoryEvaluationResponse>(`${this.apiUrl}/trajectory-eval`);
+    }
+
+    runMitigationBenchmark(): Observable<MitigationBenchmarkResponse> {
+        return this.http.post<MitigationBenchmarkResponse>(`${this.apiUrl}/mitigation-benchmark`, {});
+    }
+
+    runInjectionSimulation(question: string = 'Under what conditions can the agreement be terminated?'): Observable<InjectionAttackResponse> {
+        return this.http.post<InjectionAttackResponse>(`${this.apiUrl}/injection-attack?question=${encodeURIComponent(question)}`, {});
     }
 }

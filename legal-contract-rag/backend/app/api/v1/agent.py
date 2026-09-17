@@ -7,12 +7,19 @@ from backend.app.schemas.agent import (
     AgentQueryRequest, AgentQueryResponse,
     ReActResultDTO, AgentTraceStepDTO, BudgetStatusDTO,
     WorkflowResultDTO, FixedWorkflowStepDTO, ComparisonSummaryDTO,
-    RaceDatasetItemDTO, RaceItemResultDTO, RaceRunResponse
+    RaceDatasetItemDTO, RaceItemResultDTO, RaceRunResponse,
+    TrajectoryEvaluationResponse, TrajectoryCaseResultDTO,
+    TrajectoryStepAnalysisDTO, CostVarianceDTO, LatencyVarianceDTO,
+    MitigationBenchmarkResponse, RegressionRowDTO, MitigationPricePaidDTO,
+    InjectionAttackResponse
 )
 from backend.app.agent.react_agent import ReActAgent
 from backend.app.agent.fixed_workflow import FixedDeterministicWorkflow
 from backend.app.agent.dataset import RACE_DATASET
 from backend.app.agent.tools import TOOL_DEFINITIONS
+from backend.app.agent.trajectory_eval import TrajectoryEvaluator
+from backend.app.agent.mitigation import MitigationBenchmarkRunner, MitigatedReActAgent
+from backend.app.agent.injection_guard import PromptInjectionTestHarness
 from backend.app.llm.factory import LLMProviderFactory
 
 logger = logging.getLogger("agent_api")
@@ -290,3 +297,158 @@ async def run_race_benchmark(use_live_llm: bool = False):
         results=results,
         verdict=DECISION_RULE_VERDICT
     )
+
+
+# ─── Week 8 Endpoints: Trajectory Evals, Mitigation, & Prompt Injection ────────
+
+@router.get("/trajectory-eval", response_model=TrajectoryEvaluationResponse)
+async def run_trajectory_evaluation():
+    """
+    Executes all 10 benchmark questions against the ReAct agent,
+    evaluating trajectory validity against expected sequence sets,
+    computing the 4 trajectory metrics (including p50 & max cost),
+    and quantifying the Outcome-vs-Trajectory Gap.
+    """
+    agent = ReActAgent()
+    case_results: List[TrajectoryCaseResultDTO] = []
+    raw_eval_results = []
+    top_right_wrong_case: Optional[TrajectoryCaseResultDTO] = None
+
+    for case in RACE_DATASET:
+        t0 = time.perf_counter()
+        res = await agent.run(question=case["question"], contract_id="CNT-MAIN")
+        lat = time.perf_counter() - t0
+
+        budget_info = res.get("metrics") or res.get("budget", {})
+        toks = budget_info.get("cumulative_total_tokens") or budget_info.get("total_tokens", 0)
+        cost = budget_info.get("cumulative_cost_usd") or budget_info.get("total_cost_usd", 0.0)
+        trace = res.get("trace", [])
+        ans = res.get("answer") or res.get("final_answer", "")
+
+        if case["category"] == "BUDGET_STRESS_CIRCULAR":
+            outcome_pass = "BUDGET_TERMINATION" in ans or "MAX_ITERATIONS" in ans or budget_info.get("budget_exceeded") is not None
+        else:
+            outcome_pass = any(fact.lower() in ans.lower() for fact in case["expected_facts"])
+
+        eval_res = TrajectoryEvaluator.evaluate_case_trajectory(
+            case_data=case,
+            actual_trace_steps=trace,
+            outcome_passed=outcome_pass,
+            latency_seconds=lat,
+            total_tokens=toks,
+            cost_usd=cost,
+        )
+        raw_eval_results.append(eval_res)
+
+        case_dto = TrajectoryCaseResultDTO(
+            case_id=eval_res.case_id,
+            question=eval_res.question,
+            outcome_passed=eval_res.outcome_passed,
+            trajectory_passed=eval_res.trajectory_passed,
+            is_right_answer_wrong_path=eval_res.is_right_answer_wrong_path,
+            actual_sequence=eval_res.actual_sequence,
+            allowed_sequences=eval_res.allowed_sequences,
+            tool_choice_accuracy=eval_res.tool_choice_accuracy,
+            argument_validity_rate=eval_res.argument_validity_rate,
+            step_efficiency=eval_res.step_efficiency,
+            latency_seconds=eval_res.latency_seconds,
+            total_tokens=eval_res.total_tokens,
+            cost_usd=eval_res.cost_usd,
+            detected_failure_modes=[m.value for m in eval_res.detected_failure_modes],
+            step_details=[
+                TrajectoryStepAnalysisDTO(
+                    lap=s.lap,
+                    tool_called=s.tool_called,
+                    args=s.args,
+                    is_tool_legitimate=s.is_tool_legitimate,
+                    are_args_valid=s.are_args_valid,
+                    invalid_arg_reason=s.invalid_arg_reason,
+                    failure_mode=s.failure_mode.value
+                )
+                for s in eval_res.step_details
+            ],
+            notes=eval_res.notes
+        )
+        case_results.append(case_dto)
+
+        if eval_res.is_right_answer_wrong_path and top_right_wrong_case is None:
+            top_right_wrong_case = case_dto
+
+    agg = TrajectoryEvaluator.calculate_aggregate_metrics(raw_eval_results)
+
+    return TrajectoryEvaluationResponse(
+        total_cases=agg["total_cases"],
+        outcome_pass_rate_pct=agg["outcome_pass_rate_pct"],
+        trajectory_pass_rate_pct=agg["trajectory_pass_rate_pct"],
+        outcome_vs_trajectory_gap_pct=agg["outcome_vs_trajectory_gap_pct"],
+        right_answer_wrong_path_count=agg["right_answer_wrong_path_count"],
+        tool_choice_accuracy_pct=agg["tool_choice_accuracy_pct"],
+        argument_validity_rate_pct=agg["argument_validity_rate_pct"],
+        step_efficiency=agg["step_efficiency"],
+        cost_usd=CostVarianceDTO(
+            mean=agg["cost_usd"]["mean"],
+            p50=agg["cost_usd"]["p50"],
+            max=agg["cost_usd"]["max"],
+            total=agg["cost_usd"]["total"]
+        ),
+        latency_seconds=LatencyVarianceDTO(
+            p50=agg["latency_seconds"]["p50"],
+            max=agg["latency_seconds"]["max"]
+        ),
+        total_tokens_sum=agg["total_tokens_sum"],
+        failure_mode_counts=agg["failure_mode_counts"],
+        cases=case_results,
+        top_right_answer_wrong_path_case=top_right_wrong_case
+    )
+
+
+@router.post("/mitigation-benchmark", response_model=MitigationBenchmarkResponse)
+async def run_mitigation_benchmark():
+    """
+    Races Baseline Agent vs Single-Mitigated Agent (Pre-Execution Argument Guardrail),
+    reporting Top Mode Before -> After count and empirical Price Paid.
+    """
+    comp_data = await MitigationBenchmarkRunner.run_comparison()
+    return MitigationBenchmarkResponse(
+        mitigation_applied=comp_data["mitigation_applied"],
+        top_failure_mode=comp_data["top_failure_mode"],
+        top_mode_count_before=comp_data["top_mode_count_before"],
+        top_mode_count_after=comp_data["top_mode_count_after"],
+        price_paid=MitigationPricePaidDTO(
+            added_p50_latency_seconds=comp_data["price_paid"]["added_p50_latency_seconds"],
+            added_cumulative_tokens=comp_data["price_paid"]["added_cumulative_tokens"],
+            added_cost_per_question_usd=comp_data["price_paid"]["added_cost_per_question_usd"],
+        ),
+        baseline_summary=comp_data["baseline_summary"],
+        mitigated_summary=comp_data["mitigated_summary"],
+        regression_table=[
+            RegressionRowDTO(
+                failure_mode=r["failure_mode"],
+                before_count=r["before_count"],
+                after_count=r["after_count"],
+                status=r["status"]
+            )
+            for r in comp_data["regression_table"]
+        ]
+    )
+
+
+@router.post("/injection-attack", response_model=InjectionAttackResponse)
+def run_injection_simulation(question: str = "Under what conditions can the agreement be terminated?"):
+    """
+    Tests indirect prompt injection attack payload against unprotected vs tri-layer defended agent.
+    """
+    result = PromptInjectionTestHarness.run_injection_simulation(question=question)
+    return InjectionAttackResponse(
+        attack_payload=result.attack_payload,
+        target_question=result.target_question,
+        unprotected_response=result.unprotected_response,
+        unprotected_hijacked=result.unprotected_hijacked,
+        defended_response=result.defended_response,
+        defended_hijacked=result.defended_hijacked,
+        defense_interceptions=result.defense_interceptions,
+        guardrail_latency_ms=result.guardrail_latency_ms,
+        guardrail_overhead_tokens=result.guardrail_overhead_tokens,
+        security_verdict=result.security_verdict,
+    )
+
