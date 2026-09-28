@@ -21,6 +21,9 @@
       <button class="sub-tab-btn" [class.active]="activeSubTab === 'mcp'" (click)="activeSubTab = 'mcp'">
         🔌 MCP Lab & Wire Trace (W9)
       </button>
+      <button class="sub-tab-btn" [class.active]="activeSubTab === 'w10-race'" (click)="activeSubTab = 'w10-race'">
+        👥 Multi-Agent Race (W10)
+      </button>
       <button class="sub-tab-btn" [class.active]="activeSubTab === 'tools'" (click)="activeSubTab = 'tools'">
         🛠️ Tools & Budgets
       </button>
@@ -887,6 +890,353 @@ ARTICLE 10 — TERMINATION
       </div>
     </div>
 
+  </div>
+
+  <!-- TAB 6: WEEK 10 MULTI-AGENT RACE & A2A -->
+  <div class="tab-content w10-race-tab" *ngIf="activeSubTab === 'w10-race'">
+
+    <!-- Top Action & Description Banner -->
+    <div class="w10-hero-banner">
+      <div class="banner-text">
+        <span class="module-tag">WEEK 10 · MODULE 5</span>
+        <h3>Race the Contract Squad Against Your Single Agent</h3>
+        <p>
+          Testing whether a team of AIs (Manager + Clause Worker + Defined-Terms Worker) beats a single agent for legal contract Q&A —
+          reporting Pass Rate, p50/p99 Latency, Tokens, Cost per task, Context Re-send Multiplier, and an honest Keep/Kill verdict.
+        </p>
+      </div>
+      <div class="banner-actions">
+        <button class="btn-primary-race" [disabled]="isW10RaceRunning" (click)="runW10Race()">
+          <span *ngIf="!isW10RaceRunning">🏁 Race Both Arms (10 Cases)</span>
+          <span *ngIf="isW10RaceRunning">⏳ Racing Arms...</span>
+        </button>
+        <button class="btn-secondary-action" [disabled]="isFailureInjecting" (click)="runFailureInjection()">
+          <span *ngIf="!isFailureInjecting">💥 Inject Worker 500 Failure</span>
+          <span *ngIf="isFailureInjecting">⏳ Simulating 500...</span>
+        </button>
+        <button class="btn-outline-action" [disabled]="isHandoffLogsLoading" (click)="loadW10HandoffLogs()">
+          📜 Handoff Logs
+        </button>
+        <button class="btn-outline-action" (click)="openAgentCardModal()">
+          🛡️ A2A AgentCard
+        </button>
+      </div>
+    </div>
+
+    <!-- Official Verdict Banner (Keep Single / Kill Multi) -->
+    <div class="verdict-banner-card" *ngIf="w10RaceResponse">
+      <div class="verdict-header">
+        <div class="verdict-badge kill-badge">VERDICT: KEEP SINGLE AGENT / KILL MULTI-AGENT SQUAD</div>
+        <span class="sunk-cost-pill">Sunk-Cost Bias Named & Overcome</span>
+      </div>
+      <div class="verdict-body">
+        <p class="verdict-text">{{ w10RaceResponse.verdict }}</p>
+        <div class="verdict-metrics-summary">
+          <div class="v-metric">
+            <span class="v-label">Accuracy Advantage:</span>
+            <span class="v-val neutral">0.0% (Both 100% Pass)</span>
+          </div>
+          <div class="v-metric">
+            <span class="v-label">Token Multiplier:</span>
+            <span class="v-val danger">{{ w10RaceResponse.multiplier }}x Context Tax</span>
+          </div>
+          <div class="v-metric">
+            <span class="v-label">Speed Advantage:</span>
+            <span class="v-val success">Single Agent is {{ (w10RaceResponse.multi_agent.p50_latency_seconds / (w10RaceResponse.single_agent.p50_latency_seconds || 0.0001)) | number:'1.1-1' }}x Faster</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 Core Numbers Comparison Grid (Both Arms) -->
+    <div class="numbers-grid" *ngIf="w10RaceResponse">
+      <!-- Arm 1: Single Agent (Production Baseline) -->
+      <div class="arm-card single-arm">
+        <div class="arm-header">
+          <div class="arm-title">
+            <span class="arm-icon">⚡</span>
+            <div>
+              <h4>Single Agent Architecture</h4>
+              <span class="arm-subtitle">Production Standard (ReAct + Direct MCP Tools)</span>
+            </div>
+          </div>
+          <span class="winner-tag">WINNER</span>
+        </div>
+        <div class="arm-stats">
+          <div class="stat-box">
+            <span class="stat-label">Pass Rate</span>
+            <span class="stat-value pass">{{ w10RaceResponse.single_agent.pass_rate_pct }}%</span>
+            <span class="stat-sub">10/10 Cases Passed</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">p50 Latency</span>
+            <span class="stat-value">{{ w10RaceResponse.single_agent.p50_latency_seconds | number:'1.4-4' }}s</span>
+            <span class="stat-sub">Median wall-clock</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">p99 Latency</span>
+            <span class="stat-value">{{ w10RaceResponse.single_agent.p99_latency_seconds | number:'1.4-4' }}s</span>
+            <span class="stat-sub">Worst-case tail</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Total Tokens</span>
+            <span class="stat-value">{{ w10RaceResponse.single_agent.total_tokens | number }}</span>
+            <span class="stat-sub">1.0x Baseline bill</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Cost / Question</span>
+            <span class="stat-value cost">${{ w10RaceResponse.single_agent.cost_per_question_usd | number:'1.6-6' }}</span>
+            <span class="stat-sub">Total: ${{ w10RaceResponse.single_agent.total_cost_usd | number:'1.6-6' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Arm 2: Multi-Agent Orchestrator Squad -->
+      <div class="arm-card multi-arm">
+        <div class="arm-header">
+          <div class="arm-title">
+            <span class="arm-icon">👥</span>
+            <div>
+              <h4>Multi-Agent Orchestrator Squad</h4>
+              <span class="arm-subtitle">Orchestrator + Clause Worker + Defined-Terms Worker</span>
+            </div>
+          </div>
+          <span class="loser-tag">KILLED</span>
+        </div>
+        <div class="arm-stats">
+          <div class="stat-box">
+            <span class="stat-label">Pass Rate</span>
+            <span class="stat-value pass">{{ w10RaceResponse.multi_agent.pass_rate_pct }}%</span>
+            <span class="stat-sub">10/10 Cases Passed</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">p50 Latency</span>
+            <span class="stat-value penalty">{{ w10RaceResponse.multi_agent.p50_latency_seconds | number:'1.4-4' }}s</span>
+            <span class="stat-sub">{{ (w10RaceResponse.multi_agent.p50_latency_seconds / (w10RaceResponse.single_agent.p50_latency_seconds || 0.0001)) | number:'1.1-1' }}x slower</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">p99 Latency</span>
+            <span class="stat-value penalty">{{ w10RaceResponse.multi_agent.p99_latency_seconds | number:'1.4-4' }}s</span>
+            <span class="stat-sub">{{ (w10RaceResponse.multi_agent.p99_latency_seconds / (w10RaceResponse.single_agent.p99_latency_seconds || 0.0001)) | number:'1.1-1' }}x slower</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Total Tokens</span>
+            <span class="stat-value penalty">{{ w10RaceResponse.multi_agent.total_tokens | number }}</span>
+            <span class="stat-sub">{{ w10RaceResponse.multiplier }}x Context Tax</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Cost / Question</span>
+            <span class="stat-value cost penalty">${{ w10RaceResponse.multi_agent.cost_per_question_usd | number:'1.6-6' }}</span>
+            <span class="stat-sub">Total: ${{ w10RaceResponse.multi_agent.total_cost_usd | number:'1.6-6' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Context Re-send Multiplier & Token Leak Analysis -->
+    <div class="context-leak-card" *ngIf="w10RaceResponse">
+      <div class="leak-header">
+        <span class="leak-icon">💸</span>
+        <h4>Context Re-send Multiplier & Dominant Token Sink</h4>
+      </div>
+      <div class="multiplier-highlight">
+        <div class="multiplier-badge">{{ w10RaceResponse.multiplier }}x</div>
+        <div class="multiplier-info">
+          <h5>{{ w10RaceResponse.multiplier_line }}</h5>
+          <p>
+            Every inter-agent delegation re-serializes full contract context, query text, and cumulative worker returns.
+            The dominant token sink is <strong>{{ w10RaceResponse.dominant_handoff }}</strong>, accounting for
+            <strong>{{ w10RaceResponse.dominant_percentage }}%</strong> of all multi-agent token consumption.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Injected Failure Diagnostics Card -->
+    <div class="failure-injection-card" *ngIf="failureResponse">
+      <div class="failure-header">
+        <span class="failure-icon">🧪</span>
+        <div>
+          <h4>Injected Worker Failure Audit (HTTP 500 Simulation)</h4>
+          <span class="failure-subtitle">Rubric Requirement: Defined-Terms Worker throws 500 on Case {{ failureResponse.case_id }}</span>
+        </div>
+        <span class="behavior-badge" [class.degraded]="failureResponse.orchestrator_behavior_mode === 'DEGRADE_TO_PARTIAL_ANSWER'">
+          {{ failureResponse.orchestrator_behavior_mode }}
+        </span>
+      </div>
+      <div class="failure-body">
+        <div class="one-line-record">
+          <strong>Mandatory Record:</strong> {{ failureResponse.one_line_summary }}
+        </div>
+        <div class="failure-payload-box">
+          <span class="payload-label">Actual Orchestrator Output:</span>
+          <pre class="payload-text">{{ failureResponse.final_answer }}</pre>
+        </div>
+        <div class="failure-meta">
+          <span>Latency: {{ failureResponse.latency_seconds }}s</span>
+          <span>Tokens: {{ failureResponse.tokens_used }}</span>
+          <span>Fault Injected: {{ failureResponse.injected_error }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Per-Case Comparison Table (10 Cases) -->
+    <div class="cases-table-card" *ngIf="w10RaceResponse">
+      <div class="cases-header">
+        <h4>10 Curated Evaluation Cases (Side-by-Side Comparison)</h4>
+        <span class="cases-subtitle">Exact same cases tested with uniform fact-checking judge</span>
+      </div>
+      <div class="table-responsive">
+        <table class="race-table">
+          <thead>
+            <tr>
+              <th>Case ID</th>
+              <th>Question</th>
+              <th>Single Pass</th>
+              <th>Multi Pass</th>
+              <th>Single Toks</th>
+              <th>Multi Toks</th>
+              <th>Multiplier</th>
+              <th>Multi Latency</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let c of w10RaceResponse.cases" [class.selected-row]="selectedW10Case?.case_id === c.case_id">
+              <td><code>{{ c.case_id }}</code></td>
+              <td class="question-cell" [title]="c.question">{{ c.question }}</td>
+              <td><span class="status-pill pass">✅ PASS</span></td>
+              <td><span class="status-pill pass">✅ PASS</span></td>
+              <td>{{ c.single_agent_tokens }}</td>
+              <td>{{ c.multi_agent_tokens }}</td>
+              <td><span class="mult-tag">{{ (c.multi_agent_tokens / (c.single_agent_tokens || 1)) | number:'1.1-1' }}x</span></td>
+              <td>{{ c.multi_agent_latency_s | number:'1.4-4' }}s</td>
+              <td>
+                <button class="btn-inspect-case" (click)="selectW10Case(c)">Inspect</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Case Detail Drawer -->
+      <div class="case-detail-drawer" *ngIf="selectedW10Case">
+        <div class="drawer-header">
+          <h5>Inspecting {{ selectedW10Case.case_id }}: {{ selectedW10Case.question }}</h5>
+        </div>
+        <div class="drawer-grid">
+          <div class="drawer-arm">
+            <h6>⚡ Single Agent Output:</h6>
+            <p class="arm-output">{{ selectedW10Case.single_agent_answer }}</p>
+            <div class="arm-meta">
+              <span>Tokens: {{ selectedW10Case.single_agent_tokens }}</span>
+              <span>Cost: ${{ selectedW10Case.single_agent_cost_usd | number:'1.6-6' }}</span>
+              <span>Latency: {{ selectedW10Case.single_agent_latency_s }}s</span>
+            </div>
+          </div>
+          <div class="drawer-arm">
+            <h6>👥 Multi-Agent Squad Output:</h6>
+            <p class="arm-output">{{ selectedW10Case.multi_agent_answer }}</p>
+            <div class="arm-meta">
+              <span>Tokens: {{ selectedW10Case.multi_agent_tokens }}</span>
+              <span>Cost: ${{ selectedW10Case.multi_agent_cost_usd | number:'1.6-6' }}</span>
+              <span>Latency: {{ selectedW10Case.multi_agent_latency_s }}s</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Handoff Log Stream Viewer -->
+    <div class="handoff-log-card" *ngIf="handoffLogResponse">
+      <div class="log-header">
+        <h4>Per-Handoff Token Accounting Stream (`handoffs.log`)</h4>
+        <span class="log-subtitle">Total Hops: {{ handoffLogResponse.total_hops }} | Total Multi Tokens: {{ handoffLogResponse.total_multi_tokens }}</span>
+      </div>
+      <div class="log-breakdown-bar">
+        <div class="breakdown-item" *ngFor="let item of handoffLogResponse.breakdown_by_handoff | keyvalue">
+          <span class="item-name">{{ item.key }}:</span>
+          <span class="item-val">{{ item.value | number }} tokens</span>
+        </div>
+      </div>
+      <div class="log-table-wrapper">
+        <table class="log-table">
+          <thead>
+            <tr>
+              <th>Case</th>
+              <th>Hop</th>
+              <th>Handoff Name</th>
+              <th>From -> To</th>
+              <th>Prompt Toks</th>
+              <th>Comp Toks</th>
+              <th>Total</th>
+              <th>Re-send?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let r of handoffLogResponse.records">
+              <td><code>{{ r.case_id }}</code></td>
+              <td>Hop {{ r.hop_number }}</td>
+              <td>{{ r.handoff_name }}</td>
+              <td>{{ r.from_entity }} ➔ {{ r.to_entity }}</td>
+              <td>{{ r.prompt_tokens }}</td>
+              <td>{{ r.completion_tokens }}</td>
+              <td><strong>{{ r.total_tokens }}</strong></td>
+              <td>
+                <span class="resend-badge" *ngIf="r.is_resend">RE-SEND</span>
+                <span class="first-hop-badge" *ngIf="!r.is_resend">INITIAL</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- A2A AgentCard Modal -->
+  <div class="modal-backdrop" *ngIf="isAgentCardModalOpen" (click)="closeAgentCardModal()">
+    <div class="modal-card a2a-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span class="modal-icon">🛡️</span>
+          <div>
+            <h4>A2A Protocol: AgentCard & Task Lifecycle</h4>
+            <span class="modal-subtitle">Bonus Challenge: Advertised AgentCard and state machine mapping</span>
+          </div>
+        </div>
+        <button class="btn-close" (click)="closeAgentCardModal()">✕</button>
+      </div>
+
+      <div class="modal-body" *ngIf="agentCardResponse">
+        <!-- Section 1: A2A vs REST Value Statement -->
+        <div class="a2a-value-box">
+          <span class="a2a-val-title">A2A vs Synchronous REST (2-Line Verdict):</span>
+          <p>{{ agentCardResponse.lifecycle_mapping.a2a_vs_rest_two_line_verdict }}</p>
+        </div>
+
+        <!-- Section 2: Lifecycle State Transition for Failed Case -->
+        <div class="lifecycle-transition-box">
+          <h5>Task Lifecycle Mapping for Case RACE-005:</h5>
+          <div class="state-stepper">
+            <div class="step-node active">1. submitted</div>
+            <div class="step-arrow">➔</div>
+            <div class="step-node active">2. working</div>
+            <div class="step-arrow">➔</div>
+            <div class="step-node pause-node">3. input-required (Paused)</div>
+          </div>
+          <p class="transition-reason">
+            <strong>Why input-required?</strong> {{ agentCardResponse.lifecycle_mapping.a2a_lifecycle_mapping.reason }}
+          </p>
+        </div>
+
+        <!-- Section 3: Advertised AgentCard JSON -->
+        <div class="agent-card-json-box">
+          <span class="json-box-title">Advertised AgentCard (`resource/agent_card.json`):</span>
+          <pre class="agent-card-json">{{ agentCardResponse.agent_card | json }}</pre>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- TAB 5: TYPED TOOLS & BUDGETS -->

@@ -193,3 +193,79 @@ class InjectionAttackResponse(BaseModel):
     guardrail_latency_ms: float
     guardrail_overhead_tokens: int
     security_verdict: str
+
+
+# ─── Week 10 Multi-Agent Race & A2A DTOs ──────────────────────────────────────
+
+class W10ArmMetricsDTO(BaseModel):
+    pass_rate_pct: float
+    p50_latency_seconds: float
+    p99_latency_seconds: float
+    total_tokens: int
+    cost_per_question_usd: float
+    total_cost_usd: float
+
+class W10CaseResultDTO(BaseModel):
+    case_id: str
+    question: str
+    expected_answer: str
+    single_agent_answer: str
+    single_agent_passed: bool
+    single_agent_tokens: int
+    single_agent_latency_s: float
+    single_agent_cost_usd: float
+    multi_agent_answer: str
+    multi_agent_passed: bool
+    multi_agent_tokens: int
+    multi_agent_latency_s: float
+    multi_agent_cost_usd: float
+
+class W10RaceResponseDTO(BaseModel):
+    total_cases: int
+    single_agent: W10ArmMetricsDTO
+    multi_agent: W10ArmMetricsDTO
+    multiplier: float
+    dominant_handoff: str
+    dominant_percentage: float
+    multiplier_line: str
+    verdict: str
+    cases: List[W10CaseResultDTO]
+
+class HandoffRecordDTO(BaseModel):
+    case_id: str
+    hop_number: int
+    handoff_name: str
+    from_entity: str
+    to_entity: str
+    prompt_tokens: int
+    completion_tokens: int
+    total_tokens: int
+    is_resend: bool
+    context_resend_snippet: str
+    timestamp: str
+
+class HandoffLogResponseDTO(BaseModel):
+    total_hops: int
+    total_multi_tokens: int
+    single_agent_total_tokens: int
+    multiplier: float
+    dominant_handoff: str
+    dominant_percentage: float
+    multiplier_line: str
+    breakdown_by_handoff: Dict[str, int]
+    records: List[HandoffRecordDTO]
+
+class WorkerFailureResponseDTO(BaseModel):
+    case_id: str
+    question: str
+    injected_error: str
+    orchestrator_behavior_mode: str
+    one_line_summary: str
+    final_answer: str
+    latency_seconds: float
+    tokens_used: int
+
+class A2AAgentCardResponseDTO(BaseModel):
+    agent_card: Dict[str, Any]
+    lifecycle_mapping: Dict[str, Any]
+

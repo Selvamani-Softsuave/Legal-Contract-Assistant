@@ -9,7 +9,11 @@ import {
     ToolDefinition,
     TrajectoryEvaluationResponse,
     MitigationBenchmarkResponse,
-    InjectionAttackResponse
+    InjectionAttackResponse,
+    W10RaceResponse,
+    HandoffLogResponse,
+    WorkerFailureResponse,
+    A2AAgentCardResponse
 } from '../models';
 
 @Injectable({
@@ -49,4 +53,29 @@ export class AgentService {
     runInjectionSimulation(question: string = 'Under what conditions can the agreement be terminated?'): Observable<InjectionAttackResponse> {
         return this.http.post<InjectionAttackResponse>(`${this.apiUrl}/injection-attack?question=${encodeURIComponent(question)}`, {});
     }
+
+    // ─── Week 10 Endpoints (Multi-Agent Race, Failure Injection, A2A) ──────────
+
+    runW10Race(): Observable<W10RaceResponse> {
+        return this.http.post<W10RaceResponse>(`${this.apiUrl}/w10-race`, {});
+    }
+
+    injectWorkerFailure(
+        caseId: string = 'RACE-005',
+        question: string = 'What is the exact notice deadline for termination for Material Breach under the Final Executed Agreement?'
+    ): Observable<WorkerFailureResponse> {
+        return this.http.post<WorkerFailureResponse>(
+            `${this.apiUrl}/w10-inject-failure?case_id=${encodeURIComponent(caseId)}&question=${encodeURIComponent(question)}`,
+            {}
+        );
+    }
+
+    getW10HandoffLogs(): Observable<HandoffLogResponse> {
+        return this.http.get<HandoffLogResponse>(`${this.apiUrl}/w10-handoff-logs`);
+    }
+
+    getW10AgentCard(): Observable<A2AAgentCardResponse> {
+        return this.http.get<A2AAgentCardResponse>(`${this.apiUrl}/w10-agent-card`);
+    }
 }
+

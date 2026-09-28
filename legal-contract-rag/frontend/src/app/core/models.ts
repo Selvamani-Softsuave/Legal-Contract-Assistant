@@ -401,3 +401,99 @@ export interface MCPErrorDemoResponse {
     transcript_after: string;
     model_recovery_success: boolean;
 }
+
+// ─── Week 10: Multi-Agent Race & A2A Interfaces ──────────────────────────────
+export interface W10ArmMetrics {
+    pass_rate_pct: number;
+    p50_latency_seconds: number;
+    p99_latency_seconds: number;
+    total_tokens: number;
+    cost_per_question_usd: number;
+    total_cost_usd: number;
+}
+
+export interface W10CaseResult {
+    case_id: string;
+    question: string;
+    expected_answer: string;
+    single_agent_answer: string;
+    single_agent_passed: boolean;
+    single_agent_tokens: number;
+    single_agent_latency_s: number;
+    single_agent_cost_usd: number;
+    multi_agent_answer: string;
+    multi_agent_passed: boolean;
+    multi_agent_tokens: number;
+    multi_agent_latency_s: number;
+    multi_agent_cost_usd: number;
+}
+
+export interface W10RaceResponse {
+    total_cases: number;
+    single_agent: W10ArmMetrics;
+    multi_agent: W10ArmMetrics;
+    multiplier: number;
+    dominant_handoff: string;
+    dominant_percentage: number;
+    multiplier_line: string;
+    verdict: string;
+    cases: W10CaseResult[];
+}
+
+export interface HandoffRecord {
+    case_id: string;
+    hop_number: number;
+    handoff_name: string;
+    from_entity: string;
+    to_entity: string;
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+    is_resend: boolean;
+    context_resend_snippet: string;
+    timestamp: string;
+}
+
+export interface HandoffLogResponse {
+    total_hops: number;
+    total_multi_tokens: number;
+    single_agent_total_tokens: number;
+    multiplier: number;
+    dominant_handoff: string;
+    dominant_percentage: number;
+    multiplier_line: string;
+    breakdown_by_handoff: Record<string, number>;
+    records: HandoffRecord[];
+}
+
+export interface WorkerFailureResponse {
+    case_id: string;
+    question: string;
+    injected_error: string;
+    orchestrator_behavior_mode: string;
+    one_line_summary: string;
+    final_answer: string;
+    latency_seconds: number;
+    tokens_used: number;
+}
+
+export interface A2ALifecycleMapping {
+    state_transition: string;
+    target_state: string;
+    reason: string;
+}
+
+export interface A2ALifecycleDetails {
+    failed_case_id: string;
+    question: string;
+    plain_rest_failure_behavior: string;
+    a2a_lifecycle_mapping: A2ALifecycleMapping;
+    a2a_vs_rest_two_line_verdict: string;
+}
+
+export interface A2AAgentCardResponse {
+    agent_card: Record<string, any>;
+    lifecycle_mapping: A2ALifecycleDetails;
+}
+
+

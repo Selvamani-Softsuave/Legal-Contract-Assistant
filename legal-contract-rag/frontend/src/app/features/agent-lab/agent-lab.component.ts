@@ -17,7 +17,12 @@ import {
     MCPToolCallResponse,
     MCPWireTraceResponse,
     AuditLogEntry,
-    MCPErrorDemoResponse
+    MCPErrorDemoResponse,
+    W10RaceResponse,
+    W10CaseResult,
+    HandoffLogResponse,
+    WorkerFailureResponse,
+    A2AAgentCardResponse
 } from '../../core/models';
 
 @Component({
@@ -28,7 +33,7 @@ import {
     styleUrls: ['./agent-lab.component.scss']
 })
 export class AgentLabComponent implements OnInit {
-    activeSubTab: 'playground' | 'race' | 'trajectory' | 'injection' | 'tools' | 'mcp' = 'playground';
+    activeSubTab: 'playground' | 'race' | 'trajectory' | 'injection' | 'tools' | 'mcp' | 'w10-race' = 'playground';
     
     // Playground Form
     question: string = 'What is the exact notice deadline for termination for Material Breach under the Final Executed Agreement?';
@@ -83,6 +88,23 @@ export class AgentLabComponent implements OnInit {
     gatewayClauseNum: string = '8.1';
     gatewayTestResult: MCPToolCallResponse | null = null;
     isGatewayTesting: boolean = false;
+
+    // ─── Week 10 Multi-Agent Race & A2A States ────────────────────────────────
+    isW10RaceRunning: boolean = false;
+    w10RaceResponse: W10RaceResponse | null = null;
+    selectedW10Case: W10CaseResult | null = null;
+
+    isFailureInjecting: boolean = false;
+    failureResponse: WorkerFailureResponse | null = null;
+    failureCaseId: string = 'RACE-005';
+    failureQuestion: string = 'What is the exact notice deadline for termination for Material Breach under the Final Executed Agreement?';
+
+    isHandoffLogsLoading: boolean = false;
+    handoffLogResponse: HandoffLogResponse | null = null;
+
+    isAgentCardLoading: boolean = false;
+    agentCardResponse: A2AAgentCardResponse | null = null;
+    isAgentCardModalOpen: boolean = false;
 
     constructor(
         private agentService: AgentService,
@@ -353,5 +375,81 @@ export class AgentLabComponent implements OnInit {
             case 'BUDGET_STRESS_CIRCULAR': return 'badge-stress';
             default: return 'badge-default';
         }
+    }
+
+    // ─── Week 10 Multi-Agent Methods ──────────────────────────────────────────
+
+    runW10Race(): void {
+        this.isW10RaceRunning = true;
+        this.errorMessage = null;
+
+        this.agentService.runW10Race().subscribe({
+            next: (res) => {
+                this.w10RaceResponse = res;
+                this.isW10RaceRunning = false;
+                if (res.cases && res.cases.length > 0) {
+                    this.selectedW10Case = res.cases[0];
+                }
+            },
+            error: (err) => {
+                this.errorMessage = err.error?.detail || err.message || 'Week 10 race benchmark failed';
+                this.isW10RaceRunning = false;
+            }
+        });
+    }
+
+    runFailureInjection(): void {
+        this.isFailureInjecting = true;
+        this.errorMessage = null;
+
+        this.agentService.injectWorkerFailure(this.failureCaseId, this.failureQuestion).subscribe({
+            next: (res) => {
+                this.failureResponse = res;
+                this.isFailureInjecting = false;
+            },
+            error: (err) => {
+                this.errorMessage = err.error?.detail || err.message || 'Worker failure injection failed';
+                this.isFailureInjecting = false;
+            }
+        });
+    }
+
+    loadW10HandoffLogs(): void {
+        this.isHandoffLogsLoading = true;
+        this.agentService.getW10HandoffLogs().subscribe({
+            next: (res) => {
+                this.handoffLogResponse = res;
+                this.isHandoffLogsLoading = false;
+            },
+            error: (err) => {
+                this.errorMessage = err.error?.detail || err.message || 'Failed to fetch handoff logs';
+                this.isHandoffLogsLoading = false;
+            }
+        });
+    }
+
+    openAgentCardModal(): void {
+        this.isAgentCardModalOpen = true;
+        if (!this.agentCardResponse) {
+            this.isAgentCardLoading = true;
+            this.agentService.getW10AgentCard().subscribe({
+                next: (res) => {
+                    this.agentCardResponse = res;
+                    this.isAgentCardLoading = false;
+                },
+                error: (err) => {
+                    this.errorMessage = err.error?.detail || err.message || 'Failed to fetch A2A AgentCard';
+                    this.isAgentCardLoading = false;
+                }
+            });
+        }
+    }
+
+    closeAgentCardModal(): void {
+        this.isAgentCardModalOpen = false;
+    }
+
+    selectW10Case(item: W10CaseResult): void {
+        this.selectedW10Case = item;
     }
 }

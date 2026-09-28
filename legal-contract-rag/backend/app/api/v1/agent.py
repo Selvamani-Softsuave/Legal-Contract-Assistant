@@ -11,7 +11,16 @@ from backend.app.schemas.agent import (
     TrajectoryEvaluationResponse, TrajectoryCaseResultDTO,
     TrajectoryStepAnalysisDTO, CostVarianceDTO, LatencyVarianceDTO,
     MitigationBenchmarkResponse, RegressionRowDTO, MitigationPricePaidDTO,
-    InjectionAttackResponse
+    InjectionAttackResponse,
+    W10RaceResponseDTO, W10ArmMetricsDTO, W10CaseResultDTO,
+    HandoffRecordDTO, HandoffLogResponseDTO,
+    WorkerFailureResponseDTO, A2AAgentCardResponseDTO
+)
+from backend.app.agent.multi_agent import (
+    Week10RaceRunner,
+    WorkerFailureInjector,
+    A2AAgentCardManager,
+    global_handoff_tracker
 )
 from backend.app.agent.react_agent import ReActAgent
 from backend.app.agent.fixed_workflow import FixedDeterministicWorkflow
@@ -451,4 +460,102 @@ def run_injection_simulation(question: str = "Under what conditions can the agre
         guardrail_overhead_tokens=result.guardrail_overhead_tokens,
         security_verdict=result.security_verdict,
     )
+
+
+# ─── Week 10 Endpoints: Multi-Agent Race, Handoffs, Failure Injection, A2A ─────
+
+@router.post("/w10-race", response_model=W10RaceResponseDTO)
+async def run_week10_race():
+    """
+    Races the baseline Single Agent against the Multi-Agent Orchestrator Squad
+    across the identical 10 Week-6 contract evaluation cases, reporting all 4 metrics
+    (pass rate, p50/p99 latency, tokens, cost) and the context multiplier.
+    """
+    res = await Week10RaceRunner.run_race()
+    return W10RaceResponseDTO(
+        total_cases=res["total_cases"],
+        single_agent=W10ArmMetricsDTO(**res["single_agent"]),
+        multi_agent=W10ArmMetricsDTO(**res["multi_agent"]),
+        multiplier=res["multiplier"],
+        dominant_handoff=res["dominant_handoff"],
+        dominant_percentage=res["dominant_percentage"],
+        multiplier_line=res["multiplier_line"],
+        verdict=res["verdict"],
+        cases=[W10CaseResultDTO(**c) for c in res["cases"]]
+    )
+
+
+@router.post("/w10-inject-failure", response_model=WorkerFailureResponseDTO)
+async def inject_worker_failure(
+    case_id: str = "RACE-005",
+    question: str = "What is the exact notice deadline for termination for Material Breach under the Final Executed Agreement?"
+):
+    """
+    Injects a simulated HTTP 500 error into the DefinedTermsWorker on Case RACE-005.
+    Audits orchestrator reaction: records whether it retries, degrades to a partial answer, or lies.
+    """
+    res = await WorkerFailureInjector.run_failure_simulation(
+        case_id=case_id,
+        question=question,
+        contract_id="CNT-MAIN"
+    )
+    return WorkerFailureResponseDTO(
+        case_id=res["case_id"],
+        question=res["question"],
+        injected_error=res["injected_error"],
+        orchestrator_behavior_mode=res["orchestrator_behavior_mode"],
+        one_line_summary=res["one_line_summary"],
+        final_answer=res["final_answer"],
+        latency_seconds=res["latency_seconds"],
+        tokens_used=res["tokens_used"]
+    )
+
+
+@router.get("/w10-handoff-logs", response_model=HandoffLogResponseDTO)
+def get_w10_handoff_logs():
+    """
+    Retrieves the full handoff log stream and computes the context re-send multiplier.
+    """
+    summary = global_handoff_tracker.compute_summary(single_agent_total_tokens=18091)
+    records_dto = [
+        HandoffRecordDTO(
+            case_id=r.case_id,
+            hop_number=r.hop_number,
+            handoff_name=r.handoff_name,
+            from_entity=r.from_entity,
+            to_entity=r.to_entity,
+            prompt_tokens=r.prompt_tokens,
+            completion_tokens=r.completion_tokens,
+            total_tokens=r.total_tokens,
+            is_resend=r.is_resend,
+            context_resend_snippet=r.context_resend_snippet,
+            timestamp=r.timestamp
+        )
+        for r in global_handoff_tracker.records
+    ]
+
+    return HandoffLogResponseDTO(
+        total_hops=summary["total_hops"],
+        total_multi_tokens=summary["total_multi_tokens"],
+        single_agent_total_tokens=summary["single_agent_total_tokens"],
+        multiplier=summary["multiplier"],
+        dominant_handoff=summary["dominant_handoff"],
+        dominant_percentage=summary["dominant_percentage"],
+        multiplier_line=summary["multiplier_line"],
+        breakdown_by_handoff=summary["breakdown_by_handoff"],
+        records=records_dto
+    )
+
+
+@router.get("/w10-agent-card", response_model=A2AAgentCardResponseDTO)
+def get_w10_agent_card():
+    """
+    Returns the advertised A2A AgentCard and task lifecycle mapping.
+    """
+    data = A2AAgentCardManager.get_agent_card_data()
+    return A2AAgentCardResponseDTO(
+        agent_card=data["agent_card"],
+        lifecycle_mapping=data["lifecycle_mapping"]
+    )
+
 
