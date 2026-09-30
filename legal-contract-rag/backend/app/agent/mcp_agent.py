@@ -8,12 +8,8 @@ are generated dynamically from discovered MCP tools.
 import json
 from typing import Any, Dict, List, Optional
 
-try:
-    from backend.app.mcp.client import MCPClientManager
-    from backend.app.mcp.protocol import MCPToolDefinition
-except ImportError:
-    from app.mcp.client import MCPClientManager
-    from app.mcp.protocol import MCPToolDefinition
+from backend.app.mcp.client import MCPClientManager
+from backend.app.mcp.protocol import MCPToolDefinition
 
 
 class MCPAgentHost:

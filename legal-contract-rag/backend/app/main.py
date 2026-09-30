@@ -9,6 +9,8 @@ from backend.app.core.config import settings
 from backend.app.core.logging import setup_logging
 from backend.app.api.v1.router import api_router
 from backend.app.llm.factory import LLMProviderFactory
+from backend.app.presentation.handlers.error_handlers import setup_exception_handlers
+from backend.app.presentation.middlewares.correlation import CorrelationIdMiddleware
 
 setup_logging()
 logger = logging.getLogger(__name__)
@@ -19,6 +21,8 @@ app = FastAPI(
     version=settings.VERSION
 )
 
+# 1. Register Cross-Cutting Middlewares
+app.add_middleware(CorrelationIdMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -27,7 +31,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# 2. Register Global RFC 7807 Error Handlers
+setup_exception_handlers(app)
+
+# 3. Mount API Routers
 app.include_router(api_router, prefix=settings.API_V1_STR)
+
 
 @app.get("/health")
 async def health_check():
@@ -40,6 +49,7 @@ async def health_check():
         "version": settings.VERSION,
         "active_llm": llm_health
     }
+
 
 # Serve Angular compiled static frontend if available
 FRONTEND_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "frontend", "dist")

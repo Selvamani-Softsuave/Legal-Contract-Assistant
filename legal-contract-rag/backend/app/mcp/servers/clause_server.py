@@ -7,34 +7,19 @@ Features prompt-engineered tool docstrings and recoverable, context-rich error p
 import json
 from typing import Any, Dict, List, Optional
 
-try:
-    from backend.app.mcp.protocol import (
-        JSONRPCRequest,
-        JSONRPCResponse,
-        JSONRPCError,
-        InitializeResult,
-        ServerInfo,
-        ServerCapabilities,
-        ListToolsResult,
-        MCPToolDefinition,
-        ToolInputSchema,
-        CallToolResult,
-        ToolContent,
-    )
-except ImportError:
-    from app.mcp.protocol import (
-        JSONRPCRequest,
-        JSONRPCResponse,
-        JSONRPCError,
-        InitializeResult,
-        ServerInfo,
-        ServerCapabilities,
-        ListToolsResult,
-        MCPToolDefinition,
-        ToolInputSchema,
-        CallToolResult,
-        ToolContent,
-    )
+from backend.app.mcp.protocol import (
+    JSONRPCRequest,
+    JSONRPCResponse,
+    JSONRPCError,
+    InitializeResult,
+    ServerInfo,
+    ServerCapabilities,
+    ListToolsResult,
+    MCPToolDefinition,
+    ToolInputSchema,
+    CallToolResult,
+    ToolContent,
+)
 
 SERVER_INFO = ServerInfo(name="Contract Clause & Definitions Server", version="1.1.0")
 

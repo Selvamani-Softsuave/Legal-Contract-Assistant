@@ -2,12 +2,19 @@ import httpx
 import logging
 from typing import List, Dict, Any, Optional
 from backend.app.core.config import settings
+from backend.app.domain.ports.vector_store_port import IVectorStorePort
 
 logger = logging.getLogger(__name__)
 
-class VectorClient:
-    def __init__(self):
-        self.processor_url = settings.DOCUMENT_PROCESSOR_URL
+
+class VectorClient(IVectorStorePort):
+    """
+    HTTP Vector Adapter communicating with Document Processor microservice.
+    Implements IVectorStorePort for clean architecture inversion of control.
+    """
+
+    def __init__(self, processor_url: Optional[str] = None):
+        self.processor_url = processor_url or settings.DOCUMENT_PROCESSOR_URL
 
     def search_vectors(
         self,

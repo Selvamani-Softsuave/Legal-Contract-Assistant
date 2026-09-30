@@ -7,34 +7,19 @@ Demonstrates zero-code agent extensibility when combined with Server 1 via confi
 import json
 from typing import Any, Dict, List, Optional
 
-try:
-    from backend.app.mcp.protocol import (
-        JSONRPCRequest,
-        JSONRPCResponse,
-        JSONRPCError,
-        InitializeResult,
-        ServerInfo,
-        ServerCapabilities,
-        ListToolsResult,
-        MCPToolDefinition,
-        ToolInputSchema,
-        CallToolResult,
-        ToolContent,
-    )
-except ImportError:
-    from app.mcp.protocol import (
-        JSONRPCRequest,
-        JSONRPCResponse,
-        JSONRPCError,
-        InitializeResult,
-        ServerInfo,
-        ServerCapabilities,
-        ListToolsResult,
-        MCPToolDefinition,
-        ToolInputSchema,
-        CallToolResult,
-        ToolContent,
-    )
+from backend.app.mcp.protocol import (
+    JSONRPCRequest,
+    JSONRPCResponse,
+    JSONRPCError,
+    InitializeResult,
+    ServerInfo,
+    ServerCapabilities,
+    ListToolsResult,
+    MCPToolDefinition,
+    ToolInputSchema,
+    CallToolResult,
+    ToolContent,
+)
 
 SERVER_INFO = ServerInfo(name="Contract Repository & Metadata Server", version="1.0.0")
 

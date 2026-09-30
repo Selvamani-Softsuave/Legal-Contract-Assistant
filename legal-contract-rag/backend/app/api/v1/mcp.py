@@ -7,44 +7,24 @@ wire trace extraction, and error recovery demonstration.
 from typing import List, Optional
 from fastapi import APIRouter, HTTPException, Query
 
-try:
-    from backend.app.mcp.config import load_mcp_config, MCPServerConfig, MCPRegistryConfig
-    from backend.app.mcp.client import MCPClientManager
-    from backend.app.mcp.gateway import MCPGateway
-    from backend.app.mcp.wire_tracer import global_wire_tracer
-    from backend.app.agent.mcp_agent import MCPAgentHost
-    from backend.app.schemas.mcp import (
-        MCPDiscoveryResponseDTO,
-        MCPServerStatusDTO,
-        MCPToolDTO,
-        MCPToolInputSchemaDTO,
-        MCPQueryRequestDTO,
-        MCPQueryResponseDTO,
-        MCPToolCallRequestDTO,
-        MCPToolCallResponseDTO,
-        MCPWireTraceResponseDTO,
-        AuditLogDTO,
-        MCPErrorDemoResponseDTO
-    )
-except ImportError:
-    from app.mcp.config import load_mcp_config, MCPServerConfig, MCPRegistryConfig
-    from app.mcp.client import MCPClientManager
-    from app.mcp.gateway import MCPGateway
-    from app.mcp.wire_tracer import global_wire_tracer
-    from app.agent.mcp_agent import MCPAgentHost
-    from app.schemas.mcp import (
-        MCPDiscoveryResponseDTO,
-        MCPServerStatusDTO,
-        MCPToolDTO,
-        MCPToolInputSchemaDTO,
-        MCPQueryRequestDTO,
-        MCPQueryResponseDTO,
-        MCPToolCallRequestDTO,
-        MCPToolCallResponseDTO,
-        MCPWireTraceResponseDTO,
-        AuditLogDTO,
-        MCPErrorDemoResponseDTO
-    )
+from backend.app.mcp.config import load_mcp_config, MCPServerConfig, MCPRegistryConfig
+from backend.app.mcp.client import MCPClientManager
+from backend.app.mcp.gateway import MCPGateway
+from backend.app.mcp.wire_tracer import global_wire_tracer
+from backend.app.agent.mcp_agent import MCPAgentHost
+from backend.app.schemas.mcp import (
+    MCPDiscoveryResponseDTO,
+    MCPServerStatusDTO,
+    MCPToolDTO,
+    MCPToolInputSchemaDTO,
+    MCPQueryRequestDTO,
+    MCPQueryResponseDTO,
+    MCPToolCallRequestDTO,
+    MCPToolCallResponseDTO,
+    MCPWireTraceResponseDTO,
+    AuditLogDTO,
+    MCPErrorDemoResponseDTO
+)
 
 router = APIRouter()
 
