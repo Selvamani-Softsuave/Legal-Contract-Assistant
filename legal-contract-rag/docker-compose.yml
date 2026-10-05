@@ -60,8 +60,10 @@ services:
       - DATABASE_URL=mssql+pyodbc://sa:LegalRAG_Password2026!@sqlserver:1433/LegalContractRAG?driver=ODBC+Driver+17+for+SQL+Server
       - OLLAMA_BASE_URL=http://ollama:11434
       - BACKEND_API_URL=http://backend:8000
-      - LLM_PROVIDER=${LLM_PROVIDER:-OLLAMA}
-      - API_KEY=${API_KEY:-}
+      - LLM_PROVIDER=${LLM_PROVIDER:-${AI_PROVIDER:-OLLAMA}}
+      - AI_PROVIDER=${AI_PROVIDER:-${LLM_PROVIDER:-OLLAMA}}
+      - API_KEY=${API_KEY:-${AI_API_KEY:-}}
+      - AI_API_KEY=${AI_API_KEY:-${API_KEY:-}}
       - LLM_MODEL=${LLM_MODEL:-}
       - EMBEDDING_MODEL=${EMBEDDING_MODEL:-}
     depends_on:
@@ -82,8 +84,10 @@ services:
       - AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;QueueEndpoint=http://azurite:10001/devstoreaccount1;TableEndpoint=http://azurite:10002/devstoreaccount1;
       - DOCUMENT_PROCESSOR_URL=http://processor:80
       - OLLAMA_BASE_URL=http://ollama:11434
-      - LLM_PROVIDER=${LLM_PROVIDER:-OLLAMA}
-      - API_KEY=${API_KEY:-}
+      - LLM_PROVIDER=${LLM_PROVIDER:-${AI_PROVIDER:-OLLAMA}}
+      - AI_PROVIDER=${AI_PROVIDER:-${LLM_PROVIDER:-OLLAMA}}
+      - API_KEY=${API_KEY:-${AI_API_KEY:-}}
+      - AI_API_KEY=${AI_API_KEY:-${API_KEY:-}}
       - LLM_MODEL=${LLM_MODEL:-}
       - EMBEDDING_MODEL=${EMBEDDING_MODEL:-}
     depends_on:

@@ -1,7 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import BinaryIO, Optional
+from backend.app.domain.ports.storage_port import IFileStoragePort
 
-class BaseStorageService(ABC):
+
+class BaseStorageService(IFileStoragePort, ABC):
+    """Abstract base storage service extending domain IFileStoragePort."""
+
     @abstractmethod
     def upload_file(self, file_obj: BinaryIO, blob_name: str, content_type: str = "application/pdf") -> str:
         """Upload file object to storage and return blob_path."""

@@ -8,30 +8,17 @@ Integrates with MCPWireTracer to log all wire packets.
 import uuid
 from typing import Any, Dict, List, Optional, Tuple
 
-try:
-    from backend.app.mcp.config import MCPRegistryConfig, MCPServerConfig, load_mcp_config
-    from backend.app.mcp.protocol import (
-        JSONRPCRequest,
-        JSONRPCResponse,
-        MCPToolDefinition,
-        CallToolResult,
-        ToolContent
-    )
-    from backend.app.mcp.servers.clause_server import ClauseServer
-    from backend.app.mcp.servers.repo_server import RepoServer
-    from backend.app.mcp.wire_tracer import MCPWireTracer, global_wire_tracer
-except ImportError:
-    from app.mcp.config import MCPRegistryConfig, MCPServerConfig, load_mcp_config
-    from app.mcp.protocol import (
-        JSONRPCRequest,
-        JSONRPCResponse,
-        MCPToolDefinition,
-        CallToolResult,
-        ToolContent
-    )
-    from app.mcp.servers.clause_server import ClauseServer
-    from app.mcp.servers.repo_server import RepoServer
-    from app.mcp.wire_tracer import MCPWireTracer, global_wire_tracer
+from backend.app.mcp.config import MCPRegistryConfig, MCPServerConfig, load_mcp_config
+from backend.app.mcp.protocol import (
+    JSONRPCRequest,
+    JSONRPCResponse,
+    MCPToolDefinition,
+    CallToolResult,
+    ToolContent
+)
+from backend.app.mcp.servers.clause_server import ClauseServer
+from backend.app.mcp.servers.repo_server import RepoServer
+from backend.app.mcp.wire_tracer import MCPWireTracer, global_wire_tracer
 
 
 class MCPClientManager:

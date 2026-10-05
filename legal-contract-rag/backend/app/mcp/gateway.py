@@ -9,10 +9,7 @@ import uuid
 from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
 
-try:
-    from backend.app.mcp.client import MCPClientManager
-except ImportError:
-    from app.mcp.client import MCPClientManager
+from backend.app.mcp.client import MCPClientManager
 
 
 class AuditLogEntry(BaseModel):
