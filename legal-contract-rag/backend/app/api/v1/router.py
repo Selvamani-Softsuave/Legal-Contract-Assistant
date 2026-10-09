@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from backend.app.api.v1 import contracts, documents, processing, chat, ws, agent, mcp
+from backend.app.api.v1 import contracts, documents, processing, chat, ws, agent, mcp, observability
 
 api_router = APIRouter()
 api_router.include_router(contracts.router, prefix="/contracts", tags=["contracts"])
@@ -9,4 +9,5 @@ api_router.include_router(chat.router, prefix="/chat", tags=["chat"])
 api_router.include_router(ws.router, prefix="/ws", tags=["websocket"])
 api_router.include_router(agent.router, prefix="/agent", tags=["agent"])
 api_router.include_router(mcp.router, prefix="/mcp", tags=["mcp"])
+api_router.include_router(observability.router, prefix="/observability", tags=["observability"])
 

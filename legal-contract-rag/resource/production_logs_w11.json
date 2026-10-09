@@ -1,0 +1,5678 @@
+[
+  {
+    "trace_id": "TRACE-2026-W11-0001",
+    "request_id": "req-00001",
+    "timestamp_iso": "2026-09-28T09:15:00",
+    "day_of_week": "Monday",
+    "user_id": "usr_001",
+    "contract_id": "CNT-MSA-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the governing law of the Master Agreement?",
+    "output_answer": "Under Section 16.1, the Agreement is governed by the laws of the State of Delaware.",
+    "retrieved_context_ids": [
+      "chunk_msa_sec16_1"
+    ],
+    "cited_clauses": [
+      "Section 16.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-1-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-28T09:15:00",
+        "end_time_iso": "2026-09-28T09:15:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-1-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-28T09:15:00",
+        "end_time_iso": "2026-09-28T09:15:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_msa_sec16_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-1-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-09-28T09:15:00",
+        "end_time_iso": "2026-09-28T09:15:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-1-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-09-28T09:15:00",
+        "end_time_iso": "2026-09-28T09:15:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0002",
+    "request_id": "req-00002",
+    "timestamp_iso": "2026-09-28T11:30:20",
+    "day_of_week": "Monday",
+    "user_id": "usr_002",
+    "contract_id": "CNT-NDA-04",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the confidentiality term in the Non-Disclosure Agreement?",
+    "output_answer": "Under Section 3.2, confidential information must be protected for three (3) years from the Effective Date.",
+    "retrieved_context_ids": [
+      "chunk_nda_sec3_2"
+    ],
+    "cited_clauses": [
+      "Section 3.2"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-2-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-28T11:30:20",
+        "end_time_iso": "2026-09-28T11:30:20",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-2-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-28T11:30:20",
+        "end_time_iso": "2026-09-28T11:30:20",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_nda_sec3_2"
+          ]
+        }
+      },
+      {
+        "span_id": "span-2-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-09-28T11:30:20",
+        "end_time_iso": "2026-09-28T11:30:20",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-2-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-09-28T11:30:20",
+        "end_time_iso": "2026-09-28T11:30:20",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0003",
+    "request_id": "req-00003",
+    "timestamp_iso": "2026-09-29T10:05:12",
+    "day_of_week": "Tuesday",
+    "user_id": "usr_003",
+    "contract_id": "CNT-SOW-02",
+    "prompt_version": "v1.0.0",
+    "input_query": "What are the payment milestones for Phase 1?",
+    "output_answer": "According to Exhibit A (Pricing), Phase 1 payment of ,000 is due within 30 days of deliverable acceptance.",
+    "retrieved_context_ids": [
+      "chunk_sow_exhibit_a"
+    ],
+    "cited_clauses": [
+      "Exhibit A"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-3-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-29T10:05:12",
+        "end_time_iso": "2026-09-29T10:05:12",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-3-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-29T10:05:12",
+        "end_time_iso": "2026-09-29T10:05:12",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_sow_exhibit_a"
+          ]
+        }
+      },
+      {
+        "span_id": "span-3-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-09-29T10:05:12",
+        "end_time_iso": "2026-09-29T10:05:12",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-3-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-09-29T10:05:12",
+        "end_time_iso": "2026-09-29T10:05:12",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0004",
+    "request_id": "req-00004",
+    "timestamp_iso": "2026-09-29T14:40:00",
+    "day_of_week": "Tuesday",
+    "user_id": "usr_004",
+    "contract_id": "CNT-SLA-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the uptime SLA guarantee?",
+    "output_answer": "Section 4.1 specifies an uptime commitment of 99.9% measured on a calendar monthly basis.",
+    "retrieved_context_ids": [
+      "chunk_sla_sec4_1"
+    ],
+    "cited_clauses": [
+      "Section 4.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-4-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-29T14:40:00",
+        "end_time_iso": "2026-09-29T14:40:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-4-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-29T14:40:00",
+        "end_time_iso": "2026-09-29T14:40:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_sla_sec4_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-4-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-09-29T14:40:00",
+        "end_time_iso": "2026-09-29T14:40:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-4-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-09-29T14:40:00",
+        "end_time_iso": "2026-09-29T14:40:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0005",
+    "request_id": "req-00005",
+    "timestamp_iso": "2026-09-30T08:20:45",
+    "day_of_week": "Wednesday",
+    "user_id": "usr_005",
+    "contract_id": "CNT-MSA-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the limitation of liability cap?",
+    "output_answer": "Under Section 11.2, aggregate liability is capped at the total fees paid in the prior twelve (12) months.",
+    "retrieved_context_ids": [
+      "chunk_msa_sec11_2"
+    ],
+    "cited_clauses": [
+      "Section 11.2"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-5-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-30T08:20:45",
+        "end_time_iso": "2026-09-30T08:20:45",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-5-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-30T08:20:45",
+        "end_time_iso": "2026-09-30T08:20:45",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_msa_sec11_2"
+          ]
+        }
+      },
+      {
+        "span_id": "span-5-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-09-30T08:20:45",
+        "end_time_iso": "2026-09-30T08:20:45",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-5-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-09-30T08:20:45",
+        "end_time_iso": "2026-09-30T08:20:45",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0006",
+    "request_id": "req-00006",
+    "timestamp_iso": "2026-09-30T16:10:30",
+    "day_of_week": "Wednesday",
+    "user_id": "usr_006",
+    "contract_id": "CNT-DPA-03",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the data breach notification window?",
+    "output_answer": "Under Section 8.4, the processor must notify the controller within forty-eight (48) hours of becoming aware of a breach.",
+    "retrieved_context_ids": [
+      "chunk_dpa_sec8_4"
+    ],
+    "cited_clauses": [
+      "Section 8.4"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-6-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-30T16:10:30",
+        "end_time_iso": "2026-09-30T16:10:30",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-6-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-30T16:10:30",
+        "end_time_iso": "2026-09-30T16:10:30",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_dpa_sec8_4"
+          ]
+        }
+      },
+      {
+        "span_id": "span-6-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-09-30T16:10:30",
+        "end_time_iso": "2026-09-30T16:10:30",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-6-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-09-30T16:10:30",
+        "end_time_iso": "2026-09-30T16:10:30",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0007",
+    "request_id": "req-00007",
+    "timestamp_iso": "2026-10-01T08:12:00",
+    "day_of_week": "Thursday",
+    "user_id": "usr_007",
+    "contract_id": "CNT-LIC-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "Does the license include sublicensing rights?",
+    "output_answer": "Under Section 2.1, the grant is non-exclusive and non-transferable without sublicensing rights.",
+    "retrieved_context_ids": [
+      "chunk_lic_sec2_1"
+    ],
+    "cited_clauses": [
+      "Section 2.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-7-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T08:12:00",
+        "end_time_iso": "2026-10-01T08:12:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-7-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T08:12:00",
+        "end_time_iso": "2026-10-01T08:12:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_lic_sec2_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-7-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T08:12:00",
+        "end_time_iso": "2026-10-01T08:12:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-7-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T08:12:00",
+        "end_time_iso": "2026-10-01T08:12:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0008",
+    "request_id": "req-00008",
+    "timestamp_iso": "2026-10-01T09:45:10",
+    "day_of_week": "Thursday",
+    "user_id": "usr_008",
+    "contract_id": "CNT-MSA-02",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the force majeure notification period?",
+    "output_answer": "Section 14.1 requires written notice within ten (10) business days of the force majeure event.",
+    "retrieved_context_ids": [
+      "chunk_msa_sec14_1"
+    ],
+    "cited_clauses": [
+      "Section 14.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-8-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T09:45:10",
+        "end_time_iso": "2026-10-01T09:45:10",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-8-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T09:45:10",
+        "end_time_iso": "2026-10-01T09:45:10",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_msa_sec14_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-8-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T09:45:10",
+        "end_time_iso": "2026-10-01T09:45:10",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-8-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T09:45:10",
+        "end_time_iso": "2026-10-01T09:45:10",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0009",
+    "request_id": "req-00009",
+    "timestamp_iso": "2026-10-01T11:00:25",
+    "day_of_week": "Thursday",
+    "user_id": "usr_009",
+    "contract_id": "CNT-SOW-05",
+    "prompt_version": "v1.0.0",
+    "input_query": "When is the final acceptance testing completed?",
+    "output_answer": "Section 5.3 specifies a ten (10) day acceptance test period following delivery.",
+    "retrieved_context_ids": [
+      "chunk_sow_sec5_3"
+    ],
+    "cited_clauses": [
+      "Section 5.3"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-9-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T11:00:25",
+        "end_time_iso": "2026-10-01T11:00:25",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-9-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T11:00:25",
+        "end_time_iso": "2026-10-01T11:00:25",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_sow_sec5_3"
+          ]
+        }
+      },
+      {
+        "span_id": "span-9-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T11:00:25",
+        "end_time_iso": "2026-10-01T11:00:25",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-9-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T11:00:25",
+        "end_time_iso": "2026-10-01T11:00:25",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0010",
+    "request_id": "req-00010",
+    "timestamp_iso": "2026-10-01T13:15:00",
+    "day_of_week": "Thursday",
+    "user_id": "usr_010",
+    "contract_id": "CNT-EMP-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the non-solicitation duration?",
+    "output_answer": "Under Section 6.2, non-solicitation restrictions apply during employment and for twelve (12) months post-termination.",
+    "retrieved_context_ids": [
+      "chunk_emp_sec6_2"
+    ],
+    "cited_clauses": [
+      "Section 6.2"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-10-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T13:15:00",
+        "end_time_iso": "2026-10-01T13:15:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-10-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T13:15:00",
+        "end_time_iso": "2026-10-01T13:15:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_emp_sec6_2"
+          ]
+        }
+      },
+      {
+        "span_id": "span-10-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T13:15:00",
+        "end_time_iso": "2026-10-01T13:15:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-10-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T13:15:00",
+        "end_time_iso": "2026-10-01T13:15:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-F042",
+    "request_id": "req-00011",
+    "timestamp_iso": "2026-10-01T14:22:10",
+    "day_of_week": "Thursday",
+    "user_id": "usr_lawyer_88",
+    "contract_id": "CNT-MSA-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "What are the notice requirements for early termination for convenience under our Master Service Agreement?",
+    "output_answer": "Under Section 12.4 of the Master Service Agreement, either party may terminate for convenience with thirty (30) days prior written notice.",
+    "retrieved_context_ids": [
+      "chunk_msa_v1_sec12_4",
+      "chunk_amend2_sec12_4"
+    ],
+    "cited_clauses": [
+      "Section 12.4"
+    ],
+    "amendment_status": "SUPERSEDED",
+    "has_citation_conflict": true,
+    "spans": [
+      {
+        "span_id": "span-11-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T14:22:10",
+        "end_time_iso": "2026-10-01T14:22:10",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-11-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T14:22:10",
+        "end_time_iso": "2026-10-01T14:22:10",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_msa_v1_sec12_4",
+            "chunk_amend2_sec12_4"
+          ]
+        }
+      },
+      {
+        "span_id": "span-11-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T14:22:10",
+        "end_time_iso": "2026-10-01T14:22:10",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-11-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T14:22:10",
+        "end_time_iso": "2026-10-01T14:22:10",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "WARNING",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "CITATION_ERROR",
+    "error_type": "SUPERSEDED_CLAUSE_CITED",
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0012",
+    "request_id": "req-00012",
+    "timestamp_iso": "2026-10-01T15:05:40",
+    "day_of_week": "Thursday",
+    "user_id": "usr_011",
+    "contract_id": "CNT-SEC-02",
+    "prompt_version": "v1.0.0",
+    "input_query": "What security certifications are required?",
+    "output_answer": "Under Section 7.1, SOC 2 Type II and ISO 27001 certifications must be maintained continuously.",
+    "retrieved_context_ids": [
+      "chunk_sec_sec7_1"
+    ],
+    "cited_clauses": [
+      "Section 7.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-12-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T15:05:40",
+        "end_time_iso": "2026-10-01T15:05:40",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-12-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T15:05:40",
+        "end_time_iso": "2026-10-01T15:05:40",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_sec_sec7_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-12-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T15:05:40",
+        "end_time_iso": "2026-10-01T15:05:40",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-12-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T15:05:40",
+        "end_time_iso": "2026-10-01T15:05:40",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0013",
+    "request_id": "req-00013",
+    "timestamp_iso": "2026-10-01T16:30:15",
+    "day_of_week": "Thursday",
+    "user_id": "usr_012",
+    "contract_id": "CNT-MSA-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "Can the vendor assign this agreement to an affiliate?",
+    "output_answer": "Section 15.3 permits assignment to an affiliate upon written notice without prior consent.",
+    "retrieved_context_ids": [
+      "chunk_msa_sec15_3"
+    ],
+    "cited_clauses": [
+      "Section 15.3"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-13-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T16:30:15",
+        "end_time_iso": "2026-10-01T16:30:15",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-13-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T16:30:15",
+        "end_time_iso": "2026-10-01T16:30:15",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_msa_sec15_3"
+          ]
+        }
+      },
+      {
+        "span_id": "span-13-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T16:30:15",
+        "end_time_iso": "2026-10-01T16:30:15",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-13-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T16:30:15",
+        "end_time_iso": "2026-10-01T16:30:15",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0014",
+    "request_id": "req-00014",
+    "timestamp_iso": "2026-10-01T17:10:00",
+    "day_of_week": "Thursday",
+    "user_id": "usr_013",
+    "contract_id": "CNT-IP-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "Who owns work product created under this contract?",
+    "output_answer": "Section 4.1 designates all deliverables as works made for hire owned exclusively by the Client.",
+    "retrieved_context_ids": [
+      "chunk_ip_sec4_1"
+    ],
+    "cited_clauses": [
+      "Section 4.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-14-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T17:10:00",
+        "end_time_iso": "2026-10-01T17:10:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-14-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T17:10:00",
+        "end_time_iso": "2026-10-01T17:10:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_ip_sec4_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-14-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T17:10:00",
+        "end_time_iso": "2026-10-01T17:10:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-14-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T17:10:00",
+        "end_time_iso": "2026-10-01T17:10:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0015",
+    "request_id": "req-00015",
+    "timestamp_iso": "2026-10-02T09:00:00",
+    "day_of_week": "Friday",
+    "user_id": "usr_014",
+    "contract_id": "CNT-INS-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "What are the required commercial general liability policy limits?",
+    "output_answer": "Section 9.1 mandates ,000,000 per occurrence and ,000,000 general aggregate.",
+    "retrieved_context_ids": [
+      "chunk_ins_sec9_1"
+    ],
+    "cited_clauses": [
+      "Section 9.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-15-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-02T09:00:00",
+        "end_time_iso": "2026-10-02T09:00:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-15-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-02T09:00:00",
+        "end_time_iso": "2026-10-02T09:00:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_ins_sec9_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-15-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-02T09:00:00",
+        "end_time_iso": "2026-10-02T09:00:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-15-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-02T09:00:00",
+        "end_time_iso": "2026-10-02T09:00:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0016",
+    "request_id": "req-00016",
+    "timestamp_iso": "2026-10-02T10:30:00",
+    "day_of_week": "Friday",
+    "user_id": "usr_015",
+    "contract_id": "CNT-MSA-03",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the dispute resolution escalation process?",
+    "output_answer": "Section 17.2 mandates good-faith executive negotiation for 30 days prior to binding arbitration.",
+    "retrieved_context_ids": [
+      "chunk_msa_sec17_2"
+    ],
+    "cited_clauses": [
+      "Section 17.2"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-16-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-02T10:30:00",
+        "end_time_iso": "2026-10-02T10:30:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-16-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-02T10:30:00",
+        "end_time_iso": "2026-10-02T10:30:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_msa_sec17_2"
+          ]
+        }
+      },
+      {
+        "span_id": "span-16-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-02T10:30:00",
+        "end_time_iso": "2026-10-02T10:30:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-16-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-02T10:30:00",
+        "end_time_iso": "2026-10-02T10:30:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-B099",
+    "request_id": "req-00017",
+    "timestamp_iso": "2026-10-02T11:45:00",
+    "day_of_week": "Friday",
+    "user_id": "usr_lawyer_92",
+    "contract_id": "CNT-MSA-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the indemnification cap under the amended agreement?",
+    "output_answer": "Under Section 10.1, indemnification is capped at ,000.",
+    "retrieved_context_ids": [
+      "chunk_msa_v1_sec10_1",
+      "chunk_amend1_sec10_1"
+    ],
+    "cited_clauses": [
+      "Section 10.1"
+    ],
+    "amendment_status": "SUPERSEDED",
+    "has_citation_conflict": true,
+    "spans": [
+      {
+        "span_id": "span-17-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-02T11:45:00",
+        "end_time_iso": "2026-10-02T11:45:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-17-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-02T11:45:00",
+        "end_time_iso": "2026-10-02T11:45:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_msa_v1_sec10_1",
+            "chunk_amend1_sec10_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-17-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-02T11:45:00",
+        "end_time_iso": "2026-10-02T11:45:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-17-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-02T11:45:00",
+        "end_time_iso": "2026-10-02T11:45:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "WARNING",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "CITATION_ERROR",
+    "error_type": "SUPERSEDED_CLAUSE_CITED",
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0018",
+    "request_id": "req-00018",
+    "timestamp_iso": "2026-10-02T14:15:30",
+    "day_of_week": "Friday",
+    "user_id": "usr_016",
+    "contract_id": "CNT-AUD-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "What are the audit notice requirements?",
+    "output_answer": "Section 13.1 requires at least ten (10) business days prior written notice before an on-site audit.",
+    "retrieved_context_ids": [
+      "chunk_aud_sec13_1"
+    ],
+    "cited_clauses": [
+      "Section 13.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-18-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-02T14:15:30",
+        "end_time_iso": "2026-10-02T14:15:30",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-18-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-02T14:15:30",
+        "end_time_iso": "2026-10-02T14:15:30",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_aud_sec13_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-18-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-02T14:15:30",
+        "end_time_iso": "2026-10-02T14:15:30",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-18-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-02T14:15:30",
+        "end_time_iso": "2026-10-02T14:15:30",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0020",
+    "request_id": "req-00020",
+    "timestamp_iso": "2026-09-29T14:40:00",
+    "day_of_week": "Tuesday",
+    "user_id": "usr_004",
+    "contract_id": "CNT-SLA-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the uptime SLA guarantee?",
+    "output_answer": "Section 4.1 specifies an uptime commitment of 99.9% measured on a calendar monthly basis.",
+    "retrieved_context_ids": [
+      "chunk_sla_sec4_1"
+    ],
+    "cited_clauses": [
+      "Section 4.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-4-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-29T14:40:00",
+        "end_time_iso": "2026-09-29T14:40:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-4-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-29T14:40:00",
+        "end_time_iso": "2026-09-29T14:40:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_sla_sec4_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-4-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-09-29T14:40:00",
+        "end_time_iso": "2026-09-29T14:40:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-4-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-09-29T14:40:00",
+        "end_time_iso": "2026-09-29T14:40:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0021",
+    "request_id": "req-00021",
+    "timestamp_iso": "2026-09-30T08:20:45",
+    "day_of_week": "Wednesday",
+    "user_id": "usr_005",
+    "contract_id": "CNT-MSA-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the limitation of liability cap?",
+    "output_answer": "Under Section 11.2, aggregate liability is capped at the total fees paid in the prior twelve (12) months.",
+    "retrieved_context_ids": [
+      "chunk_msa_sec11_2"
+    ],
+    "cited_clauses": [
+      "Section 11.2"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-5-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-30T08:20:45",
+        "end_time_iso": "2026-09-30T08:20:45",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-5-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-30T08:20:45",
+        "end_time_iso": "2026-09-30T08:20:45",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_msa_sec11_2"
+          ]
+        }
+      },
+      {
+        "span_id": "span-5-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-09-30T08:20:45",
+        "end_time_iso": "2026-09-30T08:20:45",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-5-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-09-30T08:20:45",
+        "end_time_iso": "2026-09-30T08:20:45",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0022",
+    "request_id": "req-00022",
+    "timestamp_iso": "2026-09-30T16:10:30",
+    "day_of_week": "Wednesday",
+    "user_id": "usr_006",
+    "contract_id": "CNT-DPA-03",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the data breach notification window?",
+    "output_answer": "Under Section 8.4, the processor must notify the controller within forty-eight (48) hours of becoming aware of a breach.",
+    "retrieved_context_ids": [
+      "chunk_dpa_sec8_4"
+    ],
+    "cited_clauses": [
+      "Section 8.4"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-6-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-30T16:10:30",
+        "end_time_iso": "2026-09-30T16:10:30",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-6-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-30T16:10:30",
+        "end_time_iso": "2026-09-30T16:10:30",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_dpa_sec8_4"
+          ]
+        }
+      },
+      {
+        "span_id": "span-6-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-09-30T16:10:30",
+        "end_time_iso": "2026-09-30T16:10:30",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-6-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-09-30T16:10:30",
+        "end_time_iso": "2026-09-30T16:10:30",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0023",
+    "request_id": "req-00023",
+    "timestamp_iso": "2026-10-01T08:12:00",
+    "day_of_week": "Thursday",
+    "user_id": "usr_007",
+    "contract_id": "CNT-LIC-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "Does the license include sublicensing rights?",
+    "output_answer": "Under Section 2.1, the grant is non-exclusive and non-transferable without sublicensing rights.",
+    "retrieved_context_ids": [
+      "chunk_lic_sec2_1"
+    ],
+    "cited_clauses": [
+      "Section 2.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-7-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T08:12:00",
+        "end_time_iso": "2026-10-01T08:12:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-7-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T08:12:00",
+        "end_time_iso": "2026-10-01T08:12:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_lic_sec2_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-7-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T08:12:00",
+        "end_time_iso": "2026-10-01T08:12:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-7-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T08:12:00",
+        "end_time_iso": "2026-10-01T08:12:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0024",
+    "request_id": "req-00024",
+    "timestamp_iso": "2026-10-01T09:45:10",
+    "day_of_week": "Thursday",
+    "user_id": "usr_008",
+    "contract_id": "CNT-MSA-02",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the force majeure notification period?",
+    "output_answer": "Section 14.1 requires written notice within ten (10) business days of the force majeure event.",
+    "retrieved_context_ids": [
+      "chunk_msa_sec14_1"
+    ],
+    "cited_clauses": [
+      "Section 14.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-8-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T09:45:10",
+        "end_time_iso": "2026-10-01T09:45:10",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-8-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T09:45:10",
+        "end_time_iso": "2026-10-01T09:45:10",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_msa_sec14_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-8-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T09:45:10",
+        "end_time_iso": "2026-10-01T09:45:10",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-8-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T09:45:10",
+        "end_time_iso": "2026-10-01T09:45:10",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0025",
+    "request_id": "req-00025",
+    "timestamp_iso": "2026-10-01T11:00:25",
+    "day_of_week": "Thursday",
+    "user_id": "usr_009",
+    "contract_id": "CNT-SOW-05",
+    "prompt_version": "v1.0.0",
+    "input_query": "When is the final acceptance testing completed?",
+    "output_answer": "Section 5.3 specifies a ten (10) day acceptance test period following delivery.",
+    "retrieved_context_ids": [
+      "chunk_sow_sec5_3"
+    ],
+    "cited_clauses": [
+      "Section 5.3"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-9-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T11:00:25",
+        "end_time_iso": "2026-10-01T11:00:25",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-9-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T11:00:25",
+        "end_time_iso": "2026-10-01T11:00:25",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_sow_sec5_3"
+          ]
+        }
+      },
+      {
+        "span_id": "span-9-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T11:00:25",
+        "end_time_iso": "2026-10-01T11:00:25",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-9-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T11:00:25",
+        "end_time_iso": "2026-10-01T11:00:25",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0026",
+    "request_id": "req-00026",
+    "timestamp_iso": "2026-10-01T13:15:00",
+    "day_of_week": "Thursday",
+    "user_id": "usr_010",
+    "contract_id": "CNT-EMP-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the non-solicitation duration?",
+    "output_answer": "Under Section 6.2, non-solicitation restrictions apply during employment and for twelve (12) months post-termination.",
+    "retrieved_context_ids": [
+      "chunk_emp_sec6_2"
+    ],
+    "cited_clauses": [
+      "Section 6.2"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-10-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T13:15:00",
+        "end_time_iso": "2026-10-01T13:15:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-10-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T13:15:00",
+        "end_time_iso": "2026-10-01T13:15:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_emp_sec6_2"
+          ]
+        }
+      },
+      {
+        "span_id": "span-10-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T13:15:00",
+        "end_time_iso": "2026-10-01T13:15:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-10-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T13:15:00",
+        "end_time_iso": "2026-10-01T13:15:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0027",
+    "request_id": "req-00027",
+    "timestamp_iso": "2026-10-01T14:22:10",
+    "day_of_week": "Thursday",
+    "user_id": "usr_lawyer_88",
+    "contract_id": "CNT-MSA-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "What are the notice requirements for early termination for convenience under our Master Service Agreement?",
+    "output_answer": "Under Section 12.4 of the Master Service Agreement, either party may terminate for convenience with thirty (30) days prior written notice.",
+    "retrieved_context_ids": [
+      "chunk_msa_v1_sec12_4",
+      "chunk_amend2_sec12_4"
+    ],
+    "cited_clauses": [
+      "Section 12.4"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-11-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T14:22:10",
+        "end_time_iso": "2026-10-01T14:22:10",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-11-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T14:22:10",
+        "end_time_iso": "2026-10-01T14:22:10",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_msa_v1_sec12_4",
+            "chunk_amend2_sec12_4"
+          ]
+        }
+      },
+      {
+        "span_id": "span-11-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T14:22:10",
+        "end_time_iso": "2026-10-01T14:22:10",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-11-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T14:22:10",
+        "end_time_iso": "2026-10-01T14:22:10",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "WARNING",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "CITATION_ERROR",
+    "error_type": "SUPERSEDED_CLAUSE_CITED",
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0028",
+    "request_id": "req-00028",
+    "timestamp_iso": "2026-10-01T15:05:40",
+    "day_of_week": "Thursday",
+    "user_id": "usr_011",
+    "contract_id": "CNT-SEC-02",
+    "prompt_version": "v1.0.0",
+    "input_query": "What security certifications are required?",
+    "output_answer": "Under Section 7.1, SOC 2 Type II and ISO 27001 certifications must be maintained continuously.",
+    "retrieved_context_ids": [
+      "chunk_sec_sec7_1"
+    ],
+    "cited_clauses": [
+      "Section 7.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-12-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T15:05:40",
+        "end_time_iso": "2026-10-01T15:05:40",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-12-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T15:05:40",
+        "end_time_iso": "2026-10-01T15:05:40",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_sec_sec7_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-12-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T15:05:40",
+        "end_time_iso": "2026-10-01T15:05:40",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-12-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T15:05:40",
+        "end_time_iso": "2026-10-01T15:05:40",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0029",
+    "request_id": "req-00029",
+    "timestamp_iso": "2026-10-01T16:30:15",
+    "day_of_week": "Thursday",
+    "user_id": "usr_012",
+    "contract_id": "CNT-MSA-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "Can the vendor assign this agreement to an affiliate?",
+    "output_answer": "Section 15.3 permits assignment to an affiliate upon written notice without prior consent.",
+    "retrieved_context_ids": [
+      "chunk_msa_sec15_3"
+    ],
+    "cited_clauses": [
+      "Section 15.3"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-13-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T16:30:15",
+        "end_time_iso": "2026-10-01T16:30:15",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-13-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T16:30:15",
+        "end_time_iso": "2026-10-01T16:30:15",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_msa_sec15_3"
+          ]
+        }
+      },
+      {
+        "span_id": "span-13-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T16:30:15",
+        "end_time_iso": "2026-10-01T16:30:15",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-13-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T16:30:15",
+        "end_time_iso": "2026-10-01T16:30:15",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0030",
+    "request_id": "req-00030",
+    "timestamp_iso": "2026-10-01T17:10:00",
+    "day_of_week": "Thursday",
+    "user_id": "usr_013",
+    "contract_id": "CNT-IP-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "Who owns work product created under this contract?",
+    "output_answer": "Section 4.1 designates all deliverables as works made for hire owned exclusively by the Client.",
+    "retrieved_context_ids": [
+      "chunk_ip_sec4_1"
+    ],
+    "cited_clauses": [
+      "Section 4.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-14-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T17:10:00",
+        "end_time_iso": "2026-10-01T17:10:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-14-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T17:10:00",
+        "end_time_iso": "2026-10-01T17:10:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_ip_sec4_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-14-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T17:10:00",
+        "end_time_iso": "2026-10-01T17:10:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-14-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T17:10:00",
+        "end_time_iso": "2026-10-01T17:10:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0031",
+    "request_id": "req-00031",
+    "timestamp_iso": "2026-10-02T09:00:00",
+    "day_of_week": "Friday",
+    "user_id": "usr_014",
+    "contract_id": "CNT-INS-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "What are the required commercial general liability policy limits?",
+    "output_answer": "Section 9.1 mandates ,000,000 per occurrence and ,000,000 general aggregate.",
+    "retrieved_context_ids": [
+      "chunk_ins_sec9_1"
+    ],
+    "cited_clauses": [
+      "Section 9.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-15-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-02T09:00:00",
+        "end_time_iso": "2026-10-02T09:00:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-15-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-02T09:00:00",
+        "end_time_iso": "2026-10-02T09:00:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_ins_sec9_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-15-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-02T09:00:00",
+        "end_time_iso": "2026-10-02T09:00:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-15-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-02T09:00:00",
+        "end_time_iso": "2026-10-02T09:00:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0032",
+    "request_id": "req-00032",
+    "timestamp_iso": "2026-10-02T10:30:00",
+    "day_of_week": "Friday",
+    "user_id": "usr_015",
+    "contract_id": "CNT-MSA-03",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the dispute resolution escalation process?",
+    "output_answer": "Section 17.2 mandates good-faith executive negotiation for 30 days prior to binding arbitration.",
+    "retrieved_context_ids": [
+      "chunk_msa_sec17_2"
+    ],
+    "cited_clauses": [
+      "Section 17.2"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-16-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-02T10:30:00",
+        "end_time_iso": "2026-10-02T10:30:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-16-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-02T10:30:00",
+        "end_time_iso": "2026-10-02T10:30:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_msa_sec17_2"
+          ]
+        }
+      },
+      {
+        "span_id": "span-16-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-02T10:30:00",
+        "end_time_iso": "2026-10-02T10:30:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-16-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-02T10:30:00",
+        "end_time_iso": "2026-10-02T10:30:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0033",
+    "request_id": "req-00033",
+    "timestamp_iso": "2026-09-28T09:15:00",
+    "day_of_week": "Monday",
+    "user_id": "usr_001",
+    "contract_id": "CNT-MSA-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the governing law of the Master Agreement?",
+    "output_answer": "Under Section 16.1, the Agreement is governed by the laws of the State of Delaware.",
+    "retrieved_context_ids": [
+      "chunk_msa_sec16_1"
+    ],
+    "cited_clauses": [
+      "Section 16.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-1-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-28T09:15:00",
+        "end_time_iso": "2026-09-28T09:15:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-1-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-28T09:15:00",
+        "end_time_iso": "2026-09-28T09:15:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_msa_sec16_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-1-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-09-28T09:15:00",
+        "end_time_iso": "2026-09-28T09:15:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-1-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-09-28T09:15:00",
+        "end_time_iso": "2026-09-28T09:15:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0034",
+    "request_id": "req-00034",
+    "timestamp_iso": "2026-09-28T11:30:20",
+    "day_of_week": "Monday",
+    "user_id": "usr_002",
+    "contract_id": "CNT-NDA-04",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the confidentiality term in the Non-Disclosure Agreement?",
+    "output_answer": "Under Section 3.2, confidential information must be protected for three (3) years from the Effective Date.",
+    "retrieved_context_ids": [
+      "chunk_nda_sec3_2"
+    ],
+    "cited_clauses": [
+      "Section 3.2"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-2-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-28T11:30:20",
+        "end_time_iso": "2026-09-28T11:30:20",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-2-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-28T11:30:20",
+        "end_time_iso": "2026-09-28T11:30:20",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_nda_sec3_2"
+          ]
+        }
+      },
+      {
+        "span_id": "span-2-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-09-28T11:30:20",
+        "end_time_iso": "2026-09-28T11:30:20",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-2-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-09-28T11:30:20",
+        "end_time_iso": "2026-09-28T11:30:20",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0035",
+    "request_id": "req-00035",
+    "timestamp_iso": "2026-09-29T10:05:12",
+    "day_of_week": "Tuesday",
+    "user_id": "usr_003",
+    "contract_id": "CNT-SOW-02",
+    "prompt_version": "v1.0.0",
+    "input_query": "What are the payment milestones for Phase 1?",
+    "output_answer": "According to Exhibit A (Pricing), Phase 1 payment of ,000 is due within 30 days of deliverable acceptance.",
+    "retrieved_context_ids": [
+      "chunk_sow_exhibit_a"
+    ],
+    "cited_clauses": [
+      "Exhibit A"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-3-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-29T10:05:12",
+        "end_time_iso": "2026-09-29T10:05:12",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-3-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-29T10:05:12",
+        "end_time_iso": "2026-09-29T10:05:12",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_sow_exhibit_a"
+          ]
+        }
+      },
+      {
+        "span_id": "span-3-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-09-29T10:05:12",
+        "end_time_iso": "2026-09-29T10:05:12",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-3-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-09-29T10:05:12",
+        "end_time_iso": "2026-09-29T10:05:12",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0036",
+    "request_id": "req-00036",
+    "timestamp_iso": "2026-09-29T14:40:00",
+    "day_of_week": "Tuesday",
+    "user_id": "usr_004",
+    "contract_id": "CNT-SLA-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the uptime SLA guarantee?",
+    "output_answer": "Section 4.1 specifies an uptime commitment of 99.9% measured on a calendar monthly basis.",
+    "retrieved_context_ids": [
+      "chunk_sla_sec4_1"
+    ],
+    "cited_clauses": [
+      "Section 4.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-4-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-29T14:40:00",
+        "end_time_iso": "2026-09-29T14:40:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-4-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-29T14:40:00",
+        "end_time_iso": "2026-09-29T14:40:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_sla_sec4_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-4-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-09-29T14:40:00",
+        "end_time_iso": "2026-09-29T14:40:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-4-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-09-29T14:40:00",
+        "end_time_iso": "2026-09-29T14:40:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0037",
+    "request_id": "req-00037",
+    "timestamp_iso": "2026-09-30T08:20:45",
+    "day_of_week": "Wednesday",
+    "user_id": "usr_005",
+    "contract_id": "CNT-MSA-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the limitation of liability cap?",
+    "output_answer": "Under Section 11.2, aggregate liability is capped at the total fees paid in the prior twelve (12) months.",
+    "retrieved_context_ids": [
+      "chunk_msa_sec11_2"
+    ],
+    "cited_clauses": [
+      "Section 11.2"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-5-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-30T08:20:45",
+        "end_time_iso": "2026-09-30T08:20:45",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-5-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-30T08:20:45",
+        "end_time_iso": "2026-09-30T08:20:45",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_msa_sec11_2"
+          ]
+        }
+      },
+      {
+        "span_id": "span-5-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-09-30T08:20:45",
+        "end_time_iso": "2026-09-30T08:20:45",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-5-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-09-30T08:20:45",
+        "end_time_iso": "2026-09-30T08:20:45",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0038",
+    "request_id": "req-00038",
+    "timestamp_iso": "2026-09-30T16:10:30",
+    "day_of_week": "Wednesday",
+    "user_id": "usr_006",
+    "contract_id": "CNT-DPA-03",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the data breach notification window?",
+    "output_answer": "Under Section 8.4, the processor must notify the controller within forty-eight (48) hours of becoming aware of a breach.",
+    "retrieved_context_ids": [
+      "chunk_dpa_sec8_4"
+    ],
+    "cited_clauses": [
+      "Section 8.4"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-6-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-30T16:10:30",
+        "end_time_iso": "2026-09-30T16:10:30",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-6-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-30T16:10:30",
+        "end_time_iso": "2026-09-30T16:10:30",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_dpa_sec8_4"
+          ]
+        }
+      },
+      {
+        "span_id": "span-6-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-09-30T16:10:30",
+        "end_time_iso": "2026-09-30T16:10:30",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-6-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-09-30T16:10:30",
+        "end_time_iso": "2026-09-30T16:10:30",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0039",
+    "request_id": "req-00039",
+    "timestamp_iso": "2026-10-01T08:12:00",
+    "day_of_week": "Thursday",
+    "user_id": "usr_007",
+    "contract_id": "CNT-LIC-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "Does the license include sublicensing rights?",
+    "output_answer": "Under Section 2.1, the grant is non-exclusive and non-transferable without sublicensing rights.",
+    "retrieved_context_ids": [
+      "chunk_lic_sec2_1"
+    ],
+    "cited_clauses": [
+      "Section 2.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-7-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T08:12:00",
+        "end_time_iso": "2026-10-01T08:12:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-7-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T08:12:00",
+        "end_time_iso": "2026-10-01T08:12:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_lic_sec2_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-7-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T08:12:00",
+        "end_time_iso": "2026-10-01T08:12:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-7-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T08:12:00",
+        "end_time_iso": "2026-10-01T08:12:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0040",
+    "request_id": "req-00040",
+    "timestamp_iso": "2026-10-01T09:45:10",
+    "day_of_week": "Thursday",
+    "user_id": "usr_008",
+    "contract_id": "CNT-MSA-02",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the force majeure notification period?",
+    "output_answer": "Section 14.1 requires written notice within ten (10) business days of the force majeure event.",
+    "retrieved_context_ids": [
+      "chunk_msa_sec14_1"
+    ],
+    "cited_clauses": [
+      "Section 14.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-8-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T09:45:10",
+        "end_time_iso": "2026-10-01T09:45:10",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-8-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T09:45:10",
+        "end_time_iso": "2026-10-01T09:45:10",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_msa_sec14_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-8-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T09:45:10",
+        "end_time_iso": "2026-10-01T09:45:10",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-8-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T09:45:10",
+        "end_time_iso": "2026-10-01T09:45:10",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0041",
+    "request_id": "req-00041",
+    "timestamp_iso": "2026-10-01T11:00:25",
+    "day_of_week": "Thursday",
+    "user_id": "usr_009",
+    "contract_id": "CNT-SOW-05",
+    "prompt_version": "v1.0.0",
+    "input_query": "When is the final acceptance testing completed?",
+    "output_answer": "Section 5.3 specifies a ten (10) day acceptance test period following delivery.",
+    "retrieved_context_ids": [
+      "chunk_sow_sec5_3"
+    ],
+    "cited_clauses": [
+      "Section 5.3"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-9-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T11:00:25",
+        "end_time_iso": "2026-10-01T11:00:25",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-9-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T11:00:25",
+        "end_time_iso": "2026-10-01T11:00:25",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_sow_sec5_3"
+          ]
+        }
+      },
+      {
+        "span_id": "span-9-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T11:00:25",
+        "end_time_iso": "2026-10-01T11:00:25",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-9-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T11:00:25",
+        "end_time_iso": "2026-10-01T11:00:25",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0042",
+    "request_id": "req-00042",
+    "timestamp_iso": "2026-10-01T13:15:00",
+    "day_of_week": "Thursday",
+    "user_id": "usr_010",
+    "contract_id": "CNT-EMP-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the non-solicitation duration?",
+    "output_answer": "Under Section 6.2, non-solicitation restrictions apply during employment and for twelve (12) months post-termination.",
+    "retrieved_context_ids": [
+      "chunk_emp_sec6_2"
+    ],
+    "cited_clauses": [
+      "Section 6.2"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-10-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T13:15:00",
+        "end_time_iso": "2026-10-01T13:15:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-10-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T13:15:00",
+        "end_time_iso": "2026-10-01T13:15:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_emp_sec6_2"
+          ]
+        }
+      },
+      {
+        "span_id": "span-10-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T13:15:00",
+        "end_time_iso": "2026-10-01T13:15:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-10-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T13:15:00",
+        "end_time_iso": "2026-10-01T13:15:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0043",
+    "request_id": "req-00043",
+    "timestamp_iso": "2026-10-01T14:22:10",
+    "day_of_week": "Thursday",
+    "user_id": "usr_lawyer_88",
+    "contract_id": "CNT-MSA-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "What are the notice requirements for early termination for convenience under our Master Service Agreement?",
+    "output_answer": "Under Section 12.4 of the Master Service Agreement, either party may terminate for convenience with thirty (30) days prior written notice.",
+    "retrieved_context_ids": [
+      "chunk_msa_v1_sec12_4",
+      "chunk_amend2_sec12_4"
+    ],
+    "cited_clauses": [
+      "Section 12.4"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-11-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T14:22:10",
+        "end_time_iso": "2026-10-01T14:22:10",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-11-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T14:22:10",
+        "end_time_iso": "2026-10-01T14:22:10",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_msa_v1_sec12_4",
+            "chunk_amend2_sec12_4"
+          ]
+        }
+      },
+      {
+        "span_id": "span-11-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T14:22:10",
+        "end_time_iso": "2026-10-01T14:22:10",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-11-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T14:22:10",
+        "end_time_iso": "2026-10-01T14:22:10",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "WARNING",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "CITATION_ERROR",
+    "error_type": "SUPERSEDED_CLAUSE_CITED",
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0044",
+    "request_id": "req-00044",
+    "timestamp_iso": "2026-10-01T15:05:40",
+    "day_of_week": "Thursday",
+    "user_id": "usr_011",
+    "contract_id": "CNT-SEC-02",
+    "prompt_version": "v1.0.0",
+    "input_query": "What security certifications are required?",
+    "output_answer": "Under Section 7.1, SOC 2 Type II and ISO 27001 certifications must be maintained continuously.",
+    "retrieved_context_ids": [
+      "chunk_sec_sec7_1"
+    ],
+    "cited_clauses": [
+      "Section 7.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-12-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T15:05:40",
+        "end_time_iso": "2026-10-01T15:05:40",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-12-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T15:05:40",
+        "end_time_iso": "2026-10-01T15:05:40",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_sec_sec7_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-12-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T15:05:40",
+        "end_time_iso": "2026-10-01T15:05:40",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-12-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T15:05:40",
+        "end_time_iso": "2026-10-01T15:05:40",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0045",
+    "request_id": "req-00045",
+    "timestamp_iso": "2026-10-01T16:30:15",
+    "day_of_week": "Thursday",
+    "user_id": "usr_012",
+    "contract_id": "CNT-MSA-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "Can the vendor assign this agreement to an affiliate?",
+    "output_answer": "Section 15.3 permits assignment to an affiliate upon written notice without prior consent.",
+    "retrieved_context_ids": [
+      "chunk_msa_sec15_3"
+    ],
+    "cited_clauses": [
+      "Section 15.3"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-13-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T16:30:15",
+        "end_time_iso": "2026-10-01T16:30:15",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-13-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T16:30:15",
+        "end_time_iso": "2026-10-01T16:30:15",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_msa_sec15_3"
+          ]
+        }
+      },
+      {
+        "span_id": "span-13-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T16:30:15",
+        "end_time_iso": "2026-10-01T16:30:15",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-13-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T16:30:15",
+        "end_time_iso": "2026-10-01T16:30:15",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0046",
+    "request_id": "req-00046",
+    "timestamp_iso": "2026-10-01T17:10:00",
+    "day_of_week": "Thursday",
+    "user_id": "usr_013",
+    "contract_id": "CNT-IP-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "Who owns work product created under this contract?",
+    "output_answer": "Section 4.1 designates all deliverables as works made for hire owned exclusively by the Client.",
+    "retrieved_context_ids": [
+      "chunk_ip_sec4_1"
+    ],
+    "cited_clauses": [
+      "Section 4.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-14-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T17:10:00",
+        "end_time_iso": "2026-10-01T17:10:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-14-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-01T17:10:00",
+        "end_time_iso": "2026-10-01T17:10:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_ip_sec4_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-14-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-01T17:10:00",
+        "end_time_iso": "2026-10-01T17:10:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-14-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-01T17:10:00",
+        "end_time_iso": "2026-10-01T17:10:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0047",
+    "request_id": "req-00047",
+    "timestamp_iso": "2026-10-02T09:00:00",
+    "day_of_week": "Friday",
+    "user_id": "usr_014",
+    "contract_id": "CNT-INS-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "What are the required commercial general liability policy limits?",
+    "output_answer": "Section 9.1 mandates ,000,000 per occurrence and ,000,000 general aggregate.",
+    "retrieved_context_ids": [
+      "chunk_ins_sec9_1"
+    ],
+    "cited_clauses": [
+      "Section 9.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-15-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-02T09:00:00",
+        "end_time_iso": "2026-10-02T09:00:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-15-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-02T09:00:00",
+        "end_time_iso": "2026-10-02T09:00:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_ins_sec9_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-15-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-02T09:00:00",
+        "end_time_iso": "2026-10-02T09:00:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-15-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-02T09:00:00",
+        "end_time_iso": "2026-10-02T09:00:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0048",
+    "request_id": "req-00048",
+    "timestamp_iso": "2026-10-02T10:30:00",
+    "day_of_week": "Friday",
+    "user_id": "usr_015",
+    "contract_id": "CNT-MSA-03",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the dispute resolution escalation process?",
+    "output_answer": "Section 17.2 mandates good-faith executive negotiation for 30 days prior to binding arbitration.",
+    "retrieved_context_ids": [
+      "chunk_msa_sec17_2"
+    ],
+    "cited_clauses": [
+      "Section 17.2"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-16-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-02T10:30:00",
+        "end_time_iso": "2026-10-02T10:30:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-16-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-10-02T10:30:00",
+        "end_time_iso": "2026-10-02T10:30:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_msa_sec17_2"
+          ]
+        }
+      },
+      {
+        "span_id": "span-16-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-10-02T10:30:00",
+        "end_time_iso": "2026-10-02T10:30:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-16-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-10-02T10:30:00",
+        "end_time_iso": "2026-10-02T10:30:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0049",
+    "request_id": "req-00049",
+    "timestamp_iso": "2026-09-28T09:15:00",
+    "day_of_week": "Monday",
+    "user_id": "usr_001",
+    "contract_id": "CNT-MSA-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the governing law of the Master Agreement?",
+    "output_answer": "Under Section 16.1, the Agreement is governed by the laws of the State of Delaware.",
+    "retrieved_context_ids": [
+      "chunk_msa_sec16_1"
+    ],
+    "cited_clauses": [
+      "Section 16.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-1-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-28T09:15:00",
+        "end_time_iso": "2026-09-28T09:15:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-1-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-28T09:15:00",
+        "end_time_iso": "2026-09-28T09:15:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_msa_sec16_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-1-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-09-28T09:15:00",
+        "end_time_iso": "2026-09-28T09:15:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-1-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-09-28T09:15:00",
+        "end_time_iso": "2026-09-28T09:15:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0050",
+    "request_id": "req-00050",
+    "timestamp_iso": "2026-09-28T11:30:20",
+    "day_of_week": "Monday",
+    "user_id": "usr_002",
+    "contract_id": "CNT-NDA-04",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the confidentiality term in the Non-Disclosure Agreement?",
+    "output_answer": "Under Section 3.2, confidential information must be protected for three (3) years from the Effective Date.",
+    "retrieved_context_ids": [
+      "chunk_nda_sec3_2"
+    ],
+    "cited_clauses": [
+      "Section 3.2"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-2-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-28T11:30:20",
+        "end_time_iso": "2026-09-28T11:30:20",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-2-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-28T11:30:20",
+        "end_time_iso": "2026-09-28T11:30:20",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_nda_sec3_2"
+          ]
+        }
+      },
+      {
+        "span_id": "span-2-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-09-28T11:30:20",
+        "end_time_iso": "2026-09-28T11:30:20",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-2-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-09-28T11:30:20",
+        "end_time_iso": "2026-09-28T11:30:20",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0051",
+    "request_id": "req-00051",
+    "timestamp_iso": "2026-09-29T10:05:12",
+    "day_of_week": "Tuesday",
+    "user_id": "usr_003",
+    "contract_id": "CNT-SOW-02",
+    "prompt_version": "v1.0.0",
+    "input_query": "What are the payment milestones for Phase 1?",
+    "output_answer": "According to Exhibit A (Pricing), Phase 1 payment of ,000 is due within 30 days of deliverable acceptance.",
+    "retrieved_context_ids": [
+      "chunk_sow_exhibit_a"
+    ],
+    "cited_clauses": [
+      "Exhibit A"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-3-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-29T10:05:12",
+        "end_time_iso": "2026-09-29T10:05:12",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-3-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-29T10:05:12",
+        "end_time_iso": "2026-09-29T10:05:12",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_sow_exhibit_a"
+          ]
+        }
+      },
+      {
+        "span_id": "span-3-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-09-29T10:05:12",
+        "end_time_iso": "2026-09-29T10:05:12",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-3-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-09-29T10:05:12",
+        "end_time_iso": "2026-09-29T10:05:12",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0052",
+    "request_id": "req-00052",
+    "timestamp_iso": "2026-09-29T14:40:00",
+    "day_of_week": "Tuesday",
+    "user_id": "usr_004",
+    "contract_id": "CNT-SLA-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the uptime SLA guarantee?",
+    "output_answer": "Section 4.1 specifies an uptime commitment of 99.9% measured on a calendar monthly basis.",
+    "retrieved_context_ids": [
+      "chunk_sla_sec4_1"
+    ],
+    "cited_clauses": [
+      "Section 4.1"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-4-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-29T14:40:00",
+        "end_time_iso": "2026-09-29T14:40:00",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-4-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-29T14:40:00",
+        "end_time_iso": "2026-09-29T14:40:00",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_sla_sec4_1"
+          ]
+        }
+      },
+      {
+        "span_id": "span-4-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-09-29T14:40:00",
+        "end_time_iso": "2026-09-29T14:40:00",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-4-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-09-29T14:40:00",
+        "end_time_iso": "2026-09-29T14:40:00",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  },
+  {
+    "trace_id": "TRACE-2026-W11-0053",
+    "request_id": "req-00053",
+    "timestamp_iso": "2026-09-30T08:20:45",
+    "day_of_week": "Wednesday",
+    "user_id": "usr_005",
+    "contract_id": "CNT-MSA-01",
+    "prompt_version": "v1.0.0",
+    "input_query": "What is the limitation of liability cap?",
+    "output_answer": "Under Section 11.2, aggregate liability is capped at the total fees paid in the prior twelve (12) months.",
+    "retrieved_context_ids": [
+      "chunk_msa_sec11_2"
+    ],
+    "cited_clauses": [
+      "Section 11.2"
+    ],
+    "amendment_status": "CURRENT",
+    "has_citation_conflict": false,
+    "spans": [
+      {
+        "span_id": "span-5-1",
+        "span_name": "embedding_query",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-30T08:20:45",
+        "end_time_iso": "2026-09-30T08:20:45",
+        "latency_ms": 18.5,
+        "input_tokens": 128,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 128,
+        "cost_usd": 2.56e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "embedding_model": "text-embedding-3-small"
+        }
+      },
+      {
+        "span_id": "span-5-2",
+        "span_name": "hybrid_retrieval_rrf",
+        "stage": "retrieval",
+        "start_time_iso": "2026-09-30T08:20:45",
+        "end_time_iso": "2026-09-30T08:20:45",
+        "latency_ms": 42.3,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 0.0,
+        "status": "SUCCESS",
+        "metadata": {
+          "top_k": 5,
+          "retrieved_ids": [
+            "chunk_msa_sec11_2"
+          ]
+        }
+      },
+      {
+        "span_id": "span-5-3",
+        "span_name": "llm_generation",
+        "stage": "generation",
+        "start_time_iso": "2026-09-30T08:20:45",
+        "end_time_iso": "2026-09-30T08:20:45",
+        "latency_ms": 685.2,
+        "input_tokens": 1450,
+        "output_tokens": 120,
+        "cached_tokens": 0,
+        "total_tokens": 1570,
+        "cost_usd": 0.0002895,
+        "status": "SUCCESS",
+        "metadata": {
+          "model": "gpt-4o-mini",
+          "prompt_version": "v1.0.0"
+        }
+      },
+      {
+        "span_id": "span-5-4",
+        "span_name": "citation_validation",
+        "stage": "tools",
+        "start_time_iso": "2026-09-30T08:20:45",
+        "end_time_iso": "2026-09-30T08:20:45",
+        "latency_ms": 8.4,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cached_tokens": 0,
+        "total_tokens": 0,
+        "cost_usd": 7e-06,
+        "status": "SUCCESS",
+        "metadata": {
+          "assertion_checks": 4
+        }
+      }
+    ],
+    "total_latency_ms": 754.4,
+    "total_prompt_tokens": 1578,
+    "total_completion_tokens": 120,
+    "total_tokens": 1698,
+    "cost_by_stage": {
+      "retrieval_cost_usd": 2.56e-06,
+      "generation_cost_usd": 0.0002895,
+      "tools_cost_usd": 7e-06,
+      "total_cost_usd": 0.00029906,
+      "retrieval_pct": 0.86,
+      "generation_pct": 96.8,
+      "tools_pct": 2.34
+    },
+    "status": "SUCCESS",
+    "error_type": null,
+    "canary_routed": false
+  }
+]

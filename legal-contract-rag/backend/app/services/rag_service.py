@@ -59,7 +59,11 @@ class EnterpriseRAGService:
         # 2. Hybrid Retrieval (Semantic Search + BM25 + RRF Fusion)
         from backend.app.rag.hybrid_retriever import HybridRetriever
         try:
-            retriever = HybridRetriever(db=db)
+            retriever = HybridRetriever(
+                db=db,
+                vector_client=self.vector_client,
+                embedding_service=self.embedding_service
+            )
             retrieval_res = retriever.search(
                 query=question,
                 contract_ids=scoped_contract_ids,

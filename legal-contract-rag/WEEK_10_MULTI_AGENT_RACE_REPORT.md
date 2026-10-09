@@ -10,7 +10,7 @@ This report documents the rigorous head-to-head race between our **Single Agent*
 Both arms achieved a **100.0% Pass Rate**, but the Multi-Agent Squad imposed an exorbitant price tag:
 - **1.4x Token Multiplier** (25,019 tokens vs 18,091 tokens).
 - **~13.4x Cost Penalty** per question.
-- **~4.6x p99 Latency Blowout** (0.0024s vs 0.0005s).
+- **~3.0x p99 Latency Blowout** (0.0021s vs 0.0007s).
 
 The empirical conclusion is undeniable: **Multi-agent architecture is KILLED; Single Agent is KEPT for production.**
 
@@ -21,8 +21,8 @@ The empirical conclusion is undeniable: **Multi-agent architecture is KILLED; Si
 | Evaluation Metric | Single Agent (Production Path) | Multi-Agent Orchestrator Squad | Delta / Multi-Agent Tax | Rubric Target |
 |---|:---:|:---:|:---:|:---:|
 | **Pass Rate (%)** | **100.0%** | **100.0%** | **0.0%** (Identical Accuracy) | 30 pts |
-| **p50 Latency (s)** | **0.0001s** | **0.0013s** | **+0.0012s** | 30 pts |
-| **p99 Latency (s)** | **0.0005s** | **0.0024s** | **+0.0018s** | 30 pts |
+| **p50 Latency (s)** | **0.0002s** | **0.0016s** | **+0.0015s** | 30 pts |
+| **p99 Latency (s)** | **0.0007s** | **0.0021s** | **+0.0014s** | 30 pts |
 | **Total Tokens** | **18,091** | **25,019** | **+6,928 tokens** | 30 pts |
 | **Cost Per Question** | **$0.000336** | **$0.004503** | **+$0.004167** | 30 pts |
 
@@ -53,7 +53,7 @@ On test case `RACE-005`, we injected an HTTP 500 failure on the `DefinedTermsWor
 1. Single Agent achieves 100.0% Pass Rate matching the Multi-Agent Squad (100.0%).
 2. Multi-Agent imposes a massive 1.4x Token Multiplier (25019 vs 18091 tokens).
 3. Cost per question is ~3x higher on Multi-Agent ($0.004503 vs $0.000336).
-4. p99 Latency is unacceptable on Multi-Agent (0.0024s vs 0.0005s single agent).
+4. p99 Latency is unacceptable on Multi-Agent (0.0021s vs 0.0007s single agent).
 5. Dominant token sink is 'Orchestrator -> Defined-Terms Worker resend' consuming 38.5% of all tokens.
 6. SUNK-COST BIAS NAMED: We spent substantial engineering hours decomposing schemas and wiring
    orchestrators and workers, creating an emotional urge to keep multi-agent simply because we built it.

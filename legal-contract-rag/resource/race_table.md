@@ -12,8 +12,8 @@
 | Metric | Single Agent (Production Baseline) | Multi-Agent Orchestrator Squad | Delta (Multi vs Single) |
 |---|:---:|:---:|:---:|
 | **Pass Rate (%)** | **100.0%** (10/10) | **100.0%** (10/10) | **0.0% (TIE)** |
-| **p50 Latency (s)** | **0.0001s** | **0.0013s** | **+0.0012s (8.9x slower)** |
-| **p99 Latency (s)** | **0.0005s** | **0.0024s** | **+0.0018s (4.6x slower)** |
+| **p50 Latency (s)** | **0.0002s** | **0.0016s** | **+0.0015s (8.9x slower)** |
+| **p99 Latency (s)** | **0.0007s** | **0.0021s** | **+0.0014s (3.0x slower)** |
 | **Total Tokens** | **18,091** | **25,019** | **+6,928 tokens** |
 | **Cost Per Question ($)** | **$0.000336** | **$0.004503** | **+$0.004167 (13.4x cost)** |
 
@@ -29,13 +29,13 @@
 
 | Case ID | Question | Single Agent Pass | Multi-Agent Pass | Single Toks | Multi Toks | Multi Latency |
 |---|---|:---:|:---:|:---:|:---:|:---:|
-| `RACE-001` | What is the notice period required for early terminatio... | ✅ PASS | ✅ PASS | 1048 | 2405 | 0.0014s |
-| `RACE-002` | What is the initial commitment period before terminatio... | ✅ PASS | ✅ PASS | 1974 | 2387 | 0.0015s |
-| `RACE-003` | What is the governing law for the executed agreement?... | ✅ PASS | ✅ PASS | 1013 | 1362 | 0.0011s |
-| `RACE-004` | What is the formal delivery method for notices under Ar... | ✅ PASS | ✅ PASS | 1036 | 1420 | 0.0008s |
-| `RACE-005` | What is the exact notice deadline for termination for M... | ✅ PASS | ✅ PASS | 1413 | 3269 | 0.0024s |
-| `RACE-006` | If Acme Corp experiences a Change of Control, what is t... | ✅ PASS | ✅ PASS | 1088 | 2397 | 0.0012s |
-| `RACE-007` | Under Amendment No. 1, what was the early termination n... | ✅ PASS | ✅ PASS | 1824 | 2238 | 0.0011s |
-| `RACE-008` | What are the combined requirements (cure period and sub... | ✅ PASS | ✅ PASS | 1413 | 4114 | 0.0017s |
-| `RACE-009` | How did the defined Cure Period change between the Orig... | ✅ PASS | ✅ PASS | 1507 | 3030 | 0.0014s |
-| `RACE-010` | Resolve the notice schedule for Circular Term Alpha to ... | ✅ PASS | ✅ PASS | 5775 | 2397 | 0.0013s |
+| `RACE-001` | What is the notice period required for early terminatio... | ✅ PASS | ✅ PASS | 1048 | 2405 | 0.0021s |
+| `RACE-002` | What is the initial commitment period before terminatio... | ✅ PASS | ✅ PASS | 1974 | 2387 | 0.0016s |
+| `RACE-003` | What is the governing law for the executed agreement?... | ✅ PASS | ✅ PASS | 1013 | 1362 | 0.0013s |
+| `RACE-004` | What is the formal delivery method for notices under Ar... | ✅ PASS | ✅ PASS | 1036 | 1420 | 0.0013s |
+| `RACE-005` | What is the exact notice deadline for termination for M... | ✅ PASS | ✅ PASS | 1413 | 3269 | 0.0020s |
+| `RACE-006` | If Acme Corp experiences a Change of Control, what is t... | ✅ PASS | ✅ PASS | 1088 | 2397 | 0.0017s |
+| `RACE-007` | Under Amendment No. 1, what was the early termination n... | ✅ PASS | ✅ PASS | 1824 | 2238 | 0.0016s |
+| `RACE-008` | What are the combined requirements (cure period and sub... | ✅ PASS | ✅ PASS | 1413 | 4114 | 0.0019s |
+| `RACE-009` | How did the defined Cure Period change between the Orig... | ✅ PASS | ✅ PASS | 1507 | 3030 | 0.0018s |
+| `RACE-010` | Resolve the notice schedule for Circular Term Alpha to ... | ✅ PASS | ✅ PASS | 5775 | 2397 | 0.0014s |

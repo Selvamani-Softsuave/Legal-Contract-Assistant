@@ -23,7 +23,7 @@
 | **Target Worker** | `DefinedTermsWorker` |
 | **Injected Fault Code** | `HTTP 500: Remote Worker Unavailable` |
 | **Orchestrator Behavior** | **`DEGRADE_TO_PARTIAL_ANSWER`** |
-| **Latency Incurred** | `0.0018s` |
+| **Latency Incurred** | `0.0015s` |
 | **Tokens Consumed** | `2363` tokens |
 
 ---

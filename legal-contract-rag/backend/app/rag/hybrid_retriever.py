@@ -18,10 +18,15 @@ class HybridRetriever:
     Preserves strict contract scoping (0% cross-contract leakage).
     """
 
-    def __init__(self, db: Optional[Session] = None):
+    def __init__(
+        self,
+        db: Optional[Session] = None,
+        vector_client: Optional[VectorClient] = None,
+        embedding_service: Optional[EmbeddingService] = None
+    ):
         self.db = db
-        self.vector_client = VectorClient()
-        self.embedding_service = EmbeddingService()
+        self.vector_client = vector_client or VectorClient()
+        self.embedding_service = embedding_service or EmbeddingService()
         self.bm25_retriever = BM25Retriever(db=db)
 
     def search(

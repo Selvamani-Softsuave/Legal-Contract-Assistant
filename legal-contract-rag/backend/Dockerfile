@@ -20,6 +20,7 @@ COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/ /app/backend/
+COPY resource/ /app/resource/
 
 # Copy startup script and make executable (stripping Windows CRLF if present)
 COPY backend/scripts/start.sh /app/start.sh

@@ -1,0 +1,18 @@
+{
+  "id": "TC-W11-TERM-001",
+  "contract_id": "CNT-MSA-01",
+  "taxonomy_mode": "SUPERSEDED_AMENDMENT_PRECISION",
+  "question": "What are the notice requirements for early termination for convenience under our Master Service Agreement?",
+  "ground_truth": "Under Amendment No. 2 (amending Section 12.4), termination for convenience requires ninety (90) days prior written notice and mutual written consent.",
+  "expected_clause_reference": "Amendment No. 2",
+  "disallowed_clause_reference": "Section 12.4 of the Master Service Agreement",
+  "expected_notice_days": 90,
+  "disallowed_notice_days": 30,
+  "retrieved_context_ids": [
+    "chunk_msa_v1_sec12_4",
+    "chunk_amend2_sec12_4"
+  ],
+  "context_text": "DOCUMENT 1: Master Service Agreement (Dated Jan 1, 2024)\nSection 12.4 Termination for Convenience: Either party may terminate this Agreement without cause upon providing thirty (30) days prior written notice to the other party.\n\nDOCUMENT 2: Amendment No. 2 to Master Service Agreement (Dated Mar 15, 2025)\nSection 1 (Amendment to Section 12.4): Section 12.4 of the Master Service Agreement is hereby deleted in its entirety and replaced with the following: 'Either party may terminate this Agreement for convenience only upon ninety (90) days prior written notice and subject to mutual written consent of both parties.' All other terms remain in full force.",
+  "is_regression": true,
+  "created_from_trace_id": "TRACE-2026-W11-F042"
+}
