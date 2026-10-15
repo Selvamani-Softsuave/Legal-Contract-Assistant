@@ -21,6 +21,12 @@ from backend.app.mcp.protocol import (
     ToolContent,
 )
 
+from backend.app.domain.shared_corpus_knowledge import (
+    SHARED_METADATA,
+    SHARED_AMENDMENT_CHAINS,
+    resolve_contract_id,
+)
+
 SERVER_INFO = ServerInfo(name="Contract Repository & Metadata Server", version="1.0.0")
 
 MOCK_METADATA = {
@@ -69,11 +75,13 @@ def get_contract_metadata(contract_id: str) -> CallToolResult:
     """
     Retrieve comprehensive metadata for a contract including parties, effective date, governing law, total contract value, lifecycle status, and linked parent/subsidiary agreement IDs.
     Use this tool to identify counterparties, jurisdiction rules, or active contract status.
-    Provide the contract_id (e.g. 'CNT-MAIN-2024').
+    Provide the contract_id (e.g. 'CNT-MAIN-2024', 'MSA-2026-014', 'Northwind').
     """
-    meta = MOCK_METADATA.get(contract_id)
+    resolved_id = resolve_contract_id(contract_id)
+    meta = SHARED_METADATA.get(resolved_id) or MOCK_METADATA.get(resolved_id) or MOCK_METADATA.get(contract_id)
+
     if not meta:
-        avail = list(MOCK_METADATA.keys())
+        avail = sorted(list(set(list(MOCK_METADATA.keys()) + list(SHARED_METADATA.keys()))))
         err_text = (
             f"Contract metadata not found for '{contract_id}'. "
             f"Available registered contracts: {', '.join(avail)}. "
@@ -82,8 +90,11 @@ def get_contract_metadata(contract_id: str) -> CallToolResult:
         return CallToolResult(content=[ToolContent(text=err_text)], isError=True)
 
     formatted_json = json.dumps(meta, indent=2)
+    source_doc = meta.get("contract_id", resolved_id)
+    eff_date = meta.get("effective_date", "Unknown")
+    citation_header = f"[CITATION: source_doc='{source_doc}', clause_ref='Contract Preamble/Metadata', effective_date='{eff_date}']"
     return CallToolResult(
-        content=[ToolContent(text=f"Contract Metadata for {contract_id}:\n{formatted_json}")],
+        content=[ToolContent(text=f"{citation_header}\nContract Metadata for {source_doc}:\n{formatted_json}")],
         isError=False
     )
 
@@ -92,29 +103,38 @@ def get_amendment_chain(contract_id: str) -> CallToolResult:
     """
     Retrieve the chronological amendment and addenda history for a master agreement.
     Use this tool to track superseded terms, dispute escalation changes, scope modifications, or current active versions across related legal instruments.
-    Provide the master contract_id (e.g. 'CNT-MAIN-2024').
+    Provide the master contract_id (e.g. 'CNT-MAIN-2024', 'MSA-2026-014', 'Northwind').
     """
-    chain = MOCK_AMENDMENTS.get(contract_id)
+    resolved_id = resolve_contract_id(contract_id)
+    chain = SHARED_AMENDMENT_CHAINS.get(resolved_id) or MOCK_AMENDMENTS.get(resolved_id) or MOCK_AMENDMENTS.get(contract_id)
+
     if not chain:
-        if contract_id in MOCK_METADATA:
+        if resolved_id in SHARED_METADATA or contract_id in MOCK_METADATA:
             return CallToolResult(
-                content=[ToolContent(text=f"Contract '{contract_id}' exists as a standalone agreement with no recorded amendments or addenda.")],
+                content=[ToolContent(text=f"Contract '{resolved_id}' exists as a standalone agreement with no recorded amendments or addenda.")],
                 isError=False
             )
+        avail = sorted(list(set(list(MOCK_AMENDMENTS.keys()) + list(SHARED_AMENDMENT_CHAINS.keys()))))
         return CallToolResult(
-            content=[ToolContent(text=f"Master agreement '{contract_id}' not found in the Amendment Registry. Available master IDs: {', '.join(MOCK_AMENDMENTS.keys())}")],
+            content=[ToolContent(text=f"Master agreement '{contract_id}' not found in the Amendment Registry. Available master IDs: {', '.join(avail)}")],
             isError=True
         )
 
-    output = [f"Amendment Chain History for Master Agreement '{contract_id}':"]
+    output = [
+        f"[CITATION: source_doc='{resolved_id}', clause_ref='Amendment Registry', effective_date='Current Active']",
+        f"Amendment Chain History for Master Agreement '{resolved_id}':"
+    ]
     for amd in chain:
+        status_line = f"  Status: {amd.get('status', 'Active')}\n" if "status" in amd else ""
         output.append(
             f"\n• Sequence #{amd['sequence']}: {amd['amendment_id']} - {amd['title']}\n"
             f"  Effective Date: {amd['effective_date']}\n"
+            f"{status_line}"
             f"  Summary: {amd['summary']}\n"
-            f"  Affected Sections: {', '.join(amd['affected_sections'])}"
+            f"  Affected Sections: {', '.join(amd.get('affected_sections', []))}"
         )
     return CallToolResult(content=[ToolContent(text="\n".join(output))], isError=False)
+
 
 
 TOOLS = [

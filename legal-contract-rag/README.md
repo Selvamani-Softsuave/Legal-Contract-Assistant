@@ -1,8 +1,40 @@
-# Enterprise Legal Contract RAG System
+# Enterprise Legal Contract RAG & Assistant System
+**Track F — Legal Contract Assistant (Week 12 Capstone)**
 
-An enterprise-ready, modular **Retrieval-Augmented Generation (RAG)** platform for legal contract ingestion, legal-aware clause chunking, vector search, and grounded question answering with source citations.
+An enterprise-ready, modular **Retrieval-Augmented Generation (RAG)** platform and **MCP-based ReAct Agent Assistant** for legal contract review, amendment precedence resolution, defined terms extraction, and strict safety guardrail compliance.
 
 ---
+
+## 🚀 Week 12 Capstone Single Entry Point (`run_capstone.py`)
+
+A stranger-executable entry point integrating all eleven weeks of artifacts under a single CLI interface. Discovers MCP tools dynamically at runtime, resolves amendment hierarchies, validates citations, and enforces legal advice refusal guardrails.
+
+```powershell
+# 1. Interactive Grounded Legal Query (e.g. Northwind Liability Cap)
+python run_capstone.py --query "What is the liability cap under the Northwind Logistics agreement?"
+
+# 2. Detailed ReAct Execution Trajectory (Thought -> Action -> Observation)
+python run_capstone.py --trajectory "Is 20 October 2026 a Business Day for Northwind Logistics?"
+
+# 3. Comprehensive 32-Case Golden Set Evaluation Benchmark
+python run_capstone.py --eval
+
+# 4. Sequenced 4-Part Live Defense Demonstration (10 Minutes)
+python run_capstone.py --demo
+```
+
+### 📋 Capstone Deliverables Dossier
+- [`run_capstone.py`](run_capstone.py): Unified executable entry point (`--query`, `--eval`, `--trajectory`, `--demo`).
+- [`seams.md`](seams.md): Unedited Tuesday integration seams record with `[FIXED]`, `[ACCEPTED]`, `[RAN-OUT-OF-TIME]`.
+- [`architecture.md`](architecture.md): ASCII and Mermaid architecture, trust boundaries, protocol specs, fallback matrix, and unit economics.
+- [`CAPSTONE_EVAL_REPORT.md`](CAPSTONE_EVAL_REPORT.md): Re-scored 32 golden cases (93.75% pass rate), liability caps broken out, 90.6% judge agreement.
+- [`weaknesses.md`](weaknesses.md): Top 3 authentic technical weaknesses dated Wednesday with production mitigations.
+- [`fresh_eyes_review.md`](fresh_eyes_review.md): Independent peer auditor walkthrough and stranger-test certification.
+- [`demo_script.md`](demo_script.md): Timed 10-minute 4-part presentation script with hostile Q&A defense playbook.
+- [`tenx.md`](tenx.md): Mathematical proof of the 10x scalability break (TPM throttle at 42.6s).
+
+---
+
 
 ## 🏛️ Architecture Overview
 
