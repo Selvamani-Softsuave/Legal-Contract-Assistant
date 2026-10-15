@@ -1,6 +1,6 @@
 import os
 import logging
-from typing import BinaryIO
+from typing import BinaryIO, Any
 from backend.app.infrastructure.storage.base import BaseStorageService
 from backend.app.core.config import settings
 
@@ -38,7 +38,11 @@ class AzureBlobStorageService(BaseStorageService):
             logger.warning(f"Failed to connect to Azure Blob Storage / Azurite: {e}")
             return None
 
-    def upload_file(self, file_obj: BinaryIO, blob_name: str, content_type: str = "application/pdf") -> str:
+    def upload_file(self, file_obj: Any, blob_name: Any, content_type: str = "application/pdf") -> str:
+        # Tolerate reverse parameter ordering (e.g. blob_name, file_obj)
+        if isinstance(file_obj, str) and not isinstance(blob_name, str):
+            blob_name, file_obj = file_obj, blob_name
+
         client = self._get_blob_service_client()
         if client:
             try:

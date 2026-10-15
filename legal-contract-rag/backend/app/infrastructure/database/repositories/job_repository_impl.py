@@ -1,3 +1,4 @@
+import uuid
 from typing import Optional, Dict, Any
 from sqlalchemy.orm import Session
 from datetime import datetime
@@ -13,16 +14,29 @@ class SQLAlchemyJobRepository(IJobRepository):
 
     def create_job(
         self,
-        job_id: str,
-        document_id: str,
+        job_id_or_dict: Any = None,
+        document_id: Optional[str] = None,
         operation: str = "PROCESS",
-        correlation_id: Optional[str] = None
+        correlation_id: Optional[str] = None,
+        job_id: Optional[str] = None,
+        **kwargs
     ) -> Dict[str, Any]:
+        if isinstance(job_id_or_dict, dict):
+            j_id = job_id_or_dict.get("id") or str(uuid.uuid4())
+            doc_id = job_id_or_dict.get("document_id")
+            op = job_id_or_dict.get("operation", "PROCESS")
+            corr_id = job_id_or_dict.get("correlation_id")
+        else:
+            j_id = job_id or job_id_or_dict or str(uuid.uuid4())
+            doc_id = document_id
+            op = operation
+            corr_id = correlation_id
+
         job = ProcessingJob(
-            id=job_id,
-            document_id=document_id,
-            operation=operation,
-            correlation_id=correlation_id,
+            id=j_id,
+            document_id=doc_id,
+            operation=op,
+            correlation_id=corr_id,
             status="Queued"
         )
         self.db.add(job)

@@ -23,8 +23,8 @@ class DocumentMapper:
             file_type=orm_entity.file_type,
             blob_path=orm_entity.blob_path,
             status=status_val,
-            error_message=orm_entity.error_message,
-            extracted_text_path=orm_entity.extracted_text_path,
+            error_message=getattr(orm_entity, "error_message", None),
+            extracted_text_path=getattr(orm_entity, "extracted_text_path", None),
             created_at=orm_entity.created_at,
             updated_at=orm_entity.updated_at
         )
@@ -41,8 +41,6 @@ class DocumentMapper:
             file_type=domain_entity.file_type,
             blob_path=domain_entity.blob_path,
             status=domain_entity.status.value if hasattr(domain_entity.status, "value") else str(domain_entity.status),
-            error_message=domain_entity.error_message,
-            extracted_text_path=domain_entity.extracted_text_path,
             created_at=domain_entity.created_at,
             updated_at=domain_entity.updated_at
         )
