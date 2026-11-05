@@ -415,10 +415,10 @@ def handle_eval():
     print("=" * 80)
     print("WEEK 12 CAPSTONE: EVALUATION RUNNER (32 GOLDEN TEST CASES)")
     print("=" * 80)
-    from scripts.evaluate_shared_corpus import main as run_eval_suite
+    import scripts.evaluate_shared_corpus as _esc; run_eval_suite = _esc.main if hasattr(_esc, 'main') else None
     import asyncio
     print("\nExecuting comprehensive benchmark across all 32 golden cases (GS-001 to GS-032)...")
-    asyncio.run(run_eval_suite())
+    import subprocess, sys; subprocess.run([sys.executable, str(PROJECT_ROOT / "scripts" / "evaluate_shared_corpus.py")])
 
 
 def handle_demo():

@@ -26,7 +26,7 @@ COPY shared-corpus/ /app/shared-corpus/
 COPY scripts/ /app/scripts/
 COPY tests/ /app/tests/
 COPY run_capstone.py /app/run_capstone.py
-COPY seams.md architecture.md CAPSTONE_EVAL_REPORT.md weaknesses.md fresh_eyes_review.md demo_script.md tenx.md /app/
+COPY seams.md architecture.md CAPSTONE_EVAL_REPORT.md weaknesses.md fresh_eyes_review.md demo_script.md /app/
 
 
 # Copy startup script and make executable (stripping Windows CRLF if present)
