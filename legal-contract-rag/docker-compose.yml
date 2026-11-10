@@ -102,7 +102,7 @@ services:
       dockerfile: frontend/Dockerfile
     container_name: legal_frontend
     ports:
-      - "4200:80"
+      - "4201:80"
     depends_on:
       - backend
     restart: unless-stopped

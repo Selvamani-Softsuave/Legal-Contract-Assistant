@@ -101,7 +101,7 @@ def ingest_to_ui():
                 print(f"  [ERROR] Upload failed: {upload_res.status_code} - {upload_res.text}")
 
     print("\n" + "=" * 70)
-    print("All Shared Corpus documents uploaded. Refresh your browser at http://localhost:4200/")
+    print("All Shared Corpus documents uploaded. Refresh your browser at http://localhost:4201/")
     print("=" * 70)
 
 

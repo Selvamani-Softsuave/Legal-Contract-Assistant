@@ -16,7 +16,7 @@ import subprocess
 import time
 
 BACKEND_BASE = "http://localhost:8080"
-FRONTEND_BASE = "http://localhost:4200"
+FRONTEND_BASE = "http://localhost:4201"
 
 
 def test_backend_health():

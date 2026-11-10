@@ -20,7 +20,9 @@ python-multipart>=0.0.9
 python-dateutil>=2.9.0
 rank-bm25>=0.2.2
 
-# ─── Testing ───────────────────────────────────────
+# ─── Testing & Extraction ──────────────────────────
 pytest>=8.2.0
 pytest-asyncio>=0.23.0
+pypdf>=4.3.0
+python-docx>=1.1.0
 

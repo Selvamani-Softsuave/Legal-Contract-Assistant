@@ -1,213 +1,244 @@
-# System Architecture Document: Legal Contract Review Assistant
-**Project**: Soft Suave Enterprise Legal Contract RAG & Agent System  
-**Capstone Variant**: Track F — Legal Contract Assistant (Week 12 Capstone)  
-**Version**: 1.2.0 (Production-Ready Architecture)  
-**Date**: October 2026  
+# Enterprise System Architecture Document
+
+**System Name**: Enterprise Legal Contract Review Assistant & Grounded RAG Platform  
+**Architecture Style**: Distributed Microservices & Hexagonal (Ports & Adapters) Clean Architecture  
+**Document Version**: `2.0.0` (Production Reference Architecture)  
+**Date**: November 2026  
+
+> [!NOTE]
+> This canonical document specifies the end-to-end architecture of the Legal Contract RAG & Assistant System. For specialized modular specifications, see:
+> - [`docs/api.md`](docs/api.md) — Complete REST & WebSocket API Specification
+> - [`docs/database.md`](docs/database.md) — SQL Server Schema & Entity Relationship Specification
+> - [`docs/rag_pipeline.md`](docs/rag_pipeline.md) — Ingestion, Chunking, Embeddings, & Grounded Retrieval
+> - [`docs/agent_mcp.md`](docs/agent_mcp.md) — ReAct Agent, Multi-Agent Orchestration, & Model Context Protocol (MCP)
+> - [`docs/deployment.md`](docs/deployment.md) — Docker Compose Infrastructure, Environment Variables, & Runbooks
 
 ---
 
-## 1. System Overview & Core Design Philosophy
+## 1. System Overview & Core Architectural Principles
 
-The Soft Suave Legal Contract Review Assistant is an enterprise-grade AI system built for analyzing master services agreements, statements of work, non-disclosure agreements, and multi-tier amendment chains. 
+The Enterprise Legal Contract Review Assistant is an AI-powered system designed for corporate legal departments, procurement teams, and compliance officers. It automates contract ingestion, structural clause parsing, temporal amendment supersession resolution, and grounded question answering with precise citations.
 
-The architecture is governed by four strict design principles:
-1. **Decoupled Agent-Tool Boundary (MCP Protocol)**: Zero hardcoded tools in the agent prompt; all tool capabilities, schemas, and docstrings are discovered dynamically at runtime via the Model Context Protocol (MCP JSON-RPC 2.0).
-2. **Temporal Grounding & Amendment Supersession**: Embeddings and retrieval mechanisms are explicitly structured around amendment precedence, ensuring that amended clauses (e.g. Northwind Amendment No. 2) strictly override legacy base provisions.
-3. **Deterministic Safety Guardrails**: Hard failure boundaries prevent unauthorized legal practice; inquiries regarding whether clauses are "standard" or "acceptable" are intercepted and redirected to qualified counsel.
-4. **Observable Economics & Traceability**: Unified request tracing across every thought, tool call, and token, tracking cost-by-stage ($0.000299/query baseline) and identifying scale breakpoints under 10x concurrency.
+### Core Architectural Principles:
+
+1. **Hexagonal Clean Architecture**:
+   Domain logic (entities, validation, value objects) is decoupled from external frameworks, databases, and LLM providers. Adapters implement domain ports via inversion of control, ensuring testability and longevity.
+
+2. **Decoupled Agent-Tool Boundary (Model Context Protocol)**:
+   The agent host contains zero hardcoded tool definitions. All capabilities, parameter schemas, and documentation are discovered dynamically at runtime from independent MCP servers via JSON-RPC 2.0.
+
+3. **Temporal Grounding & Amendment Hierarchy**:
+   Legal contracts operate under an amendment hierarchy. The system prioritizes later executed amendments over earlier baseline provisions, guaranteeing that superseded terms are never cited as governing obligations.
+
+4. **Dynamic AI Provider Agnosticism**:
+   Eliminates single-vendor AI lock-in. A unified provider abstraction layer supports switching between Google Gemini, local Ollama, OpenRouter, and OpenAI through configuration variables without changing application code.
+
+5. **Asynchronous Decoupled Ingestion**:
+   Heavy document extraction, OCR, structural chunking, and vector embedding are offloaded to an asynchronous Azure Functions queue worker, ensuring web API responsiveness and system scalability.
 
 ---
 
-## 2. End-to-End Architecture Diagram
-
-### 2.1 Mermaid Architectural Diagram
+## 2. High-Level Architecture Diagram
 
 ```mermaid
 flowchart TD
-    subgraph ClientLayer["Client & User Interfaces"]
-        CLI["Single Entry Point\n(run_capstone.py)"]
-        UI["React Web Application\n(Port 3000 / 8080)"]
+    subgraph ClientTier["Client Tier (Port 4201)"]
+        UI["Angular 19 Standalone SPA\n- Chat & Citation Inspector\n- Contract & Document Manager\n- Agent & MCP Lab"]
+        Nginx["Nginx Reverse Proxy\n(Port 4201:80)"]
+        UI --> Nginx
     end
 
-    subgraph GatewayLayer["API & Safety Gateway"]
-        FastAPI["FastAPI App Engine\n(/api/v1/chat, /contracts)"]
-        Guardrail["Legal Advice Guardrail\n(Deterministic Regex Interceptor)"]
-        Tracer["MCP Wire Tracer\n(Unified trace_id Correlation)"]
-    end
-
-    subgraph AgentCore["Decoupled Agent Host (ReAct Loop)"]
-        MCPAgent["MCPAgentHost / ReAct Agent\n(Dynamic Startup Discovery)"]
-        BudgetEnforcer["Budget Tracker\n(Iterations, Cost, Tokens, Wall Clock)"]
-    end
-
-    subgraph MCPNetwork["Model Context Protocol (JSON-RPC 2.0)"]
-        MCPClient["MCP Client Manager\n(stdio / in-process dispatch)"]
+    subgraph APITier["Backend API Gateway (Port 8080)"]
+        FastAPI["FastAPI 0.111 Application\n(/api/v1/*, /health)"]
+        Nginx -->|Proxy /api/| FastAPI
+        Nginx -->|Proxy /ws/| FastAPI
         
-        subgraph MCPServer1["Server 1: Clause Server"]
-            Tool1["get_clause(contract_id, clause_number)"]
-            Tool2["get_definitions(contract_id, term)"]
-        end
-
-        subgraph MCPServer2["Server 2: Repository Server"]
-            Tool3["get_contract_metadata(contract_id)"]
-            Tool4["get_amendment_chain(contract_id)"]
-        end
+        Middlewares["Cross-Cutting Middlewares\n- Distributed Correlation ID\n- RFC 7807 Error Handlers\n- CORS Policies"]
+        FastAPI --- Middlewares
+        
+        AppServices["Application Services\n- ChatUseCases / RAGService\n- ContractUseCases\n- DocumentUseCases\n- MCPAgentHost / MultiAgent"]
+        FastAPI --> AppServices
     end
 
-    subgraph StorageLayer["Data & Knowledge Repositories"]
-        KB["Domain Knowledge Base\n(shared_corpus_knowledge.py)"]
-        VectorDB["Dense Semantic Store\n(ChromaDB / all-MiniLM-L6-v2)"]
-        BM25["Lexical Search Index\n(Okapi BM25 Index)"]
-        SharedCorpus["Shared Corpus Raw Files\n(PDF, Markdown, Scans)"]
+    subgraph IngestionTier["Background Processing Tier (Port 7071)"]
+        QueueTrigger["Azure Functions Python v2 Worker\n(Queue Trigger: legal-document-processing)"]
+        Extractors["Extractors & Chunkers\n- PdfExtractor (pdfplumber)\n- DocxExtractor (python-docx)\n- LegalAwareChunker"]
+        VectorService["Processor Chroma & Embedding Adapter\n(HTTP Vector Search & Ingestion)"]
+        
+        QueueTrigger --> Extractors
+        Extractors --> VectorService
     end
 
-    subgraph LLMProviders["Inference & Fallback Matrix"]
-        PrimaryLLM["Primary: Gemini 1.5 Flash / OpenRouter"]
-        SecondaryLLM["Secondary: Local Ollama / Qwen2.5-Coder"]
-        MockLLM["Deterministic Fallback Provider"]
+    subgraph StorageTier["Data & Persistence Tier"]
+        SQLServer[("Microsoft SQL Server 2022\n(Port 1433)\nTables: Contracts, Documents, Jobs, Chats")]
+        Azurite[("Azure Storage / Azurite Emulator\n- Blob Storage (Port 10000)\n- Queue Storage (Port 10001)")]
+        ChromaDB[("ChromaDB 0.5.20\n(Port 8000)\nCollection: legal_contracts (HNSW Cosine)")]
+        
+        AppServices -->|Metadata & Message History| SQLServer
+        AppServices -->|File Uploads & Enqueue Jobs| Azurite
+        QueueTrigger -->|Read Queue & Download Blobs| Azurite
+        QueueTrigger -->|Update Job Status| SQLServer
+        VectorService -->|Add Vectors & Metadatas| ChromaDB
+        AppServices -->|Dense Vector Retrieval| VectorService
     end
 
-    CLI --> GatewayLayer
-    UI --> GatewayLayer
-    GatewayLayer --> Guardrail
-    Guardrail --> AgentCore
-    AgentCore --> Tracer
-    AgentCore --> BudgetEnforcer
-    AgentCore --> MCPClient
-    
-    MCPClient -- "JSON-RPC 2.0 initialize & tools/list" --> MCPServer1
-    MCPClient -- "JSON-RPC 2.0 initialize & tools/list" --> MCPServer2
-    
-    MCPServer1 --> KB
-    MCPServer2 --> KB
-    MCPServer1 --> VectorDB
-    MCPServer1 --> BM25
-
-    AgentCore -- "Prompt & Context Synthesis" --> PrimaryLLM
-    PrimaryLLM -- "Rate Limit / Network Timeout" --> SecondaryLLM
-    SecondaryLLM -- "Local Fail" --> MockLLM
-```
-
-### 2.2 ASCII System Architecture
-
-```text
-=============================================================================================
-                      SOFT SUAVE LEGAL CONTRACT ASSISTANT (VARIANT F)
-=============================================================================================
-
- [STRANGER CLI]                 [WEB INTERFACE]
- (run_capstone.py)              (Vite / React UI)
-       │                               │
-       └──────────────┬────────────────┘
-                      ▼
- ┌─────────────────────────────────────────────────────────────┐
- │ GATEWAY & SAFETY BOUNDARY                                    │
- │  • LegalAdviceGuardrail (Intercepts "standard"/"acceptable")│
- │  • CitationValidator (Enforces 3-tuple metadata citations)   │
- │  • RequestTracer (Generates correlation trace_id)           │
- └────────────────────────────┬────────────────────────────────┘
-                              ▼
- ┌─────────────────────────────────────────────────────────────┐
- │ DECOUPLED AGENT HOST (ReAct Execution Engine)               │
- │  • Startup MCP Tool Discovery: client_manager.list_tools()  │
- │  • Dynamic System Prompt Assembly                           │
- │  • Thought -> Action -> Observation Execution Loop          │
- │  • 4-Budget Enforcer (Cost, Tokens, Iterations, Wall Clock) │
- └────────────────────────────┬────────────────────────────────┘
-                              ▼
- ┌─────────────────────────────────────────────────────────────┐
- │ MODEL CONTEXT PROTOCOL (MCP JSON-RPC 2.0 BUS)               │
- │                                                             │
- │   ┌───────────────────────────────┐  ┌────────────────────┐ │
- │   │ Server 1: Clause Server       │  │ Server 2: Repo Srv │ │
- │   │  • get_clause                 │  │  • get_metadata    │ │
- │   │  • get_definitions            │  │  • get_amendments  │ │
- │   └───────────────┬───────────────┘  └──────────┬─────────┘ │
- └───────────────────┼─────────────────────────────┼───────────┘
-                     ▼                             ▼
- ┌─────────────────────────────────────────────────────────────┐
- │ ENTERPRISE CONTRACT KNOWLEDGE & STORAGE ENGINE              │
- │  • Shared Corpus Knowledge Base (shared_corpus_knowledge.py)│
- │  • Temporal Amendment Hierarchy (AMD-02 > AMD-01 > Base)    │
- │  • Hybrid Retriever (BM25 Lexical + ChromaDB Dense RRF)     │
- │  • Holiday Calendar & Definition Engine (Schedule C)        │
- └─────────────────────────────────────────────────────────────┘
+    subgraph ExternalAITier["Dynamic AI Provider Tier"]
+        Gemini["Google Gemini API\n- LLM: gemma-4-26b-a4b-it\n- Embed: gemini-embedding-001 (3072 dim)"]
+        Ollama["Local Ollama Service (Port 11434)\n- LLM: llama3.2\n- Embed: nomic-embed-text (768 dim)"]
+        OpenRouter["OpenRouter / OpenAI APIs\n- LLM: openrouter/free\n- Embed: text-embedding-3-small"]
+        
+        AppServices -->|Active LLM Generation| Gemini
+        VectorService -->|Batch Vector Embeddings| Gemini
+        AppServices -.->|Fallback / Switch| Ollama
+        VectorService -.->|Fallback / Switch| Ollama
+    end
 ```
 
 ---
 
-## 3. Trust Boundaries & Model Isolation
+## 3. Component Responsibilities & Technology Stack
 
-The system enforces strict operational boundaries between probabilistic generative models and deterministic verification components:
-
-| Boundary | Untrusted / Non-Deterministic | Trusted / Deterministic Control | Enforcement Mechanism |
-| :--- | :--- | :--- | :--- |
-| **User Input Boundary** | Natural language queries, prompt injections, adversarial edge cases. | Intent classifier, input sanitizer, and counterparty alias resolver. | `resolve_contract_id()` maps noisy names to canonical IDs (`MSA-2026-014`). |
-| **Model Generation Boundary** | Raw LLM output (potential hallucinations, unwarranted legal declarations). | `LegalAdviceGuardrail` & `CitationValidator`. | Regex interceptor sanitizes forbidden declarations ("standard", "acceptable") and inserts mandatory counsel referral. |
-| **Tool Execution Boundary** | Model-requested tool parameters (wrong types, malformed numbers). | JSON-RPC 2.0 schema validation. | Pydantic model validation on input schemas; recoverable context-rich error paths. |
-| **Data Storage Boundary** | Scanned PDF artifacts with OCR noise (CER ~4.2%). | High-fidelity chunker with 5 mandatory metadata fields. | `SharedCorpusChunker` attaches `source_doc`, `counterparty`, `effective_date`, `doc_type`, `clause_ref`. |
-
----
-
-## 4. Protocol Specifications
-
-### 4.1 Model Context Protocol (MCP JSON-RPC 2.0)
-All agent-tool communication conforms strictly to the MCP Protocol Specification (`protocolVersion: 2024-11-05`).
-
-1. **Handshake (`initialize`)**:
-   - Request: `{"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2024-11-05"}}`
-   - Response: `{"jsonrpc": "2.0", "id": 1, "result": {"protocolVersion": "2024-11-05", "capabilities": {"tools": {"listChanged": false}}, "serverInfo": {"name": "Contract Clause & Definitions Server", "version": "1.1.0"}}}`
-2. **Tool Discovery (`tools/list`)**:
-   - Returns array of `MCPToolDefinition` with JSON Schema parameter definitions.
-   - MCPAgentHost registers tools dynamically with 0 lines of code change.
-3. **Tool Invocation (`tools/call`)**:
-   - Request: `{"jsonrpc": "2.0", "id": 2, "method": "tools/call", "params": {"name": "get_clause", "arguments": {"contract_id": "MSA-2026-014", "clause_number": "8.3"}}}`
-   - Response: Formatted citation header with clause text and supersession alert.
-
-### 4.2 FastAPI REST & WebSocket Live Streaming
-- **REST**: OpenAPI 3.1 endpoints (`POST /api/v1/chat/conversation`, `GET /api/v1/contracts`, `POST /api/v1/contracts/upload`).
-- **WebSocket**: Broadcasts live agent execution traces and tool dispatch events to the frontend UI over `ws://localhost:8080/api/v1/ws/events`.
+| Layer / Component | Technology | Responsibilities |
+|---|---|---|
+| **Frontend SPA** | Angular 19, TypeScript 5.5, Tailwind CSS, RxJS | Interactive legal chat, contract and document management, real-time WebSocket job tracking, grounded source citation drawer, agent experimental lab. |
+| **Ingress Proxy** | Nginx Alpine (Docker) | Static asset serving, SSL/TLS termination, reverse proxy routing for `/api/` (HTTP) and `/ws/` (WebSocket). |
+| **Backend API Gateway** | FastAPI, Python 3.11, Uvicorn | Request validation (Pydantic V2), correlation ID injection, RFC 7807 problem details formatting, business use case orchestration. |
+| **RAG Orchestrator** | `EnterpriseRAGService`, `ContextBuilder`, `ResponseValidator` | Conversational routing, hybrid retrieval fusion (BM25 + Dense vector), amendment hierarchy enforcement, reasoning trace normalization. |
+| **Agent Subsystem** | `ReActAgent`, `FixedDeterministicWorkflow`, `MultiAgentOrchestrator` | Iterative Thought-Action-Observation loops, deterministic workflows, multi-agent worker delegations, budget tracking, prompt injection testing. |
+| **MCP Host & Servers** | `MCPAgentHost`, `MCPClientManager`, `ClauseServer`, `RepoServer` | Decoupled runtime tool discovery over JSON-RPC 2.0, wire tracing, deterministic legal advice refusal guardrails. |
+| **Document Processor** | Azure Functions Python v2 Worker | Asynchronous queue-triggered worker, document extraction (PDF/DOCX/TXT), structural legal chunking, vector embedding generation. |
+| **Relational Database** | Microsoft SQL Server 2022 | Entity metadata persistence, relational integrity, foreign key cascading, conversation history, audit logging. |
+| **Object & Queue Storage** | Azure Storage / Azurite Emulator | Binary contract storage (Blob Storage), resilient job dispatch and retry management (Queue Storage). |
+| **Vector Database** | ChromaDB 0.5.20 | Cosine similarity vector indexing, metadata filtering by contract/document, self-healing dimension harmonization. |
+| **AI Provider Layer** | Google Gemini (REST API), Ollama, OpenRouter | Active model hosting: `gemma-4-26b-a4b-it` (text generation) and `gemini-embedding-001` (embeddings). |
 
 ---
 
-## 5. Inference Providers & Fallback Matrix
+## 4. End-to-End System Workflows
 
-To guarantee 100% operational uptime and resilience against vendor outages or token-per-minute (TPM) throttling, the system utilizes a three-tier provider fallback matrix:
+### 4.1 Document Ingestion & Vector Indexing Workflow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Legal Administrator
+    participant UI as Angular Frontend (:4201)
+    participant API as FastAPI Backend (:8080)
+    participant Blob as Azure Blob Storage (:10000)
+    participant Queue as Azure Queue Storage (:10001)
+    participant SQL as SQL Server 2022 (:1433)
+    participant Func as Azure Function Processor (:7071)
+    participant Embed as Gemini Embedding API
+    participant Chroma as ChromaDB (:8000)
+
+    User->>UI: Selects file (PDF/DOCX) & Contract Envelope
+    UI->>API: POST /api/v1/documents/upload (multipart/form-data)
+    API->>Blob: Upload raw binary to container "legal-contracts-blob"
+    API->>SQL: INSERT Documents (status='Uploaded'), ProcessingJobs (status='Queued')
+    API->>Queue: Enqueue message {"documentId", "operation":"INGEST", "blob_path"}
+    API-->>UI: 202 Accepted {"documentId", "jobId", "status":"Queued"}
+    
+    Queue->>Func: Dequeue message trigger
+    Func->>API: PATCH /api/v1/processing/jobs/{id}/status {"status":"Processing"}
+    API->>UI: WebSocket Broadcast {"type":"JOB_UPDATE", "status":"Processing"}
+    Func->>Blob: Download raw file bytes
+    Func->>Func: Extract text (PdfExtractor) & parse structure (LegalAwareChunker)
+    Func->>Embed: POST /v1beta/openai/embeddings (batch chunk texts)
+    Embed-->>Func: Return 3072-dimensional embeddings
+    Func->>Chroma: Add chunks with metadata to collection "legal_contracts"
+    Func->>API: PATCH /api/v1/processing/jobs/{id}/status {"status":"Completed", "page_count":7}
+    API->>SQL: UPDATE Documents (status='Completed'), ProcessingJobs (status='Completed')
+    API->>UI: WebSocket Broadcast {"type":"JOB_UPDATE", "status":"Completed"}
+    UI-->>User: Document table status updates to "Completed"
+```
+
+---
+
+### 4.2 Grounded Contract Question Answering Workflow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Legal Counsel
+    participant UI as Angular Chat Interface
+    participant API as FastAPI Backend (:8080)
+    participant RAG as EnterpriseRAGService
+    participant Embed as Gemini Embedding API
+    participant Chroma as ChromaDB (:8000)
+    participant LLM as Gemini LLM (gemma-4-26b-a4b-it)
+    participant SQL as SQL Server 2022 (:1433)
+
+    User->>UI: Asks question with scoped contract ID
+    UI->>API: POST /api/v1/chat/conversations/{id}/messages {"question": "..."}
+    API->>RAG: answer_question(question, conversation_id, scoped_contract_ids)
+    
+    alt Conversational Greeting / General Query ("hii", "what can you do")
+        RAG->>LLM: Direct Generation (system prompt, temperature=0.7)
+        LLM-->>RAG: Dynamic warm greeting
+    else Contractual Query ("What is the late payment interest rate?")
+        RAG->>Embed: Embed query string ("gemini-embedding-001")
+        Embed-->>RAG: 3072-dim query vector
+        RAG->>Chroma: Cosine similarity query (where contract_id IN scopes, top_k=5)
+        Chroma-->>RAG: Top 5 chunks with page, section, clause metadata
+        RAG->>RAG: ContextBuilder formats structured context
+        RAG->>RAG: LegalRAGPromptBuilder v1.1.0 (enforces Amendment Hierarchy)
+        RAG->>LLM: Generate Answer (system prompt, context prompt, temperature=0.0)
+        LLM-->>RAG: Raw LLM output
+        RAG->>RAG: ResponseValidator (strips reasoning bullets, deduplicates sentences)
+    end
+    
+    RAG->>SQL: INSERT Messages (role='assistant'), INSERT RAGSources (chunk_id, doc_name, page, score)
+    RAG-->>API: {"answer": "...", "sources": [...]}
+    API-->>UI: 200 OK ChatResponse
+    UI-->>User: Displays verified answer with inline citations & source inspection drawer
+```
+
+---
+
+## 5. Trust Boundaries, Security & Fault Tolerance
 
 ```mermaid
 flowchart LR
-    Request["Agent LLM Request"] --> Tier1{"Tier 1: Cloud API\n(Gemini 1.5 / OpenRouter)"}
-    Tier1 -- Success --> Done["Completed Generation"]
-    Tier1 -- "RateLimitError (429)\nor Timeout (>10s)" --> Tier2{"Tier 2: Local Model\n(Ollama / Qwen2.5-Coder)"}
-    Tier2 -- Success --> Done
-    Tier2 -- "ConnectionRefused\nor High VRAM Load" --> Tier3["Tier 3: Deterministic Fallback\n(In-Memory Knowledge Base)"]
-    Tier3 --> Done
+    subgraph Untrusted["Untrusted Public Zone"]
+        WebUser["User Browser"]
+    end
+
+    subgraph DMZ["Ingress & Perimeter Zone"]
+        NginxProxy["Nginx Reverse Proxy (:4201)\n- Port Restriction\n- Header Sanitization"]
+    end
+
+    subgraph TrustedApp["Trusted Application Network"]
+        APIApp["FastAPI Backend (:8080)\n- RFC 7807 Validation\n- Legal Advice Guardrail Interceptor"]
+        FuncWorker["Azure Function Processor (:7071)\n- Input Validation\n- Safe Parsing Engines"]
+    end
+
+    subgraph TrustedData["Data Isolation Zone"]
+        SQLDB["SQL Server 2022\n- Encrypted Storage\n- Cascading Constraints"]
+        Storage["Azurite / Azure Blob & Queue\n- Container-level Isolation"]
+        VectorDB["ChromaDB\n- Scoped Query Filters"]
+    end
+
+    subgraph ExternalSaaS["External AI Providers"]
+        GoogleCloud["Google Generative Language API\n- TLS 1.3 Transport\n- API Key Header Authentication"]
+    end
+
+    WebUser -->|HTTPS :4201| NginxProxy
+    NginxProxy -->|HTTP Internal| APIApp
+    APIApp -->|ODBC Port 1433| SQLDB
+    APIApp -->|Blob/Queue 10000-10001| Storage
+    FuncWorker -->|Blob/Queue 10000-10001| Storage
+    FuncWorker -->|HTTP Port 8000| VectorDB
+    APIApp -->|HTTP Port 7071| FuncWorker
+    APIApp -->|HTTPS Outbound| GoogleCloud
+    FuncWorker -->|HTTPS Outbound| GoogleCloud
 ```
 
-1. **Tier 1 (Cloud API)**: High-speed reasoning with Google Gemini 1.5 Flash or OpenRouter.
-2. **Tier 2 (Local LLM)**: Zero-cloud, privacy-preserving Ollama local instance for enterprise deployments where customer personal data (DPDP Act) cannot leave the server.
-3. **Tier 3 (Deterministic Mock)**: In-memory fallback synthesizing factual answers directly from structured citations when network interfaces are unavailable.
+### 5.1 Fault Tolerance & Self-Healing Matrix
 
----
-
-## 6. Money Flow, Token Budget & Unit Economics
-
-### 6.1 Baseline Cost per Query Breakdown
-Empirical cost attribution across 1,000 queries using Gemini 1.5 Flash ($0.15/1M input tokens, $0.60/1M output tokens):
-
-| Stage | Input Tokens | Output Tokens | Latency (ms) | Stage Cost (USD) | % of Total Cost |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Stage 1: Intent & Discovery** | 185 | 45 | 110 ms | $0.000055 | 18.4% |
-| **Stage 2: MCP Tool Invocations** | 420 | 120 | 85 ms | $0.000135 | 45.2% |
-| **Stage 3: Grounded Synthesis** | 560 | 95 | 145 ms | $0.000141 | 47.1% |
-| **Cache Savings (Embedding Reuse)** | -210 | — | -40 ms | -$0.000032 | -10.7% |
-| **Net Query Total** | **955** | **260** | **300 ms** | **$0.000299** | **100.0%** |
-
-### 6.2 10x Scalability Break Analysis
-- **Capacity Horizon**: 34 concurrent requests (12,000 RPM / 200 RPS).
-- **Scale Breakpoint**: At 10x baseline concurrency (340 concurrent users), the system hits the cloud provider's Tier-1 Token-Per-Minute (TPM) ceiling (4,000,000 TPM) at **second 42.6**, resulting in HTTP 429 rate limits.
-- **Horizontal Scale Solution**: Implemented client-side token bucket rate limiter, semantic cache layer (48% cache hit rate on repetitive contract lookups), and read-replica ChromaDB instances.
-
----
-**Maintained by**: Soft Suave AI League Architecture Review Board  
-**Capstone Variant**: Track F (Legal Contract Assistant)
+| Failure Mode | Detection Mechanism | Automated Mitigation |
+|---|---|---|
+| **ChromaDB Dimension Mismatch** | `InvalidCollectionException` / `Dimensionality error` on insert or query | `ProcessorChromaService` catches error, drops the obsolete collection, and recreates it matching the incoming dimension (e.g. 3072). |
+| **Model 500 Error from Google API** | HTTP 500 status returned by Generative Language API | `GeminiProvider` detects 500 and attempts automatic fallback across candidate models (`gemini-3.5-flash`, `gemini-flash-latest`). |
+| **Document Parsing Crash** | Unhandled exception in PDF/DOCX extractor | Worker catches exception, updates `ProcessingJobs.status = 'Failed'` with stack trace, updates `Documents.status = 'Failed'`, and notifies UI via WebSockets. |
+| **Reasoning Model Thought Leakage** | Leading `<think>` tags or bulleted thought traces in raw generation | `ResponseValidator` strips think blocks, parses draft candidates, and deduplicates consecutive duplicate sentences. |
+| **Unauthorized Legal Advice Query** | Pattern match on queries asking if clauses are "acceptable", "standard", or "fair" | `MCPGateway` immediately short-circuits the query, returning a safe legal disclaimer without invoking the LLM. |

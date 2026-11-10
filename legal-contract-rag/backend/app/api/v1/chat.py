@@ -58,8 +58,8 @@ def get_conversation_messages(
                 page_number=s.page_number,
                 section=s.section,
                 clause=s.clause,
-                similarity_score=s.similarity_score,
-                text_content=s.text_content
+                relevance_score=getattr(s, "relevance_score", None) if getattr(s, "relevance_score", None) is not None else getattr(s, "similarity_score", None),
+                similarity_score=getattr(s, "similarity_score", None) if getattr(s, "similarity_score", None) is not None else getattr(s, "relevance_score", None)
             )
             for s in m.sources
         ]
@@ -97,19 +97,24 @@ async def send_message(
 
     sources_dto = [SourceDTO(**s) for s in result["sources"]]
 
-    # Fetch newly created assistant message
-    messages = use_cases.get_messages(conversation_id)
-    latest_msg = messages[-1] if messages else None
+    msg_id = result.get("message_id")
+    msg_created_at = result.get("created_at")
+
+    if not msg_id:
+        messages = use_cases.get_messages(conversation_id)
+        latest_msg = messages[-1] if messages else None
+        msg_id = latest_msg.id if latest_msg else ""
+        msg_created_at = latest_msg.created_at if latest_msg else None
 
     return ChatResponse(
         conversation_id=conversation_id,
         message=MessageResponse(
-            id=latest_msg.id if latest_msg else "",
+            id=msg_id,
             conversation_id=conversation_id,
             role="assistant",
             content=result["answer"],
             sources=sources_dto,
-            created_at=latest_msg.created_at if latest_msg else None
+            created_at=msg_created_at
         ),
         answer=result["answer"],
         sources=sources_dto

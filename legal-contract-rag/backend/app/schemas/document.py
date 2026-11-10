@@ -20,7 +20,7 @@ class DocumentResponse(BaseModel):
     file_size: int
     file_type: str
     blob_path: str
-    page_count: int
+    page_count: Optional[int] = 0
     status: str
     created_at: datetime
     updated_at: datetime

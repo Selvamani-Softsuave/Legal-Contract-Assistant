@@ -2,6 +2,7 @@ import os
 import httpx
 import logging
 from typing import Dict, Any, Optional
+from backend.app.core.config import settings
 from backend.app.llm.base import LLMProvider
 from backend.app.llm.models import LLMRequest, LLMResponse, LLMUsage
 from backend.app.llm.exceptions import (
@@ -30,12 +31,17 @@ class GeminiProvider(LLMProvider):
     ):
         self._api_key = (
             api_key
+            or getattr(settings, "API_KEY", None)
             or os.getenv("API_KEY")
             or os.getenv("GEMINI_API_KEY")
             or os.getenv("AI_API_KEY")
             or os.getenv("LLM_API_KEY")
         )
-        self._default_model = model or os.getenv("LLM_MODEL", os.getenv("GEMINI_MODEL", "gemini-1.5-flash"))
+        self._default_model = (
+            model
+            or getattr(settings, "LLM_MODEL", None)
+            or os.getenv("LLM_MODEL", os.getenv("GEMINI_MODEL", "gemma-4-26b-a4b-it"))
+        )
         self._timeout = timeout or float(os.getenv("LLM_TIMEOUT", os.getenv("GEMINI_TIMEOUT", "60.0")))
         self._cached_working_model: Optional[tuple[str, str]] = None
 
@@ -135,17 +141,18 @@ class GeminiProvider(LLMProvider):
 
         # 2. Try candidate list
         candidate_models = [requested_model]
-        for fallback in ["gemini-1.5-flash", "gemini-2.5-flash", "gemini-1.5-pro", "gemma-4-26b-a4b-it"]:
+        for fallback in ["gemini-3.5-flash", "gemini-flash-latest", "gemini-3.1-pro-preview", "gemma-4-26b-a4b-it"]:
             if fallback not in candidate_models:
                 candidate_models.append(fallback)
 
+        headers = {"Content-Type": "application/json", "x-goog-api-key": self._api_key}
         last_error = None
         for m in candidate_models:
             for version in ["v1beta", "v1"]:
                 url = f"https://generativelanguage.googleapis.com/{version}/models/{m}:generateContent?key={self._api_key}"
                 try:
                     async with httpx.AsyncClient(timeout=timeout) as client:
-                        resp = await client.post(url, json=self._build_payload(request, m))
+                        resp = await client.post(url, headers=headers, json=self._build_payload(request, m))
                         if resp.status_code == 200:
                             content, usage, finish_reason = self._extract_text_and_usage(resp.json())
                             if content:

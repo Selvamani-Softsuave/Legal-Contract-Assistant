@@ -32,7 +32,7 @@ def _to_document_response(doc) -> DocumentResponse:
         file_size=doc.file_size,
         file_type=doc.file_type,
         blob_path=doc.blob_path,
-        page_count=getattr(doc, "page_count", None),
+        page_count=getattr(doc, "page_count", 0) or 0,
         status=doc.status.value if hasattr(doc.status, "value") else str(doc.status),
         created_at=doc.created_at,
         updated_at=doc.updated_at

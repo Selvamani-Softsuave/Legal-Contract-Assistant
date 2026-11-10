@@ -66,9 +66,22 @@ class ChatUseCases:
             scoped_contract_ids=active_scope
         )
 
+        answer_text = rag_result.get("answer", "")
+        sources_data = rag_result.get("sources", [])
+
+        # 4. Persist assistant response with RAG citations
+        assistant_msg = self.repository.add_message(
+            conversation_id=conversation_id,
+            role="assistant",
+            content=answer_text,
+            sources=sources_data
+        )
+
         return {
             "conversation_id": conversation_id,
-            "answer": rag_result.get("answer", ""),
-            "sources": rag_result.get("sources", []),
-            "scope": active_scope
+            "answer": answer_text,
+            "sources": sources_data,
+            "scope": active_scope,
+            "message_id": assistant_msg.id if assistant_msg else None,
+            "created_at": assistant_msg.created_at if assistant_msg else None
         }

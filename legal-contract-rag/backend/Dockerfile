@@ -20,6 +20,7 @@ COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/ /app/backend/
+COPY processor/ /app/processor/
 COPY resource/ /app/resource/
 COPY config/ /app/config/
 COPY shared-corpus/ /app/shared-corpus/

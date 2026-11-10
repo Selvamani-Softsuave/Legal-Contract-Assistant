@@ -18,6 +18,15 @@ class ProcessorChromaService:
         chroma_host = os.getenv("CHROMA_HOST")
         if chroma_host:
             self.client = chromadb.HttpClient(host=chroma_host, port=int(os.getenv("CHROMA_PORT", "8000")))
+            if hasattr(self.client, "_server") and hasattr(self.client._server, "_query"):
+                orig_query = self.client._server._query
+                def _patched_query(*args, **kwargs):
+                    if kwargs.get("where") == {}:
+                        kwargs["where"] = None
+                    if kwargs.get("where_document") == {}:
+                        kwargs["where_document"] = None
+                    return orig_query(*args, **kwargs)
+                self.client._server._query = _patched_query
         else:
             self.persist_dir = persist_dir or os.getenv("CHROMA_PERSIST_DIRECTORY", "./chroma_data")
             self.client = chromadb.PersistentClient(path=self.persist_dir)
@@ -72,12 +81,25 @@ class ProcessorChromaService:
                 embeddings=embeddings
             )
         except Exception as e:
-            if "dimensionality" in str(e).lower() or "dimension" in str(e).lower():
+            err_msg = str(e).lower()
+            if "dimensionality" in err_msg or "dimension" in err_msg:
                 logger.warning(f"Dimension mismatch detected ({e}). Recreating collection '{self.collection_name}' to match new embedding dimension.")
                 try:
                     self.client.delete_collection(name=self.collection_name)
                 except Exception:
                     pass
+                self.collection = self.client.get_or_create_collection(
+                    name=self.collection_name,
+                    metadata={"hnsw:space": "cosine"}
+                )
+                self.collection.add(
+                    ids=ids,
+                    documents=documents,
+                    metadatas=metadatas,
+                    embeddings=embeddings
+                )
+            elif "does not exist" in err_msg or "invalidcollection" in err_msg:
+                logger.warning(f"Collection reference invalid ({e}). Refreshing collection and retrying...")
                 self.collection = self.client.get_or_create_collection(
                     name=self.collection_name,
                     metadata={"hnsw:space": "cosine"}

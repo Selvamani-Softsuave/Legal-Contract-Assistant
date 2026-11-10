@@ -1,392 +1,185 @@
-# Enterprise Legal Contract RAG & Assistant System
-**Track F — Legal Contract Assistant (Week 12 Capstone)**
+# Enterprise Legal Contract RAG & Assistant Platform
 
-An enterprise-ready, modular **Retrieval-Augmented Generation (RAG)** platform and **MCP-based ReAct Agent Assistant** for legal contract review, amendment precedence resolution, defined terms extraction, and strict safety guardrail compliance.
+[![Architecture](https://img.shields.io/badge/Architecture-Hexagonal%20Clean-blue.svg)](docs/architecture.md)
+[![API Version](https://img.shields.io/badge/API-v2.0.0-green.svg)](docs/api.md)
+[![Frontend](https://img.shields.io/badge/Frontend-Angular%2019-red.svg)](frontend/)
+[![Backend](https://img.shields.io/badge/Backend-FastAPI%200.111-009688.svg)](backend/)
+[![Vector DB](https://img.shields.io/badge/Vector%20Store-ChromaDB%200.5.20-orange.svg)](docs/rag_pipeline.md)
+[![Database](https://img.shields.io/badge/Database-SQL%20Server%202022-CC292B.svg)](docs/database.md)
+[![Protocol](https://img.shields.io/badge/Protocol-MCP%20JSON--RPC%202.0-purple.svg)](docs/agent_mcp.md)
 
----
-
-## 🚀 Week 12 Capstone Single Entry Point (`run_capstone.py`)
-
-A stranger-executable entry point integrating all eleven weeks of artifacts under a single CLI interface. Discovers MCP tools dynamically at runtime, resolves amendment hierarchies, validates citations, and enforces legal advice refusal guardrails.
-
-```powershell
-# 1. Interactive Grounded Legal Query (e.g. Northwind Liability Cap)
-python run_capstone.py --query "What is the liability cap under the Northwind Logistics agreement?"
-
-# 2. Detailed ReAct Execution Trajectory (Thought -> Action -> Observation)
-python run_capstone.py --trajectory "Is 20 October 2026 a Business Day for Northwind Logistics?"
-
-# 3. Comprehensive 32-Case Golden Set Evaluation Benchmark
-python run_capstone.py --eval
-
-# 4. Sequenced 4-Part Live Defense Demonstration (10 Minutes)
-python run_capstone.py --demo
-```
-
-### 📋 Capstone Deliverables Dossier
-- [`run_capstone.py`](run_capstone.py): Unified executable entry point (`--query`, `--eval`, `--trajectory`, `--demo`).
-- [`seams.md`](seams.md): Unedited Tuesday integration seams record with `[FIXED]`, `[ACCEPTED]`, `[RAN-OUT-OF-TIME]`.
-- [`architecture.md`](architecture.md): ASCII and Mermaid architecture, trust boundaries, protocol specs, fallback matrix, and unit economics.
-- [`CAPSTONE_EVAL_REPORT.md`](CAPSTONE_EVAL_REPORT.md): Re-scored 32 golden cases (93.75% pass rate), liability caps broken out, 90.6% judge agreement.
-- [`weaknesses.md`](weaknesses.md): Top 3 authentic technical weaknesses dated Wednesday with production mitigations.
-- [`fresh_eyes_review.md`](fresh_eyes_review.md): Independent peer auditor walkthrough and stranger-test certification.
-- [`demo_script.md`](demo_script.md): Timed 10-minute 4-part presentation script with hostile Q&A defense playbook.
-- [`tenx.md`](tenx.md): Mathematical proof of the 10x scalability break (TPM throttle at 42.6s).
+An enterprise-ready, modular **Retrieval-Augmented Generation (RAG)** platform and **MCP-based Agent Assistant** engineered for corporate legal departments, procurement teams, and compliance officers. Built to automate legal contract ingestion, structural clause parsing, amendment hierarchy resolution, and verified citation-backed question answering.
 
 ---
 
+## 🏛️ Comprehensive Documentation Suite
 
-## 🏛️ Architecture Overview
+For exhaustive technical specifications, refer to our modular documentation directory:
 
-```mermaid
-graph TD
-    UI[Angular Frontend :4200] -->|REST API| API[FastAPI Backend :8080]
-    API -->|Metadata & History| SQL[(SQL Server :1433)]
-    API -->|Blob/Queue Storage| Blob[(Azurite :10000-10001)]
-    API -->|Enqueue Jobs| Queue[(Azure Queue)]
-    Queue -->|Queue Trigger| Proc[Azure Function Processor :7071]
-    Proc -->|Download Blob| Blob
-    Proc -->|Extract & Chunk| Engine[LegalAwareChunker]
-    Engine -->|Embeddings| AI[AI Provider\nOllama / OpenRouter / Gemini / ...]
-    AI -->|Store Vectors| Chroma[(ChromaDB :8000)]
-    API -->|RAG Search| Chroma
-    API -->|LLM Chat| AI
-```
-
-| Service | Technology | Port |
-|---|---|---|
-| Frontend | Angular 17+ | 4200 |
-| Backend API | FastAPI + SQLAlchemy | 8080 |
-| Document Processor | Azure Functions (Python) | 7071 |
-| Database | SQL Server 2022 | 1433 |
-| Blob & Queue Storage | Azurite (local Azure emulator) | 10000-10002 |
-| Vector Store | ChromaDB 0.4.24 | 8000 |
-| AI (local option) | Ollama | 11434 |
-
----
-
-## 🤖 Dynamic AI Provider Configuration
-
-The application supports **any OpenAI-compatible LLM and embedding API** without code changes. Switch providers by editing a single `.env` variable.
-
-### Supported Providers
-
-| `AI_PROVIDER` | LLM Chat | Embeddings | Free? |
-|---|---|---|---|
-| `OLLAMA` | Local Ollama (`/api/generate`) | Local Ollama (`/api/embed`) | ✅ Free (local) |
-| `OPENROUTER` | 100+ models | `jinaeu/jina-embeddings-v2-base-en` | ✅ Free tier |
-| `OPENAI` | `gpt-4o-mini` | `text-embedding-3-small` | 💳 Paid |
-| `GEMINI` | `gemini-1.5-flash` | `text-embedding-004` | ✅ Free tier |
-| `GROQ` | `llama-3.1-8b-instant` | *(use OpenRouter for embeddings)* | ✅ Free tier |
-| `DEEPSEEK` | `deepseek-chat` | *(use OpenRouter for embeddings)* | 💲 Very cheap |
-| `CUSTOM` | Any OpenAI-compatible URL | Any OpenAI-compatible URL | Varies |
-
-### Minimal Configuration
-
-Edit **one block** in your `.env` file (root or `backend/.env`):
-
-```env
-# Option 1 — Local Ollama (no internet, free, requires Docker or local install)
-AI_PROVIDER=OLLAMA
-
-# Option 2 — OpenRouter (free tier models available)
-AI_PROVIDER=OPENROUTER
-AI_API_KEY=sk-or-v1-your-key-here
-
-# Option 3 — Google Gemini (free tier)
-AI_PROVIDER=GEMINI
-AI_API_KEY=AIzaSy-your-gemini-key-here
-
-# Option 4 — Completely custom provider
-AI_PROVIDER=CUSTOM
-LLM_BASE_URL=https://your-provider.com/v1
-LLM_API_KEY=your-api-key
-LLM_MODEL=your-model-name
-EMBEDDING_BASE_URL=https://your-provider.com/v1
-EMBEDDING_MODEL=your-embedding-model
-```
-
-> **Model overrides:**  Use `LLM_MODEL` and `EMBEDDING_MODEL` to override any provider's default model without changing code.
-
----
-
-## 🚀 Local Development Setup
-
-### Prerequisites
-
-- Python **3.11** (required by Azure Functions Core Tools)
-- Node.js 18+ and Angular CLI: `npm install -g @angular/cli`
-- Azure Functions Core Tools v4: [Install guide](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local)
-- Docker & Docker Compose (for infrastructure services)
-- ODBC Driver 17 for SQL Server
-
-### Step 1 — Start Infrastructure Services (Docker)
-
-```powershell
-docker-compose up -d sqlserver azurite chromadb
-```
-
-This starts SQL Server, Azurite (Blob + Queue), and ChromaDB — **without** building the backend or processor images.
-
-### Step 2 — Initialize the Database (first time only)
-
-```powershell
-cd "E:\Selvamani\Learning\AI Learning\legal-contract-rag"
-python backend/scripts/init_db.py
-```
-
-This creates the `LegalContractRAG` database and runs all Alembic migrations to set up tables.
-
-### Step 3 — Configure AI Provider
-
-Edit `backend/.env` and `processor/local.settings.json` with your chosen provider:
-
-```env
-# backend/.env
-AI_PROVIDER=OPENROUTER
-AI_API_KEY=sk-or-v1-your-key-here
-```
-
-```json
-// processor/local.settings.json → "Values" block
-"AI_PROVIDER": "OPENROUTER",
-"AI_API_KEY": "sk-or-v1-your-key-here"
-```
-
-### Step 4 — Start the Backend API
-
-```powershell
-cd "E:\Selvamani\Learning\AI Learning\legal-contract-rag"
-uvicorn backend.app.main:app --reload --port 8080
-```
-
-API Docs: [http://localhost:8080/docs](http://localhost:8080/docs)
-
-### Step 5 — Start the Document Processor
-
-```powershell
-cd processor
-
-# Install dependencies (first time or after requirements change)
-pip install -r requirements.txt
-
-func start
-```
-
-> ⚠️  Azure Functions Core Tools uses Python **3.11** internally. Your `venv` should be created with Python 3.11.
-
-### Step 6 — Start the Angular Frontend
-
-```powershell
-cd frontend
-npm install
-npm start
-```
-
-Frontend: [http://localhost:4200](http://localhost:4200)
-
----
-
-## 🐳 Full Docker Deployment
-
-### Step 1 — Configure Root `.env`
-
-The root `.env` is the **single source of truth** for `docker-compose`. Both the backend and processor containers read AI provider config from it via `${AI_PROVIDER}` variable substitution:
-
-```env
-# .env (project root)
-AI_PROVIDER=OPENROUTER
-AI_API_KEY=sk-or-v1-your-key-here
-EMBEDDING_MODEL=jinaeu/jina-embeddings-v2-base-en
-```
-
-### Step 2 — Build and Start All Services
-
-```powershell
-docker-compose up --build -d
-```
-
-The **backend container automatically**:
-1. ⏳ Waits for SQL Server to be ready
-2. 🗄️ Creates the `LegalContractRAG` database if missing
-3. 📋 Runs `alembic upgrade head` to create/update all tables
-4. 🚀 Starts the API server
-
-### Exposed Endpoints
-
-| Service | URL |
+| Document | Focus & Contents |
 |---|---|
-| Frontend | [http://localhost:4200](http://localhost:4200) |
-| Backend API Docs | [http://localhost:8080/docs](http://localhost:8080/docs) |
-| Document Processor | [http://localhost:7071](http://localhost:7071) |
-| ChromaDB | [http://localhost:8000](http://localhost:8000) |
-| Azurite Blob | [http://localhost:10000](http://localhost:10000) |
-| SQL Server | `localhost:1433` |
-
-### Using Local Ollama in Docker
-
-If `AI_PROVIDER=OLLAMA`, pull models into your Ollama container before processing:
-
-```powershell
-docker exec -it legal_ollama ollama pull llama3.2
-docker exec -it legal_ollama ollama pull nomic-embed-text
-```
+| 📐 [**System Architecture (`docs/architecture.md`)**](docs/architecture.md) | Distributed microservices topology, component responsibilities, trust boundaries, sequence diagrams, and fault-tolerance matrix. |
+| 🔌 [**REST & WebSocket API (`docs/api.md`)**](docs/api.md) | Complete OpenAPI endpoint catalog, request/response JSON schemas, WebSocket events, and RFC 7807 error specifications. |
+| 🗄️ [**Database Architecture (`docs/database.md`)**](docs/database.md) | SQL Server 2022 relational schema, ER diagrams, table dictionaries, foreign key cascading rules, and Alembic migrations. |
+| 🧠 [**Legal AI & RAG Pipeline (`docs/rag_pipeline.md`)**](docs/rag_pipeline.md) | Document extraction, `LegalAwareChunker`, dynamic embedding providers, self-healing ChromaDB vector storage, hybrid RRF search, and prompt versioning. |
+| 🤖 [**Agent Subsystem & MCP (`docs/agent_mcp.md`)**](docs/agent_mcp.md) | ReAct reasoning loops, deterministic workflows, multi-agent coordination, Model Context Protocol (MCP JSON-RPC 2.0), and legal advice guardrails. |
+| 🚀 [**Deployment & Operations (`docs/deployment.md`)**](docs/deployment.md) | Docker Compose infrastructure topology, environment variables matrix, local dev guides, and operations troubleshooting playbook. |
 
 ---
 
-## 📁 Project Structure
+## 🌟 Key Platform Capabilities
 
-```
-legal-contract-rag/
-├── .env                      # Root env — read by docker-compose
-├── docker-compose.yml
-├── backend/
-│   ├── .env                  # Backend local dev env
-│   ├── Dockerfile
-│   ├── scripts/
-│   │   ├── init_db.py        # Local DB init (run once)
-│   │   └── start.sh          # Docker entrypoint (auto-init DB + migrate)
-│   ├── app/
-│   │   ├── core/config.py    # All settings
-│   │   ├── services/
-│   │   │   ├── embedding_service.py   # Dynamic multi-provider embeddings
-│   │   │   └── ollama_service.py      # Dynamic multi-provider LLM
-│   │   └── ...
-│   └── alembic/              # Database migration scripts
-├── processor/
-│   ├── local.settings.json   # Processor local dev env (gitignored)
-│   ├── requirements.txt
-│   ├── function_app.py       # Azure Function entry point
-│   └── services/
-│       ├── embedding_service.py   # Dynamic multi-provider embeddings
-│       ├── chroma_service.py      # ChromaDB (HTTP or persistent)
-│       └── ...
-└── frontend/                 # Angular 17+ application
-```
+- **Temporal Grounding & Amendment Hierarchy**: Prioritizes later executed amendments over earlier baseline provisions (e.g. Northwind Amendment No. 2 strictly overrides legacy base provisions).
+- **Dynamic Multi-Provider AI Engine**: Hot-swap between **Google Gemini** (`gemma-4-26b-a4b-it`, `gemini-embedding-001`), **Local Ollama** (`llama3.2`, `nomic-embed-text`), **OpenRouter**, or **OpenAI** with zero codebase modifications.
+- **Decoupled Model Context Protocol (MCP)**: Zero hardcoded tools in agent prompts. All tool bindings and parameter schemas are discovered dynamically at runtime via MCP JSON-RPC 2.0.
+- **Structural Legal Parsing**: `LegalAwareChunker` captures Articles, Sections, Clauses, Recitals, Definitions, and Schedules, preventing naive mid-sentence splits.
+- **Self-Healing Vector Store**: Automatic dimensionality synchronization in ChromaDB (768 for Ollama vs 3072 for Gemini) preventing runtime dimensionality mismatch crashes.
+- **Dual-Mode Conversational Routing**: Dynamically handles casual greetings (`hi`, `hii`, `heyy`) and assistant capability questions directly through the LLM while routing contractual queries through grounded retrieval.
+- **Deterministic Legal Advice Guardrail**: Deterministic regex interceptors short-circuit inquiries regarding whether clauses are "acceptable", "standard", or "fair", redirecting users to licensed legal counsel.
+- **Real-Time Job Tracking**: Full-duplex WebSocket connection streaming document processing progress (`Uploaded` $\to$ `Processing` $\to$ `Completed`) to the UI.
 
 ---
 
-## 🧪 Running Tests
+## 🚢 Service Topology & Port Map
 
-```powershell
-cd "E:\Selvamani\Learning\AI Learning\legal-contract-rag"
-pytest tests/ -v
-```
-
----
-
-## ⚙️ Key Environment Variables Reference
-
-| Variable | Description | Example |
-|---|---|---|
-| `AI_PROVIDER` | Active AI provider | `OLLAMA`, `OPENROUTER`, `GEMINI` |
-| `AI_API_KEY` | Shared API key for LLM + embeddings | `sk-or-v1-...` |
-| `LLM_MODEL` | Override LLM model name | `meta-llama/llama-3.1-8b-instruct:free` |
-| `EMBEDDING_MODEL` | Override embedding model name | `jinaeu/jina-embeddings-v2-base-en` |
-| `LLM_BASE_URL` | Override LLM endpoint (any provider) | `https://api.groq.com/openai/v1` |
-| `LLM_API_KEY` | Override LLM-specific key | *(optional, falls back to AI_API_KEY)* |
-| `EMBEDDING_BASE_URL` | Override embedding endpoint | `https://openrouter.ai/api/v1` |
-| `EMBEDDING_API_KEY` | Override embedding-specific key | *(optional, falls back to AI_API_KEY)* |
-| `OLLAMA_BASE_URL` | Local Ollama URL | `http://localhost:11434` |
-| `DATABASE_URL` | SQL Server connection string | `mssql+pyodbc://sa:pass@host/db?...` |
-| `CHROMA_HOST` | ChromaDB host (HTTP mode) | `127.0.0.1` or `chromadb` (Docker) |
-| `CHROMA_PORT` | ChromaDB port | `8000` |
-
-
----
-
-## 🏛️ Architecture Overview
-
-The system is decoupled into three core tiers:
-
-1. **Angular 17+ Frontend (`frontend/`)**: Modern UI built with Angular Material, featuring contract lifecycle management, asynchronous document upload progress tracking, interactive chat, and a slide-out Citation Drawer.
-2. **FastAPI Backend (`backend/`)**: Relational metadata API managing contracts, documents, processing job queues, conversation history, and persisted citation sources (`RAGSources`) using SQL Server and SQLAlchemy.
-3. **Document Processor Azure Functions (`processor/`)**: Isolated microservice handling document extraction (PDF, DOCX, TXT), `LegalAwareChunker` structural clause parsing (Articles, Sections, Clauses), embedding generation (SentenceTransformers / Ollama), and isolated ChromaDB vector indexing.
+The system deploys as 7 containerized services connected over an internal Docker bridge network:
 
 ```mermaid
 graph TD
-    UI[Angular 17 Frontend] -->|REST API| API[FastAPI Backend]
-    API -->|Metadata & History| SQL[(SQL Server)]
-    API -->|Blob Storage| Blob[(Azurite / Azure Blob)]
-    API -->|Enqueue Jobs| Queue[(Azure Queue)]
-    Queue -->|Queue Trigger| Proc[Document Processor Azure Function]
-    Proc -->|Download File| Blob
-    Proc -->|Extract & Legal Chunk| Engine[Legal-Aware Engine]
-    Engine -->|Generate Embeddings| Embed[SentenceTransformers / Ollama]
-    Embed -->|Store Vectors| Chroma[(ChromaDB)]
-    API -->|Vector Search API| Proc
+    Client[Web Browser] -->|Port 4201| Frontend[legal_frontend\nAngular 19 + Nginx]
+    Frontend -->|Reverse Proxy /api/| Backend[legal_backend\nFastAPI :8080]
+    Frontend -->|Reverse Proxy /ws/| Backend
+    Backend -->|Port 1433| SQL[(legal_sqlserver\nSQL Server 2022)]
+    Backend -->|Ports 10000-10001| Storage[(legal_azurite\nBlob & Queue)]
+    Storage -.->|Queue Trigger| Proc[legal_processor\nAzure Functions :7071]
+    Proc -->|Port 8000| Chroma[(legal_chromadb\nChromaDB 0.5.20)]
+    Backend -->|Port 8000| Chroma
+    Backend -.->|Port 11434| Ollama[(legal_ollama\nLocal AI)]
+```
+
+| Container Name | Service | Technology | Exposed Port | Purpose |
+|---|---|---|---|---|
+| `legal_frontend` | Web UI | Angular 19 + Nginx | **`4201`** | Interactive Legal Assistant UI & Management Portal |
+| `legal_backend` | REST API | FastAPI + SQLAlchemy | **`8080`** | Primary Application Gateway & RAG Orchestrator |
+| `legal_processor`| Background Worker | Azure Functions Python v2 | **`7071`** | Document Extraction, Structural Chunking & Ingestion |
+| `legal_chromadb` | Vector Database | ChromaDB 0.5.20 | **`8000`** | Dense Vector Cosine Similarity Search |
+| `legal_sqlserver`| Relational DB | Microsoft SQL Server 2022 | **`1433`** | Relational Ledger (Contracts, Documents, Chats) |
+| `legal_azurite`  | Storage Emulator| Azurite | **`10000-10002`**| Azure Blob (10000) & Azure Queue (10001) Storage |
+| `legal_ollama`   | Offline AI Host | Ollama | **`11434`** | Local LLM & Embedding Service (Offline fallback) |
+
+---
+
+## ⚡ Quick Start: 3-Minute Docker Deployment
+
+### 1. Prerequisites
+- Docker Desktop 4.25+ (Windows / macOS / Linux) with Docker Compose enabled.
+- Git.
+
+### 2. Configure Environment Secrets
+Ensure `.env` at the root contains your active AI provider configuration:
+```bash
+# Active AI Provider: GEMINI, OLLAMA, OPENROUTER, OPENAI
+AI_PROVIDER=GEMINI
+LLM_PROVIDER=GEMINI
+AI_API_KEY=your-gemini-api-key-here
+API_KEY=your-gemini-api-key-here
+LLM_MODEL=gemma-4-26b-a4b-it
+EMBEDDING_MODEL=gemini-embedding-001
+```
+
+### 3. Build & Launch the Stack
+```powershell
+docker-compose up -d --build
+```
+
+### 4. Verify System Health
+Verify all services are up and healthy:
+```powershell
+curl http://localhost:8080/health
+# Expected: {"status": "healthy", "environment": "development", "version": "2.0.0", "active_llm": {"status": "healthy", "provider": "gemini", "model": "gemma-4-26b-a4b-it"}}
+```
+
+Access the applications:
+- **Angular Web UI**: [`http://localhost:4201`](http://localhost:4201)
+- **FastAPI Interactive Docs**: [`http://localhost:8080/docs`](http://localhost:8080/docs)
+
+### 5. Ingest Sample Legal Corpus
+Upload and index the Northwind Logistics Master Services Agreement Suite:
+```powershell
+python scripts/ingest_shared_corpus_to_ui.py
 ```
 
 ---
 
-## 🚀 Key Features
+## 💻 Local Development Setup (Without Docker)
 
-* **Asynchronous Queue Ingestion**: Document uploads return immediate `202 Accepted` responses. Ingestion runs asynchronously via Azure Queue (`legal-document-processing`).
-* **Legal-Aware Chunking (`LegalAwareChunker`)**: Respects legal hierarchy boundaries (Articles, Sections, Subsections, Clauses, Headings) without breaking contractual clauses across chunks.
-* **Vector Store Isolation**: ChromaDB is kept strictly internal to the Document Processor microservice and accessed exclusively via internal REST APIs (`/api/vector/search`, `/api/vector/delete`).
-* **Relational Citation Persistence**: User questions, assistant answers, and detailed chunk citations (Document Name, Page, Section, Clause, Relevance Score) are stored in SQL Server.
-* **Resilient Infrastructure**: Full Azurite (Blob & Queue) integration with seamless local disk and logging fallbacks.
+### Backend API (FastAPI)
+```powershell
+# Create and activate virtual environment
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
 
----
+# Install dependencies
+pip install -r backend/requirements.txt
 
-## 🛠️ Local Development & Quickstart
-
-### Prerequisites
-* Python 3.10+
-* Node.js 18+ and Angular CLI (`npm install -g @angular/cli`)
-* Docker & Docker Compose (optional for containerized deployment)
-
-### 1. Database & Migrations Setup
-```bash
-cd backend
-pip install -r requirements.txt
+# Run migrations
 alembic upgrade head
+
+# Start development server
+uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-### 2. Run Backend API Server
-```bash
-uvicorn backend.app.main:app --reload --port 8000
-```
-Swagger API Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
-
-### 3. Run Document Processor Azure Function
-```bash
+### Document Processor (Azure Functions)
+```powershell
 cd processor
 pip install -r requirements.txt
-func start
+func start --port 7071
 ```
 
-### 4. Run Angular Frontend
-```bash
+### Frontend Application (Angular 19)
+```powershell
 cd frontend
 npm install
+
+# Start development server on port 4201 with backend proxy
 npm start
 ```
-Frontend Web UI: [http://localhost:4200](http://localhost:4200)
 
 ---
 
-## 🐳 Containerized Deployment (Docker Compose)
+## 🧪 Testing & Quality Assurance
 
-Launch the complete 7-container enterprise stack (SQL Server, Azurite, ChromaDB, Ollama, Backend, Processor, Frontend) with a single command:
+All unit and integration tests are consolidated in the root [`tests/`](tests/) directory:
 
-```bash
-docker-compose up --build -d
+```powershell
+# Run complete core test suite
+$env:PYTHONPATH="."; .venv\Scripts\pytest.exe -o cache_dir=.pytest_cache_local tests/ -v
 ```
 
-Services exposed:
-* **Frontend UI**: `http://localhost`
-* **FastAPI Backend**: `http://localhost:8080/docs`
-* **Document Processor Function**: `http://localhost:7071`
-* **SQL Server**: `localhost:1433`
-* **Azurite Emulator**: `localhost:10000` (Blob), `10001` (Queue)
+### Test Suite Directory
+
+| Test File | Target Subsystem |
+|---|---|
+| `test_clean_domain.py` | Domain entities, value objects, and lifecycle validations. |
+| `test_clean_use_cases.py` | Contract and document use cases, validation, and mocking. |
+| `test_embedding_strategy.py` | Pluggable embedding factory delegation (Gemini, Ollama, OpenAI). |
+| `test_hybrid_rag.py` | BM25 lexical search, Reciprocal Rank Fusion, and scoping isolation. |
+| `test_llm_providers.py` | LLM conformance, error mappings, and factory switching. |
+| `test_rag_pipeline.py` | Grounded RAG synthesis, prompt assembly, and output validation. |
+| `test_mcp.py` | Model Context Protocol dynamic discovery, wire tracing, and safety guardrails. |
+| `test_multi_agent.py` | Multi-agent orchestrator, worker delegations, and failure injectors. |
+| `test_production.py` | End-to-end integration workflows, evaluation benchmarks, and cost analysis. |
 
 ---
 
-## 🧪 Testing Strategy
+## 🔧 Operations & Troubleshooting
 
-Run the automated pytest test suite covering domain models, legal extractors, chunkers, and FastAPI endpoint routes:
-
-```bash
-pytest tests/ -v
-```
+- **Frontend Port**: The frontend runs on **port 4201** (`http://localhost:4201`). If you experience collisions on port 4200 from other applications, our Docker stack and Angular dev server are explicitly pre-configured to port 4201.
+- **Dimensionality Error**: If switching between Ollama (768) and Gemini (3072) embeddings, the processor automatically recreates the ChromaDB collection. Trigger re-processing via `POST /api/v1/documents/{document_id}/reprocess`.
+- **SQL Server SA Password**: Ensure `MSSQL_SA_PASSWORD` meets Microsoft complexity standards (uppercase, lowercase, numbers, special characters).
+- **Log Inspection**:
+  ```powershell
+  docker logs -f legal_backend --tail 50
+  docker logs -f legal_processor --tail 50
+  docker logs -f legal_chromadb --tail 50
+  ```

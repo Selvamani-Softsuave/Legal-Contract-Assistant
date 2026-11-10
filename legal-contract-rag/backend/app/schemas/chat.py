@@ -23,6 +23,11 @@ class SourceDTO(BaseModel):
     section: Optional[str] = None
     clause: Optional[str] = None
     relevance_score: Optional[float] = None
+    similarity_score: Optional[float] = None
+
+    class Config:
+        from_attributes = True
+        extra = "ignore"
 
 class ChatRequest(BaseModel):
     question: str

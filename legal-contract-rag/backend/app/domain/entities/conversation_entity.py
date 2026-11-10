@@ -14,6 +14,7 @@ class RAGSource:
     page_number: Optional[int] = None
     section: Optional[str] = None
     clause: Optional[str] = None
+    relevance_score: Optional[float] = None
     similarity_score: Optional[float] = None
     text_content: Optional[str] = None
     created_at: datetime = field(default_factory=datetime.utcnow)

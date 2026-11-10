@@ -25,6 +25,7 @@ class DocumentMapper:
             status=status_val,
             error_message=getattr(orm_entity, "error_message", None),
             extracted_text_path=getattr(orm_entity, "extracted_text_path", None),
+            page_count=getattr(orm_entity, "page_count", 0) or 0,
             created_at=orm_entity.created_at,
             updated_at=orm_entity.updated_at
         )
@@ -40,6 +41,7 @@ class DocumentMapper:
             file_size=domain_entity.file_size,
             file_type=domain_entity.file_type,
             blob_path=domain_entity.blob_path,
+            page_count=getattr(domain_entity, "page_count", 0) or 0,
             status=domain_entity.status.value if hasattr(domain_entity.status, "value") else str(domain_entity.status),
             created_at=domain_entity.created_at,
             updated_at=domain_entity.updated_at

@@ -79,6 +79,7 @@ class SQLAlchemyChatRepository(IChatRepository):
 
         if sources:
             for s in sources:
+                score = s.get("relevance_score") if s.get("relevance_score") is not None else s.get("similarity_score")
                 src = ORMRAGSource(
                     id=str(uuid.uuid4()),
                     message_id=msg.id,
@@ -87,8 +88,7 @@ class SQLAlchemyChatRepository(IChatRepository):
                     page_number=s.get("page_number"),
                     section=s.get("section"),
                     clause=s.get("clause"),
-                    similarity_score=s.get("similarity_score"),
-                    text_content=s.get("text_content")
+                    relevance_score=score
                 )
                 self.db.add(src)
 

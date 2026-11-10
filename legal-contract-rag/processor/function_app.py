@@ -159,7 +159,7 @@ def process_document_queue(msg: func.QueueMessage) -> None:
         notify_backend({"status": "Processing", "document_id": document_id})
 
         result = None
-        if operation in ["PROCESS", "REPROCESS"]:
+        if operation in ["PROCESS", "REPROCESS", "INGEST"]:
             # 1. Download file from blob storage
             conn_str = os.environ.get("AZURE_STORAGE_CONNECTION_STRING")
             blob_service_client = BlobServiceClient.from_connection_string(conn_str, api_version="2023-11-03")

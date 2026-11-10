@@ -42,20 +42,22 @@ class ChatMapper:
             role_val = MessageRole.USER
 
         sources = []
-        if hasattr(orm_msg, "sources") and orm_msg.sources:
-            for s in orm_msg.sources:
-                sources.append(DomainRAGSource(
-                    id=s.id,
-                    message_id=s.message_id,
-                    chunk_id=s.chunk_id,
-                    document_name=s.document_name,
-                    page_number=s.page_number,
-                    section=s.section,
-                    clause=s.clause,
-                    similarity_score=s.similarity_score,
-                    text_content=s.text_content,
-                    created_at=s.created_at
-                ))
+        raw_sources = getattr(orm_msg, "rag_sources", None) or getattr(orm_msg, "sources", None) or []
+        for s in raw_sources:
+            score = getattr(s, "relevance_score", None) if getattr(s, "relevance_score", None) is not None else getattr(s, "similarity_score", None)
+            sources.append(DomainRAGSource(
+                id=s.id,
+                message_id=s.message_id,
+                chunk_id=s.chunk_id,
+                document_name=s.document_name,
+                page_number=s.page_number,
+                section=s.section,
+                clause=s.clause,
+                relevance_score=score,
+                similarity_score=score,
+                text_content=getattr(s, "text_content", None),
+                created_at=s.created_at
+            ))
 
         return DomainMessage(
             id=orm_msg.id,
