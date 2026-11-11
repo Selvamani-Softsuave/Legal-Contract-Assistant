@@ -33,7 +33,7 @@ COPY scripts/ /app/scripts/
 COPY tests/ /app/tests/
 COPY run_capstone.py /app/run_capstone.py
 COPY docs/ /app/docs/
-COPY architecture.md README.md .env.example /app/
+COPY README.md .env.example /app/
 
 # 4. Copy startup script and make executable
 COPY backend/scripts/start.sh /app/start.sh

@@ -47,7 +47,6 @@ legal-contract-rag/
 ├── Dockerfile                       # Multi-stage Python 3.11 container definition
 ├── docker-compose.yml               # Multi-container orchestrator (7 services)
 ├── README.md                        # Primary developer onboarding and quickstart guide
-├── architecture.md                  # Executive architectural summary
 ├── run_capstone.py                  # End-to-end evaluation & verification script
 │
 ├── backend/                         # FastAPI Application & AI Core
@@ -160,7 +159,6 @@ Contains environment templates, orchestration files, and cross-cutting project d
 | `Dockerfile` | Root Docker image definition bundling backend, processor utilities, and test suites. | Based on `python:3.11-slim`, installs Microsoft ODBC 17/18 drivers for SQL Server, bundles dependencies, and configures the test harness. |
 | `run_capstone.py` | Single entry-point script to run the full verification and evaluation benchmark. | Executes tests, runs RAG evaluations against the shared corpus, verifies MCP tools, and produces an evaluation report. |
 | `README.md` | Front-door documentation for onboarding developers and system operators. | Quickstart instructions, feature highlights, service port maps, and testing commands. |
-| `architecture.md` | Executive-level architecture summary. | High-level component overview and sequence summaries. |
 
 ---
 
