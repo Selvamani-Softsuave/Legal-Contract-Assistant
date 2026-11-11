@@ -24,6 +24,7 @@ For exhaustive technical specifications, refer to our modular documentation dire
 | 🧠 [**Legal AI & RAG Pipeline (`docs/rag_pipeline.md`)**](docs/rag_pipeline.md) | Document extraction, `LegalAwareChunker`, dynamic embedding providers, self-healing ChromaDB vector storage, hybrid RRF search, and prompt versioning. |
 | 🤖 [**Agent Subsystem & MCP (`docs/agent_mcp.md`)**](docs/agent_mcp.md) | ReAct reasoning loops, deterministic workflows, multi-agent coordination, Model Context Protocol (MCP JSON-RPC 2.0), and legal advice guardrails. |
 | 🚀 [**Deployment & Operations (`docs/deployment.md`)**](docs/deployment.md) | Docker Compose infrastructure topology, environment variables matrix, local dev guides, and operations troubleshooting playbook. |
+| 📁 [**Folder Structure & Codebase Guide (`docs/folder_structure.md`)**](docs/folder_structure.md) | File-by-file directory tree, clean architecture layers, use case definitions, and developer navigation map. |
 
 ---
 
