@@ -57,6 +57,14 @@ class Settings(BaseSettings):
     SEMANTIC_TOP_K: int = int(os.getenv("SEMANTIC_TOP_K", "10"))
     HYBRID_FINAL_TOP_K: int = int(os.getenv("HYBRID_FINAL_TOP_K", "5"))
 
+    # Langfuse LLM Observability & Tracing Configuration
+    # MODE: CLOUD | LOCAL | DISABLED (or controlled via LANGFUSE_ENABLED and LANGFUSE_HOST)
+    LANGFUSE_MODE: str = os.getenv("LANGFUSE_MODE", "LOCAL").upper()
+    LANGFUSE_PUBLIC_KEY: Optional[str] = os.getenv("LANGFUSE_PUBLIC_KEY", "pk-lf-local")
+    LANGFUSE_SECRET_KEY: Optional[str] = os.getenv("LANGFUSE_SECRET_KEY", "sk-lf-local")
+    LANGFUSE_HOST: str = os.getenv("LANGFUSE_HOST", "http://localhost:3000")
+    LANGFUSE_ENABLED: bool = bool(os.getenv("LANGFUSE_ENABLED", "True").lower() in ("true", "1", "yes"))
+
     class Config:
         case_sensitive = True
         env_file = ".env"
