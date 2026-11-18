@@ -90,10 +90,43 @@ services:
       - AI_API_KEY=${AI_API_KEY:-${API_KEY:-}}
       - LLM_MODEL=${LLM_MODEL:-}
       - EMBEDDING_MODEL=${EMBEDDING_MODEL:-}
+      - HYBRID_RETRIEVAL_ENABLED=${HYBRID_RETRIEVAL_ENABLED:-True}
+      - LANGFUSE_ENABLED=${LANGFUSE_ENABLED:-True}
+      - LANGFUSE_MODE=${LANGFUSE_MODE:-LOCAL}
+      - LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY:-pk-lf-local}
+      - LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY:-sk-lf-local}
+      - LANGFUSE_HOST=http://langfuse:3000
     depends_on:
       - sqlserver
       - azurite
       - processor
+    restart: unless-stopped
+
+  langfuse:
+    image: langfuse/langfuse:2
+    container_name: legal_langfuse
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - TELEMETRY_ENABLED=false
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_SECRET=legal-langfuse-secret-key-32chars-min!
+      - SALT=legal-salt-token-key-32chars-min!
+      - DATABASE_URL=postgresql://postgres:postgres@langfuse_db:5432/langfuse
+    depends_on:
+      - langfuse_db
+    restart: unless-stopped
+
+  langfuse_db:
+    image: postgres:16-alpine
+    container_name: legal_langfuse_db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=langfuse
+    volumes:
+      - langfuse_pgdata:/var/lib/postgresql/data
     restart: unless-stopped
 
   frontend:
@@ -111,3 +144,4 @@ volumes:
   azurite_data:
   chroma_data:
   ollama_data:
+  langfuse_pgdata:

@@ -25,6 +25,7 @@ For exhaustive technical specifications, refer to our modular documentation dire
 | 🤖 [**Agent Subsystem & MCP (`docs/agent_mcp.md`)**](docs/agent_mcp.md) | ReAct reasoning loops, deterministic workflows, multi-agent coordination, Model Context Protocol (MCP JSON-RPC 2.0), and legal advice guardrails. |
 | 🚀 [**Deployment & Operations (`docs/deployment.md`)**](docs/deployment.md) | Docker Compose infrastructure topology, environment variables matrix, local dev guides, and operations troubleshooting playbook. |
 | 📁 [**Folder Structure & Codebase Guide (`docs/folder_structure.md`)**](docs/folder_structure.md) | File-by-file directory tree, clean architecture layers, use case definitions, and developer navigation map. |
+| 📊 [**Week 3 to 12 Tasks & Implementation Matrix (`docs/week_3_to_12_tasks_and_implementation.md`)**](docs/week_3_to_12_tasks_and_implementation.md) | Detailed status of curriculum tasks, implemented deliverables, and research branch findings across weeks 3 through 12. |
 
 ---
 
@@ -32,6 +33,7 @@ For exhaustive technical specifications, refer to our modular documentation dire
 
 - **Temporal Grounding & Amendment Hierarchy**: Prioritizes later executed amendments over earlier baseline provisions (e.g. Northwind Amendment No. 2 strictly overrides legacy base provisions).
 - **Dynamic Multi-Provider AI Engine**: Hot-swap between **Google Gemini** (`gemma-4-26b-a4b-it`, `gemini-embedding-001`), **Local Ollama** (`llama3.2`, `nomic-embed-text`), **OpenRouter**, or **OpenAI** with zero codebase modifications.
+- **Dual-Mode Langfuse Observability**: Flexible telemetry switchable between **Local Self-Hosted Langfuse** (100% offline at `http://localhost:3000`) and **Langfuse Cloud** (`cloud.langfuse.com`) via `LANGFUSE_MODE` in `.env`.
 - **Decoupled Model Context Protocol (MCP)**: Zero hardcoded tools in agent prompts. All tool bindings and parameter schemas are discovered dynamically at runtime via MCP JSON-RPC 2.0.
 - **Structural Legal Parsing**: `LegalAwareChunker` captures Articles, Sections, Clauses, Recitals, Definitions, and Schedules, preventing naive mid-sentence splits.
 - **Self-Healing Vector Store**: Automatic dimensionality synchronization in ChromaDB (768 for Ollama vs 3072 for Gemini) preventing runtime dimensionality mismatch crashes.

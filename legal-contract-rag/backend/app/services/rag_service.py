@@ -18,6 +18,7 @@ from backend.app.rag.context_builder import ContextBuilder
 from backend.app.rag.citation_handler import CitationHandler
 from backend.app.rag.prompt_builder import LegalRAGPromptBuilder
 from backend.app.rag.response_validator import ResponseValidator
+from backend.app.observability.langfuse_service import langfuse_service
 
 logger = logging.getLogger(__name__)
 
@@ -113,6 +114,22 @@ class EnterpriseRAGService:
             logger.info(
                 f"LLM generation finished | Provider: {llm_response.provider} | "
                 f"Model: {llm_response.model} | Duration: {duration:.2f}s"
+            )
+
+            # Langfuse LLM Observability & Execution Trace
+            langfuse_service.trace_generation(
+                name="legal-contract-rag-qa",
+                model=llm_response.model or "unknown-model",
+                system_prompt=system_prompt,
+                user_prompt=user_prompt,
+                output_text=raw_answer,
+                provider=llm_response.provider or "generic",
+                session_id=conversation_id,
+                metadata={
+                    "duration_seconds": round(duration, 3),
+                    "chunk_count": len(search_results),
+                    "scoped_contracts": scoped_contract_ids or []
+                }
             )
 
             # 7. Normalize & validate LLM response
@@ -228,6 +245,18 @@ class EnterpriseRAGService:
                     "Greetings! As your Enterprise Legal Contract Assistant, I can help you examine agreement clauses, check amendment hierarchies, and verify contractual terms. How can I assist you today?",
                     "Hi there! I am your Enterprise Legal Contract Assistant, designed to assist with reviewing and querying your legal contracts and amendments. Feel free to upload documents or ask specific questions!"
                 ])
+
+            # Langfuse Trace
+            langfuse_service.trace_generation(
+                name="legal-contract-greeting",
+                model=llm_response.model or "unknown-model",
+                system_prompt=general_sys_prompt,
+                user_prompt=prompt_text,
+                output_text=answer_text,
+                provider=llm_response.provider or "generic",
+                session_id=conversation_id,
+                tags=["greeting", "conversational"]
+            )
         except Exception as e:
             logger.warning(f"Error generating general assistant response: {e}. Using standard greeting.")
             answer_text = (
@@ -297,6 +326,18 @@ class EnterpriseRAGService:
             answer_text = ResponseValidator.validate_and_normalize(llm_response.content)
             if not answer_text or answer_text == ResponseValidator.DEFAULT_FALLBACK or not answer_text.endswith(('.', '!', '?')):
                 answer_text = random.choice(fallback_templates)
+
+            # Langfuse Trace
+            langfuse_service.trace_generation(
+                name="legal-contract-unsupported-query",
+                model=llm_response.model or "unknown-model",
+                system_prompt=unsupported_sys_prompt,
+                user_prompt=prompt_text,
+                output_text=answer_text,
+                provider=llm_response.provider or "generic",
+                session_id=conversation_id,
+                tags=["unsupported", "out-of-scope"]
+            )
         except Exception as e:
             logger.warning(f"Error generating dynamic unsupported response: {e}. Using diversified fallback.")
             answer_text = random.choice(fallback_templates)

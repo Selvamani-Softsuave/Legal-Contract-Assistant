@@ -47,6 +47,7 @@ graph TD
 | `legal_sqlserver` | `mcr.microsoft.com/mssql/server:2022-latest` | **`1433`** | `1433` | Relational database storing contracts, documents, jobs, and chat messages. |
 | `legal_azurite` | `mcr.microsoft.com/azure-storage/azurite:latest` | **`10000-10002`** | `10000-10002` | Local storage emulator for Azure Blob (10000), Queue (10001), Table (10002). |
 | `legal_ollama` | `ollama/ollama:latest` | **`11434`** | `11434` | Optional local LLM and embedding service for 100% offline deployment. |
+| `legal_langfuse` | `langfuse/langfuse:2` | **`3000`** | `3000` | Local self-hosted Langfuse LLM Observability & Tracing Web Dashboard. |
 
 ---
 
